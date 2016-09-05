@@ -84,6 +84,8 @@ public class EmailPasswordLoginActivity
                     // TODO
                     updateUI(user);
                 }
+
+                // updateUI(user);
             }
         };
         // [END auth_state_listener]
