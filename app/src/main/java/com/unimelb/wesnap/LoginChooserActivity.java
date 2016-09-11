@@ -9,8 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * List-based Activity to redirect to one of the other Activities:
@@ -20,6 +24,7 @@ import android.widget.TextView;
 public class LoginChooserActivity
         extends AppCompatActivity
         implements AdapterView.OnItemClickListener {
+
 
     private static final Class[] CLASSES = new Class[]{
             GoogleLoginActivity.class,
@@ -43,13 +48,28 @@ public class LoginChooserActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseAuth mFirebaseAuth;
+        FirebaseUser mFirebaseUser;
+        //Initialise Firebase Auth
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (mFirebaseUser != null) {
+            // Signed in, launch the Main activity
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+
         setContentView(R.layout.activity_login);
 
         // Set up ListView and Adapter
         ListView listView = (ListView) findViewById(R.id.activity_login_chooser);
 
         MyArrayAdapter adapter = new MyArrayAdapter(
-                this, android.R.layout.simple_list_item_2, CLASSES);
+                this, R.layout.login_icon, CLASSES);
         adapter.setTitleIds(TITLE_IDS);
         adapter.setDescriptionIds(DESCRIPTION_IDS);
 
@@ -88,10 +108,15 @@ public class LoginChooserActivity
             if (convertView == null) {
                 LayoutInflater inflater =
                         (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(android.R.layout.simple_list_item_2, null);
+                view = inflater.inflate(R.layout.login_icon, null);
             }
 
-            ((TextView) view.findViewById(android.R.id.text1)).setText(
+            ImageView iv = (ImageView) view.findViewById(R.id.login_img);
+            if (position == 0)
+                iv.setImageResource(R.drawable.google);
+            else
+                iv.setImageResource(R.drawable.wesnap);
+            ((TextView) view.findViewById(R.id.login_txt)).setText(
                     mTitleIds[position]);
 //            ((TextView) view.findViewById(android.R.id.text2)).setText(
 //                    mDescriptionIds[position]);

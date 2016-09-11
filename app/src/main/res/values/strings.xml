@@ -7,8 +7,8 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- Auth Related -->
-    <string name="title_activity_email_password_login">Login / Register via Email</string>
-    <string name="title_activity_google_login">Login via Google Account</string>
+    <string name="title_activity_email_password_login">WeSnap Account</string>
+    <string name="title_activity_google_login">Google Account</string>
 
     <string name="action_login_register">Login / Register</string>
     <string name="action_login">Login</string>
@@ -30,5 +30,6 @@
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
     <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
 
+    <string name="camera_button">Start Camera</string>
 
 </resources>

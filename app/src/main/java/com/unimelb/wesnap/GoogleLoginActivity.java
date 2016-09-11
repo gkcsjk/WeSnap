@@ -85,14 +85,15 @@ public class GoogleLoginActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 // notification of auth state changes come from firebaseAuthWithGoogle()
-
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
                     // TODO
-                    startActivity(new Intent(GoogleLoginActivity.this, MainActivity.class));
+                    Intent intent = new Intent(GoogleLoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                     finish();
                 } else {
                     // User is signed out
