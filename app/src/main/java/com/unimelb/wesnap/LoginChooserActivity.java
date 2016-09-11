@@ -48,13 +48,10 @@ public class LoginChooserActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseAuth mFirebaseAuth;
-        FirebaseUser mFirebaseUser;
-        //Initialise Firebase Auth
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-        if (mFirebaseUser != null) {
+        // Check if user already logged in
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        if (mFirebaseAuth.getCurrentUser() != null) {
             // Signed in, launch the Main activity
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -62,7 +59,7 @@ public class LoginChooserActivity
             return;
         }
 
-
+        // Set up view
         setContentView(R.layout.activity_login);
 
         // Set up ListView and Adapter

@@ -32,4 +32,7 @@
 
     <string name="camera_button">Start Camera</string>
 
+    <string name="text_camera">It\'s SNAP TIME</string>
+    <string name="text_chat">It\'s CHAT TIME</string>
+
 </resources>
