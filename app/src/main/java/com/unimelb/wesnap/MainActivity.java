@@ -1,8 +1,10 @@
 package com.unimelb.wesnap;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,15 +13,33 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+/**
+ * MainActivity class:
+ * TODO add comments
+ */
+public class MainActivity
+        extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener {
+
+    private static final String TAG = "MainActivity";
+//    public static final String ANONYMOUS = "anonymous";
 
     /* Settings for the Tabs */
     private static final int TAB_NUM = 5;
@@ -38,17 +58,55 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;// {@link ViewPager} that will host the section contents.
+    private TabLayout tabLayout;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
+    /* Variables for the Logged-in User */
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    private GoogleApiClient mGoogleApiClient;
+
+    /* Dialog for exitApp() */
+    private AlertDialog exitAppDialog;
+
+    /* Dialog interface click listener */
+    private DialogInterface.OnClickListener exitAppDialogListener =
+            new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int button) {
+            switch(button) {
+                case AlertDialog.BUTTON_POSITIVE:
+                    finish();
+                    break;
+                case AlertDialog.BUTTON_NEGATIVE:
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     // ======================================================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up view
         setContentView(R.layout.activity_main);
+
+        // Initialise FirebaseAuth & GoogleApiClient.
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
+
+        // set up the exitApp dialog
+        exitAppDialog = new AlertDialog.Builder(this).create();
+        exitAppDialog.setTitle("Confirm Exit");
+        exitAppDialog.setMessage("Are you sure to exit?");
+        exitAppDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", exitAppDialogListener);
+        exitAppDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", exitAppDialogListener);
 
         // Set up the action bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -62,17 +120,13 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++){
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(mSectionsPagerAdapter.getTabView(i));
+        }
 
     }
 
@@ -87,17 +141,39 @@ public class MainActivity extends AppCompatActivity {
     // ======================================================
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        // Handle action bar item clicks here.
+        // The action bar will automatically handle clicks on the Home/Up button,
+        // so long as you specify a parent activity in AndroidManifest.xml.
+        switch(item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.logout:
+                logout();
+                break;
+            case R.id.exit:
+                exitApp();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+    // ======================================================
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitApp();
             return true;
         }
+        return false;
+    }
 
-        return super.onOptionsItemSelected(item);
+    // ======================================================
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
     // ======================================================
@@ -116,6 +192,10 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // TODO: add the relevant fragment / activity here
             switch(position) {
+//                case 1:
+//                    return ChatFragment.getInstance();
+                case 2:
+                    return CameraFragment.getInstance();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }
@@ -127,22 +207,65 @@ public class MainActivity extends AppCompatActivity {
             return TAB_NUM;
         }
 
-        /* Set the title for each tab */
-        @Override
-        public CharSequence getPageTitle(int position) {
+        public View getTabView(int position) {
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.tab_icon,null);
+            TextView tv = (TextView) view.findViewById(R.id.iconText);
+            ImageView iv = (ImageView) view.findViewById(R.id.icon);
             switch (position) {
                 case 0:
-                    return TAB_TITLE_CONTACTS;
+                    tv.setText(TAB_TITLE_CONTACTS);
+                    iv.setImageResource(R.mipmap.contacts);
+                    break;
                 case 1:
-                    return TAB_TITLE_CHAT;
+                    tv.setText(TAB_TITLE_CHAT);
+                    iv.setImageResource(R.mipmap.chat);
+                    break;
                 case 2:
-                    return TAB_TITLE_SNAP;
+                    tv.setText(TAB_TITLE_SNAP);
+                    iv.setImageResource(R.mipmap.camera);
+                    break;
                 case 3:
-                    return TAB_TITLE_STORIES;
+                    tv.setText(TAB_TITLE_STORIES);
+                    iv.setImageResource(R.mipmap.discover);
+                    break;
                 case 4:
-                    return TAB_TITLE_ME;
+                    tv.setText(TAB_TITLE_ME);
+                    iv.setImageResource(R.mipmap.profile);
+                    break;
             }
-            return null;
+            return view;
+        }
+    }
+
+    // ======================================================
+    // private methods
+    // ======================================================
+
+    /*
+    * Logout from Firebase (and Google Account)
+    * */
+    private void logout() {
+        // logout
+        if(mFirebaseAuth != null) {
+            mFirebaseAuth.signOut();
+        }
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+        // restart from LoginChooserActivity
+//        mUsername = ANONYMOUS;
+        Intent intent = new Intent(this, LoginChooserActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    /*
+    * Exit the app after confirming via dialog
+    * */
+    private void exitApp() {
+        // only show the Dialog when the activity is not finished
+        if (!isFinishing()) {
+            exitAppDialog.show();
         }
     }
 }

@@ -75,7 +75,9 @@ public class EmailPasswordLoginActivity
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
                     // TODO
-                    startActivity(new Intent(EmailPasswordLoginActivity.this, MainActivity.class));
+                    Intent intent = new Intent(new Intent(EmailPasswordLoginActivity.this, MainActivity.class));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                     finish();
                 } else {
                     // User is signed out
