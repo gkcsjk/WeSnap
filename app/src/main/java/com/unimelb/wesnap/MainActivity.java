@@ -29,6 +29,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * MainActivity class:
@@ -128,6 +133,23 @@ public class MainActivity
             tab.setCustomView(mSectionsPagerAdapter.getTabView(i));
         }
 
+        // Get the latest user profile from Firebase
+        Map<String, Object> updateValues = new HashMap<>();
+        updateValues.put("email", mFirebaseUser.getEmail() != null ? mFirebaseUser.getEmail() : "Anonymous");
+        updateValues.put("profilePhoto", mFirebaseUser.getPhotoUrl() != null ? mFirebaseUser.getPhotoUrl().toString() : null);
+        // Save to database 'people'
+        FirebaseUtil.getPeopleRef().child(mFirebaseUser.getUid()).updateChildren(
+                updateValues,
+                new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {
+                        if (firebaseError != null) {
+                            Toast.makeText(MainActivity.this,
+                                    "Couldn't save user data: " + firebaseError.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     // ======================================================

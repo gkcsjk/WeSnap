@@ -24,9 +24,10 @@ public class GlideUtil {
 
     public static void loadProfileIcon(String url, ImageView imageView) {
         Context context = imageView.getContext();
+        ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(context, R.color.blue_grey_500));
         Glide.with(context)
                 .load(url)
-                .placeholder(R.drawable.ic_person_outline_black_24dp)
+                .placeholder(cd)//R.drawable.ic_person_outline_black_24dp)
                 .dontAnimate()
                 .fitCenter()
                 .into(imageView);
