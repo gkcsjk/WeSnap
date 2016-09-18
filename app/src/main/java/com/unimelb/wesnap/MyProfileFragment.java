@@ -4,14 +4,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import com.unimelb.wesnap.models.Person;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -28,12 +32,9 @@ public class MyProfileFragment extends Fragment {
 
     private static final String TAG = "MyProfileFragment";
 
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
-
     private DatabaseReference mPeopleRef;
-    private DatabaseReference mPersonRef;
-
+    private DatabaseReference mCurrentUserRef;
+    private ValueEventListener mProfileListener;
     private CircleImageView mProfilePhoto;
     private TextView mProfileEmail;
 
@@ -76,11 +77,8 @@ public class MyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
         mPeopleRef = FirebaseUtil.getPeopleRef();
-        final String currentUserId = FirebaseUtil.getCurrentUserId();
+        mCurrentUserRef = FirebaseUtil.getCurrentUserRef();
 
     }
 
@@ -96,40 +94,48 @@ public class MyProfileFragment extends Fragment {
         mProfilePhoto = (CircleImageView) view.findViewById(R.id.profile_user_photo);
         mProfileEmail = (TextView) view.findViewById(R.id.profile_email);
 
-        if (mFirebaseUser.getEmail() != null) {
-            mProfileEmail.setText(mFirebaseUser.getEmail());
-        }
+        // [START person_value_event_listener]
+        ValueEventListener profileListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Person object and use the values to update the UI
+                Person person = dataSnapshot.getValue(Person.class);
 
-        if (mFirebaseUser.getPhotoUrl() != null) {
-            GlideUtil.loadProfileIcon(mFirebaseUser.getPhotoUrl().toString(), mProfilePhoto);
-        }
+                if (person.profilePhoto != null) {
+                    GlideUtil.loadProfileIcon(person.profilePhoto, mProfilePhoto);
+                } else {
+                    mProfilePhoto.setImageResource(R.mipmap.profile);
+                }
 
+                mProfileEmail.setText(person.email);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Person failed, log a message
+                Log.w(TAG, "loadPerson:onCancelled", databaseError.toException());
+//                Toast.makeText(MyProfileFragment.this,
+//                        "Failed to load person.",
+//                        Toast.LENGTH_SHORT).show();
+            }
+        };
+        mCurrentUserRef.addValueEventListener(profileListener);
+        // [END person_value_event_listener]
+
+        // Keep copy of post listener so we can remove it when app stops
+        mProfileListener = profileListener;
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Remove person value event listener
+        if (mProfileListener != null) {
+            mCurrentUserRef.removeEventListener(mProfileListener);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
