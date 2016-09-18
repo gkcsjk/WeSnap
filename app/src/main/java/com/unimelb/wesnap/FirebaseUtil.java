@@ -31,6 +31,15 @@ public class FirebaseUtil {
         return null;
     }
 
+    public static DatabaseReference getCurrentChatsRef() {
+        DatabaseReference currentUserRef = getCurrentUserRef();
+        if (currentUserRef != null) {
+            return currentUserRef.child("chats");
+        }
+        return null;
+    }
+
+    // =============================================
     public static DatabaseReference getPeopleRef() {
         return getBaseRef().child("people");
     }
@@ -46,6 +55,7 @@ public class FirebaseUtil {
     public static String getFollowersPath() {
         return "followers/";
     }
+
     // =============================================
     public static DatabaseReference getPostsRef() {
         return getBaseRef().child("posts");
@@ -59,11 +69,4 @@ public class FirebaseUtil {
         return getBaseRef().child("comments");
     }
 
-//    public static DatabaseReference getFeedRef() {
-//        return getBaseRef().child("feed");
-//    }
-//
-//    public static DatabaseReference getLikesRef() {
-//        return getBaseRef().child("likes");
-//    }
 }

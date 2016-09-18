@@ -39,9 +39,9 @@ import java.util.Map;
  * MainActivity class:
  * TODO add comments
  */
-public class MainActivity
-        extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener,
+        ChatFragment.OnChatSelectedListener {
 
     private static final String TAG = "MainActivity";
 //    public static final String ANONYMOUS = "anonymous";
@@ -167,8 +167,6 @@ public class MainActivity
         // The action bar will automatically handle clicks on the Home/Up button,
         // so long as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId()) {
-            case R.id.action_settings:
-                return true;
             case R.id.logout:
                 logout();
                 break;
@@ -214,8 +212,10 @@ public class MainActivity
         public Fragment getItem(int position) {
             // TODO: add the relevant fragment / activity here
             switch(position) {
-//                case 1:
-//                    return ChatFragment.getInstance();
+                case 0:
+                    return FriendFragment.getInstance();
+                case 1:
+                    return ChatFragment.getInstance();
                 case 2:
                     return CameraFragment.getInstance();
                 case 4:
@@ -262,13 +262,13 @@ public class MainActivity
     }
 
     // ======================================================
-    // private methods
+    // logout & exit method; can be accessed from MyProfile fragment
     // ======================================================
 
     /*
     * Logout from Firebase (and Google Account)
     * */
-    private void logout() {
+    public void logout() {
         // logout
         if(mFirebaseAuth != null) {
             mFirebaseAuth.signOut();
@@ -276,7 +276,6 @@ public class MainActivity
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
 
         // restart from LoginChooserActivity
-//        mUsername = ANONYMOUS;
         Intent intent = new Intent(this, LoginChooserActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -286,10 +285,16 @@ public class MainActivity
     /*
     * Exit the app after confirming via dialog
     * */
-    private void exitApp() {
+    public void exitApp() {
         // only show the Dialog when the activity is not finished
         if (!isFinishing()) {
             exitAppDialog.show();
         }
+    }
+
+    @Override
+    public void onChatSelected(String chatKey) {
+        // TODO: OnChatSelectedListener
+        // TODO: start the Message activity???
     }
 }

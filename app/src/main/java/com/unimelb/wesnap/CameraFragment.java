@@ -23,6 +23,7 @@ public class CameraFragment extends Fragment {
 
     /* UI Variables */
     private Button cameraB;
+    private OnClickListener clickListener;
     private TextView textView3;
     private ImageView iv3;
 
@@ -40,16 +41,6 @@ public class CameraFragment extends Fragment {
         return mCameraFragment;
     }
 
-    private OnClickListener click = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            startActivityForResult(intent, 1);
-        }
-    };
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG,", resultCode=" + resultCode);
@@ -61,9 +52,20 @@ public class CameraFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         textView3 = (TextView) view.findViewById(R.id.camera_txt);
         textView3.setText(R.string.text_camera);
+
         cameraB = (Button) view.findViewById(R.id.camera_b1);
+        clickListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                startActivityForResult(intent, 1);
+            }
+        };
+        cameraB.setOnClickListener(clickListener);
+
         iv3 = (ImageView) view.findViewById(R.id.phview);
-        cameraB.setOnClickListener(click);
     }
 
     @Override

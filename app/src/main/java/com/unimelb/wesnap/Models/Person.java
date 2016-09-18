@@ -9,25 +9,38 @@ import java.util.Map;
  */
 @IgnoreExtraProperties
 public class Person {
-    public String uid;
-//    private String username;
-    public String email;
-    public String profilePhoto;
+    private String username;    // TODO
+    private String displayName; // TODO
 
-    private Map<String, Boolean> posts; // TODO: 18/09/2016
-    private Map<String, Object> friends; // TODO: 18/09/2016
-    private Map<String, Object> friend_requests; // TODO: 18/09/2016
+    private String email;
+    private String profilePhoto;
+
+    private Map<String, Object> chats;
+    private Map<String, Object> friends;
+    private Map<String, Object> posts; // TODO
 
     public Person() {
         // Default constructor required for calls to DataSnapshot.getValue(Person.class)
     }
 
-    public Person(String uid, String username, String email, String profilePhoto) {
-        this.uid = uid;
-//        this.username = username;
+    public Person(String email, String profilePhoto) {
         this.email = email;
         this.profilePhoto = profilePhoto;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }
