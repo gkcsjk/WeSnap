@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static com.unimelb.wesnap.R.*;
 
@@ -40,6 +42,8 @@ public class EmailPasswordLoginActivity
     private FirebaseAuth.AuthStateListener mAuthListener;
     // [END declare_auth_listener]
 
+    private DatabaseReference mDatabase;
+
     // ======================================================
     /*
     * onCreate()
@@ -58,6 +62,8 @@ public class EmailPasswordLoginActivity
         findViewById(id.email_login_button).setOnClickListener(this);
         findViewById(id.email_register_button).setOnClickListener(this);
         findViewById(id.email_logout_button).setOnClickListener(this);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();

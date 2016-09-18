@@ -35,4 +35,7 @@
     <string name="text_camera">It\'s SNAP TIME</string>
     <string name="text_chat">It\'s CHAT TIME</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
