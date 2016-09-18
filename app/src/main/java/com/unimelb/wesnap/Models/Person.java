@@ -9,10 +9,10 @@ import java.util.Map;
  */
 @IgnoreExtraProperties
 public class Person {
-    private String uid;
-    private String username;
-    private String email;
-    private String profile_picture;
+    public String uid;
+//    private String username;
+    public String email;
+    public String profilePhoto;
 
     private Map<String, Boolean> posts; // TODO: 18/09/2016
     private Map<String, Object> friends; // TODO: 18/09/2016
@@ -22,11 +22,11 @@ public class Person {
         // Default constructor required for calls to DataSnapshot.getValue(Person.class)
     }
 
-    public Person(String uid, String username, String email, String profile_picture) {
+    public Person(String uid, String username, String email, String profilePhoto) {
         this.uid = uid;
-        this.username = username;
+//        this.username = username;
         this.email = email;
-        this.profile_picture = profile_picture;
+        this.profilePhoto = profilePhoto;
     }
 
 
