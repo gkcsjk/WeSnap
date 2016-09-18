@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.unimelb.wesnap.MyProfileFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_user_photo"
+            android:layout_width="@dimen/profile_user_photo_size"
+            android:layout_height="@dimen/profile_user_photo_size"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+        <TextView
+            android:id="@+id/profile_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            style="@style/TextAppearance.AppCompat.Title"/>
+    </LinearLayout>
+
+</FrameLayout>

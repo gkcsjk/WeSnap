@@ -196,6 +196,8 @@ public class MainActivity
 //                    return ChatFragment.getInstance();
                 case 2:
                     return CameraFragment.getInstance();
+                case 4:
+                    return MyProfileFragment.getInstance();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }

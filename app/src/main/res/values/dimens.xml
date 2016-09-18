@@ -9,4 +9,6 @@
 
     <dimen name="icon_top_margin">24dp</dimen>
     <dimen name="icon_bottom_margin">24dp</dimen>
+
+    <dimen name="profile_user_photo_size">150dp</dimen>
 </resources>
