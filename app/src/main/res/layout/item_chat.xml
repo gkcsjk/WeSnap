@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="@dimen/size_edges">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/chat_avatar"
+        android:layout_alignParentLeft="true"
+        android:layout_width="@dimen/size_avatar_chat"
+        android:layout_height="@dimen/size_avatar_chat"
+        android:scaleType="centerCrop" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:id="@+id/chat_receiver_photo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/chat_receiver_name"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="0" />
-    </LinearLayout>
-
-</LinearLayout>
+    <TextView
+        android:id="@+id/chat_name"
+        android:layout_toRightOf="@+id/chat_avatar"
+        android:layout_marginLeft="@dimen/size_edges"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/size_avatar_chat"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textStyle="bold" />
+</RelativeLayout>
