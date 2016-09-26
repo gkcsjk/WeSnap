@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="@dimen/size_edges">
+
+    <ImageView
+        android:id="@+id/chat_avatar"
+        android:contentDescription="@string/desc_image_avatar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_width="@dimen/size_avatar"
+        android:layout_height="@dimen/size_avatar"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:id="@+id/chat_receiver_photo" />
+        android:layout_height="@dimen/size_avatar"
+        android:layout_toRightOf="@+id/chat_avatar"
+        android:layout_toEndOf="@+id/chat_avatar"
+        android:layout_marginLeft="@dimen/size_edges"
+        android:layout_marginStart="@dimen/size_edges"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/chat_receiver_name"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="0" />
-    </LinearLayout>
+            android:id="@+id/chat_name"
+            android:text="@string/hint_chat_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textStyle="bold" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/chat_hint"
+            android:text="@string/hint_chat"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textAppearance="?android:textAppearanceListItemSmall" />
+    </LinearLayout>
+</RelativeLayout>
