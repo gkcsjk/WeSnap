@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">WeSnap</string>
 
+    <!--Geneal-->
     <string name="action_submit">Submit</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_loading">Loading</string>
+    <string name="action_exit_app">Exit App</string>
 
-    <string name="text_title_login">Log in</string>
+    <!--Auth-->
+    <string name="text_title_login">Log In</string>
     <string name="text_title_register">Create your WeSnap account</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -16,15 +19,22 @@
     <string name="status_empty"> </string>
     <string name="status_auth_failed">authentication failed</string>
     <string name="status_register_failed">register failed</string>
+    <string name="action_logout">Logout</string>
 
-    <string name="item_chat_name">Alice</string>
+    <!--Friends-->
+    <string name="action_add_friend">Add Friend</string>
+    <string name="hint_chat_name">Your Friend Alice from Wonderland</string>
+    <string name="hint_chat">Tap to read messages!</string>
 
+    <!--Messages-->
     <string name="action_view_photo">See the Photo</string>
     <string name="action_replay_photo">Replay the Photo</string>
 
+    <!--Camera-->
     <string name="action_camera">Start Camera</string>
-    <string name="text_camera">It\'s SNAP TIME</string>
+    <string name="text_title_camera">It\'s SNAP TIME</string>
 
+    <!--Dummy-->
     <string name="text_dummy">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -34,4 +44,5 @@
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
         culpa qui officia deserunt mollit anim id est laborum.
     </string>
+    <string name="desc_image_avatar">Avatar of User</string>
 </resources>

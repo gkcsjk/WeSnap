@@ -48,8 +48,8 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        textView3 = (TextView) view.findViewById(R.id.camera_txt);
-        textView3.setText(R.string.text_camera);
+        textView3 = (TextView) view.findViewById(R.id.text_title_camera);
+        textView3.setText(R.string.text_title_camera);
 
         cameraB = (Button) view.findViewById(R.id.camera_b1);
         clickListener = new OnClickListener() {
@@ -63,7 +63,7 @@ public class CameraFragment extends Fragment {
         };
         cameraB.setOnClickListener(clickListener);
 
-        iv3 = (ImageView) view.findViewById(R.id.phview);
+        iv3 = (ImageView) view.findViewById(R.id.preview);
     }
 
     @Override

@@ -128,17 +128,17 @@ public class ChatFragment extends Fragment {
     // ======================================================
 
     /**
-     * ChatViewHolder
+     * ChatListViewHolder
      * */
     public static class ChatListViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameView;
         public ImageView avatarView;
+        public TextView nameView;
 
         public ChatListViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_chat, parent, false));
 
-            nameView = (TextView) itemView.findViewById(R.id.chat_name);
             avatarView = (ImageView) itemView.findViewById(R.id.chat_avatar);
+            nameView = (TextView) itemView.findViewById(R.id.chat_name);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -147,7 +147,7 @@ public class ChatFragment extends Fragment {
                     Intent intent = new Intent(context, MessageActivity.class);
                     intent.putExtra(
                             MessageActivity.EXTRA_POSITION,
-                            getAdapterPosition()); // TODO
+                            getAdapterPosition()); // TODO ChatListViewHolder
                     context.startActivity(intent);
                 }
             });

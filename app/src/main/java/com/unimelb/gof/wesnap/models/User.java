@@ -12,7 +12,8 @@ public class User {
     private String username;
     private String displayedName;
     private String email;
-    private String profilePhoto;
+    private String avatarUrl; // "null" for a newly registered user
+    // TODO user-supplied avatar?
 
     private Map<String, Object> chats;
     private Map<String, Object> friends;
@@ -23,11 +24,11 @@ public class User {
     }
 
     public User(String username, String displayName, String email,
-                String profilePhoto) {
+                String avatarUrl) {
         this.username = username;
         this.displayedName = displayName;
         this.email = email;
-        this.profilePhoto = profilePhoto;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getDisplayedName() {
@@ -38,8 +39,8 @@ public class User {
         return username;
     }
 
-    public String getProfilePhoto() {
-        return profilePhoto;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
     public String getEmail() {

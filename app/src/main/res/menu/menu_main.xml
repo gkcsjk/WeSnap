@@ -4,14 +4,19 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
 
-<item
-    android:id="@+id/logout"
-    android:title="Logout"
-    app:showAsAction = "never" />
+    <item
+        android:id="@+id/add_friend"
+        android:icon="@drawable/ic_action_add_friend"
+        android:title="@string/action_add_friend"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/logout"
+        android:title="@string/action_logout"
+        app:showAsAction="never" />
 
-<item
-    android:id="@+id/exit"
-    android:title="Exit"
-    app:showAsAction = "never" />
+    <item
+        android:id="@+id/exit"
+        android:title="@string/action_exit_app"
+        app:showAsAction="never" />
 
 </menu>

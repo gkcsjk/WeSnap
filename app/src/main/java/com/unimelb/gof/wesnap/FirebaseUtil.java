@@ -15,6 +15,8 @@ public class FirebaseUtil {
     }
 
     // =============================================
+    /* Current user */
+
     public static String getCurrentUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -31,6 +33,7 @@ public class FirebaseUtil {
         return null;
     }
 
+    /* List of Chat-IDs of the current user */
     public static DatabaseReference getCurrentChatsRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef != null) {
@@ -39,7 +42,18 @@ public class FirebaseUtil {
         return null;
     }
 
+    /* List of User-IDs of the current user's friends */
+    public static DatabaseReference getCurrentFriendsRef() {
+        DatabaseReference currentUserRef = getCurrentUserRef();
+        if (currentUserRef != null) {
+            return currentUserRef.child("friends");
+        }
+        return null;
+    }
+
     // =============================================
+    /* Users */
+
     public static DatabaseReference getUsersRef() {
         return getBaseRef().child("users");
     }
@@ -49,6 +63,8 @@ public class FirebaseUtil {
     }
 
     // =============================================
+    /* Usernames */
+
     public static DatabaseReference getUsernamesRef() {
         return getBaseRef().child("usernames");
     }
