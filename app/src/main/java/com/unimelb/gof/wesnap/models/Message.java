@@ -7,36 +7,68 @@ import com.google.firebase.database.IgnoreExtraProperties;
  */
 @IgnoreExtraProperties
 public class Message {
+    // private String messageId;
 
-    private String messageId;
-    private String messageText; // TODO: messageImage???
-    private String senderName;
+    private String sendUid;
+    private String senderDisplayedName;
+    private String senderAvatarUrl;
+
+    private String messageBody; // message text = {text, photoUrl}
+    private boolean isPhoto; // message type = {plain_text, photo}
+    private boolean photoIsViewed;
+    private int photoTimeToLive; // positive int for photo; -1 for photo uploaded from local or text
 
     public Message() {
     }
 
-    public Message(String messageText, String senderName) {
-        this.messageText = messageText;
-        this.senderName = senderName;
+    // without photoTimeToLive
+    public Message(String sendUid, String senderDisplayedName, String senderAvatarUrl,
+                   String messageBody, boolean isPhoto) {
+        this(sendUid, senderDisplayedName, senderAvatarUrl,
+                messageBody, isPhoto, -1);
     }
 
-    public String getId() {
-        return messageId;
+    // with photoTimeToLive
+    public Message(String sendUid, String senderDisplayedName, String senderAvatarUrl,
+                   String messageBody, boolean isPhoto, int photoTimeToLive) {
+        this.sendUid = sendUid;
+        this.senderDisplayedName = senderDisplayedName;
+        this.senderAvatarUrl = senderAvatarUrl;
+
+        this.messageBody = messageBody;
+        this.isPhoto = isPhoto;
+        this.photoTimeToLive = photoTimeToLive;
+
+        this.photoIsViewed = false;
     }
 
-    public String getMessageText() {
-        return messageText;
+    // ======================================================
+
+//    public String getSendUid() {
+//        return sendUid;
+//    }
+
+    public String getSenderDisplayedName() {
+        return senderDisplayedName;
     }
 
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
+    public String getSenderAvatarUrl() {
+        return senderAvatarUrl;
     }
 
-    public String getSenderName() {
-        return senderName;
+    public String getMessageBody() {
+        return messageBody;
     }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+    public boolean isPhoto() {
+        return isPhoto;
+    }
+
+    public boolean isPhotoIsViewed() {
+        return photoIsViewed;
+    }
+
+    public int getPhotoTimeToLive() {
+        return photoTimeToLive;
     }
 }

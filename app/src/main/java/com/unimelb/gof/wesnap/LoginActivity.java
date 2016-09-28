@@ -22,14 +22,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import com.google.firebase.database.ValueEventListener;
-import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.models.*;
+import com.unimelb.gof.wesnap.util.AppParams;
+import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
 /**
- * TODO comments
+ * TODO comments: LoginActivity
  */
 public class LoginActivity extends BaseActivity
         implements View.OnClickListener {
-
     private static final String TAG = "LoginActivity";
     private static final String FIELD_REQUIRED = "This field is required";
     private static final String TOO_SHORT = "Password should be at least 6 characters.";
@@ -54,35 +55,36 @@ public class LoginActivity extends BaseActivity
     /* Firebase Auth variables */
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private boolean isNewUser;
+
+    private boolean isNewUser; /* set to true for new register */
 
     // ========================================================
-    /*
-    * onCreate()
-    * */
+    /* onCreate()
+     * (Change of user auth state is handled here by the listener.) */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         // UI components
+        // login
         mLoginUI = (ViewGroup) findViewById(R.id.ui_group_login);
         mEmailField = (EditText) findViewById(R.id.field_email);
         mPasswordField = (EditText) findViewById(R.id.field_password);
-        mLoginButton = (Button) findViewById(R.id.login_button);
+        mLoginButton = (Button) findViewById(R.id.button_login);
         mLoginButton.setOnClickListener(this);
-        mRegisterButton = (Button) findViewById(R.id.register_button);
+        mRegisterButton = (Button) findViewById(R.id.button_register);
         mRegisterButton.setOnClickListener(this);
-
+        // register
         mRegisterUI = (ViewGroup) findViewById(R.id.ui_group_register);
         mRegisterUI.setVisibility(View.GONE);
         mRegUsernameField = (EditText) findViewById(R.id.field_username_r);
         mRegDisplayedNameField = (EditText) findViewById(R.id.field_display_name_r);
         mRegEmailField = (EditText) findViewById(R.id.field_email_r);
         mRegPasswordField = (EditText) findViewById(R.id.field_password_r);
-        mRegSubmitButton = (Button) findViewById(R.id.register_submit_button);
+        mRegSubmitButton = (Button) findViewById(R.id.button_submit_register);
         mRegSubmitButton.setOnClickListener(this);
-        mRegCancelButton = (Button) findViewById(R.id.register_cancel_button);
+        mRegCancelButton = (Button) findViewById(R.id.button_cancel_register);
         mRegCancelButton.setOnClickListener(this);
 
         // Firebase Auth
@@ -97,19 +99,9 @@ public class LoginActivity extends BaseActivity
                     // User is signed in: direct to Main activity
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    // for new user: save the user to Firebase Database
+                    // for new user: save the user info to Firebase Database
                     if (isNewUser) {
-                        User mNewUser = new User(
-                                mRegUsernameField.getText().toString(),
-                                mRegDisplayedNameField.getText().toString(),
-                                mRegEmailField.getText().toString(),
-                                null );
-                        FirebaseUtil.getCurrentUserRef().setValue(mNewUser);
-                        FirebaseUtil.getUsernamesRef()
-                                .child(mRegUsernameField.getText().toString())
-                                .setValue(user.getUid());
-
-                        // hide loading
+                        saveNewUser(user.getUid());
                         hideProgressDialog();
                     }
 
@@ -125,6 +117,42 @@ public class LoginActivity extends BaseActivity
             }
         };
         // [END auth_state_listener]
+    }
+
+    // ========================================================
+    /* saveNewUser(): save account info to Firebase Database, and
+     * send out the initial messages */
+    private void saveNewUser(String newUserId) {
+        // TODO cloud messaging???
+
+        // initial Friend/Chat/Message from Dev Team!!!
+        String newChatId = FirebaseUtil.getChatsRef().push().getKey();
+        String newMessageId = FirebaseUtil.getMessagesRef().child(newChatId).push().getKey();
+        // save to database
+        FirebaseUtil.getMessagesRef().child(newChatId).child(newMessageId)
+                .setValue(AppParams.MESSAGE_WELCOME);
+
+        Chat newChat = new Chat(
+                new String[]{AppParams.ID_DEV_TEAM, newUserId},
+                AppParams.TEXT_WELCOME);
+        FirebaseUtil.getChatsRef().child(newChatId)
+                .setValue(newChat);
+
+        // create new user instance
+        User newUser = new User(
+                newUserId,
+                mRegUsernameField.getText().toString(),
+                mRegDisplayedNameField.getText().toString(),
+                mRegEmailField.getText().toString(),
+                AppParams.ID_DEV_TEAM,
+                newChatId
+        );
+        // save to "/users/newUserId/newUser"
+        FirebaseUtil.getUsersRef().child(newUserId).setValue(newUser);
+        // save to "/usernames/newUsername/newUserId"
+        FirebaseUtil.getUsernamesRef()
+                .child(mRegUsernameField.getText().toString())
+                .setValue(newUserId);
     }
 
     // ========================================================
@@ -157,35 +185,27 @@ public class LoginActivity extends BaseActivity
     public void onClick(View v) {
         int i = v.getId();
         switch(i) {
-            case R.id.login_button:
+            case R.id.button_login:
                 isNewUser = false;
                 login(mEmailField.getText().toString(),
                         mPasswordField.getText().toString());
                 break;
-            case R.id.register_button:
+            case R.id.button_register:
                 showRegister();
                 break;
-            case R.id.register_submit_button:
+            case R.id.button_submit_register:
                 isNewUser = true;
                 register(mRegEmailField.getText().toString(),
                         mRegPasswordField.getText().toString());
                 break;
-            case R.id.register_cancel_button:
+            case R.id.button_cancel_register:
                 showLogin();
                 break;
         }
     }
 
     // ========================================================
-    // login and register logic
-
-    /* show the REGISTER screen */
-    private void showRegister() {
-        ((TextView) findViewById(R.id.text_title_login))
-                .setText(R.string.text_title_register);
-        mLoginUI.setVisibility(View.GONE);
-        mRegisterUI.setVisibility(View.VISIBLE);
-    }
+    // login logic
 
     /* show the LOGIN screen */
     private void showLogin() {
@@ -195,9 +215,7 @@ public class LoginActivity extends BaseActivity
         mRegisterUI.setVisibility(View.GONE);
     }
 
-    /*
-     * login(): login via the given email/password
-     * */
+    /* login(): login via the given email/password */
     private void login(String email, String password) {
         Log.d(TAG, "login:" + email);
 
@@ -236,9 +254,18 @@ public class LoginActivity extends BaseActivity
         // [END sign_in_with_email]
     }
 
-    /**
-     * register(): create account via the given username/name/email/password
-     * */
+    // ========================================================
+    // register logic
+
+    /* show the REGISTER screen */
+    private void showRegister() {
+        ((TextView) findViewById(R.id.text_title_login))
+                .setText(R.string.text_title_register);
+        mLoginUI.setVisibility(View.GONE);
+        mRegisterUI.setVisibility(View.VISIBLE);
+    }
+
+    /* register(): try to create a new user account */
     private void register(String email, String password) {
         Log.d(TAG, "register:" + email);
 
@@ -254,6 +281,7 @@ public class LoginActivity extends BaseActivity
             mRegPasswordField.setError(TOO_SHORT);
             return;
         }
+        // TODO clean user-supplied username, e.g. ":"
 
         // show loading
         showProgressDialog();
@@ -283,6 +311,7 @@ public class LoginActivity extends BaseActivity
                 });
     }
 
+    /* createAccount(): create account via the given username/name/email/password */
     private void createAccount() {
         // create new Firebase account
         mAuth.createUserWithEmailAndPassword(
@@ -309,6 +338,9 @@ public class LoginActivity extends BaseActivity
                     }
                 });
     }
+
+    // ========================================================
+    // input data validation
 
     /* validateEmpty(): check empty fields in the form; return false when invalid */
     private boolean validateEmpty(EditText[] fields) {

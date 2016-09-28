@@ -19,8 +19,13 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.unimelb.gof.wesnap.fragment.CameraFragment;
+import com.unimelb.gof.wesnap.fragment.ChatsFragment;
+import com.unimelb.gof.wesnap.fragment.FriendsFragment;
+import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
+
 /**
- * TODO add comments
+ * TODO add comments: MainActivity
  */
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -40,12 +45,12 @@ public class MainActivity extends BaseActivity {
     };
     private static final Fragment[] TAB_FRAGMENTS = new Fragment[] {
             FriendsFragment.getInstance(),
-            ChatFragment.getInstance(),
+            ChatsFragment.getInstance(),
             CameraFragment.getInstance(),
             new CameraFragment(),   // TODO
             new CameraFragment()    // TODO
     };
-    private static final int[] TAB_ICONS_INT = {    // TODO
+    private static final int[] TAB_ICONS_INT = {
             R.drawable.ic_action_friends,
             R.drawable.ic_action_chat,
             R.drawable.ic_action_camera,
@@ -140,8 +145,8 @@ public class MainActivity extends BaseActivity {
             View view = LayoutInflater.from(MainActivity.this)
                     .inflate(R.layout.item_tab, null);
 
-            TextView mTabTitle = (TextView) view.findViewById(R.id.tabTitle);
-            ImageView mTabIcon = (ImageView) view.findViewById(R.id.tabIcon);
+            TextView mTabTitle = (TextView) view.findViewById(R.id.title_tab);
+            ImageView mTabIcon = (ImageView) view.findViewById(R.id.icon_tab);
 
             mTabTitle.setText(mFragmentTitleList[position]);
             mTabIcon.setImageResource(mFragmentIconList[position]);
@@ -156,7 +161,11 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+        // Inflate menu resource file
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Return true to display menu
         return true;
     }
 
@@ -164,6 +173,10 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here.
         switch(item.getItemId()) {
+            case R.id.add_friend:
+                Intent intent = new Intent(MainActivity.this, AddFriendChooserActivity.class);
+                startActivity(intent);
+                break;
             case R.id.logout:
                 logout();
                 break;

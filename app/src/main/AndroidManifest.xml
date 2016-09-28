@@ -25,6 +25,26 @@
             android:label="@string/app_name">
         </activity>
 
+        <activity
+            android:name=".friend.AddFriendChooserActivity"
+            android:label="@string/action_add_friend">
+        </activity>
+
+        <activity
+            android:name=".friend.ViewRequestActivity"
+            android:label="@string/action_view_request">
+        </activity>
+
+        <activity
+            android:name=".friend.SearchUsernameActivity"
+            android:label="@string/action_search_username">
+        </activity>
+
+        <activity
+            android:name=".MessagesActivity"
+            android:label="@string/hint_chat">
+        </activity>
+
     </application>
 
 </manifest>

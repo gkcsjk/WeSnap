@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap;
+package com.unimelb.gof.wesnap.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,13 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.unimelb.gof.wesnap.R;
+
 /**
  * Created by qideng on 20/09/2016.
  */
 
 public class CameraFragment extends Fragment {
     private static final String TAG = "CameraFragment";
-    private static CameraFragment mCameraFragment = null;
 
     /* UI Variables */
     private Button cameraB;
@@ -32,6 +33,7 @@ public class CameraFragment extends Fragment {
     }
 
     /* Returns a singleton instance of this fragment */
+    private static CameraFragment mCameraFragment = null;
     public static CameraFragment getInstance() {
         if (mCameraFragment == null) {
             mCameraFragment = new CameraFragment();
@@ -51,7 +53,7 @@ public class CameraFragment extends Fragment {
         textView3 = (TextView) view.findViewById(R.id.text_title_camera);
         textView3.setText(R.string.text_title_camera);
 
-        cameraB = (Button) view.findViewById(R.id.camera_b1);
+        cameraB = (Button) view.findViewById(R.id.button_start_camera);
         clickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +65,7 @@ public class CameraFragment extends Fragment {
         };
         cameraB.setOnClickListener(clickListener);
 
-        iv3 = (ImageView) view.findViewById(R.id.preview);
+        iv3 = (ImageView) view.findViewById(R.id.image_preview_camera);
     }
 
     @Override

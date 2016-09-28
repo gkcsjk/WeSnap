@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by qideng on 18/09/2016.
  */
 @IgnoreExtraProperties
-public class Post {
+public class Story {
     private static final int TIME_TO_LIVE = 24; //24 hours? TODO
 
     private String uid;
@@ -24,11 +24,11 @@ public class Post {
 
     private ArrayList<Comment> comments; // TODO: 18/09/2016
 
-    public Post() {
-        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
+    public Story() {
+        // Default constructor required for calls to DataSnapshot.getValue(Story.class)
     }
 
-    public Post(String uid, String author, String text) {
+    public Story(String uid, String author, String text) {
         this.uid = uid;
         this.author = author;
         this.text = text;

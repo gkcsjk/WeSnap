@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".CameraFragment">
+    tools:context=".fragment.CameraFragment">
 
     <TextView
         android:id="@+id/text_title_camera"
@@ -30,7 +30,7 @@
         android:padding="@dimen/size_spaces"
         android:orientation="vertical">
         <Button
-            android:id="@+id/camera_b1"
+            android:id="@+id/button_start_camera"
             android:text="@string/action_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/preview"
+        android:id="@+id/image_preview_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/action_camera"

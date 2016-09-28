@@ -2,11 +2,20 @@ package com.unimelb.gof.wesnap;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
+/**
+ * BaseActivity
+ * This hosts the shared methods.
+ * Most of the other activities inherit this BaseActivity.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
+ */
 public class BaseActivity extends AppCompatActivity {
 
     @VisibleForTesting
@@ -14,6 +23,8 @@ public class BaseActivity extends AppCompatActivity {
     public AlertDialog mExitAppDialog = null;
     public DialogInterface.OnClickListener mExitAppDialogListener;
 
+    // ========================================================
+    // ProgressDialog
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -30,6 +41,8 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // ========================================================
+    // AlertDialog: ExitApp
     public void showExitAppDialog() {
         if (mExitAppDialog == null) {
             mExitAppDialog = new AlertDialog.Builder(this).create();
@@ -65,10 +78,20 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // ========================================================
     @Override
     public void onStop() {
         super.onStop();
         hideProgressDialog();
         hideExitAppDialog();
+    }
+
+    // ========================================================
+    // TODO for network failure ???
+    public void goToLogin() {
+        Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

@@ -10,26 +10,39 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".FriendsFragment">
+    tools:context=".fragment.FriendsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal" >
+
+        <!-- Add Friend Button -->
+        <Button
+            android:id="@+id/button_add_friend"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/action_add_friend"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <!-- View Friend Request Button -->
+        <Button
+            android:id="@+id/button_view_request"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/action_view_request"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_friends"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/size_edges"
-        android:paddingTop="@dimen/size_edges"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add_friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginBottom="@dimen/size_edges"
-        android:layout_marginRight="@dimen/size_edges"
-        app:srcCompat="@drawable/ic_add"
-        android:tint="@color/colorWhite"/>
 
 </LinearLayout>

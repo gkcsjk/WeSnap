@@ -7,7 +7,7 @@
     android:padding="@dimen/size_edges">
 
     <ImageView
-        android:id="@+id/avatar_chat"
+        android:id="@+id/avatar_request"
         android:contentDescription="@string/desc_image_avatar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -19,15 +19,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_avatar"
-        android:layout_toRightOf="@+id/avatar_chat"
-        android:layout_toEndOf="@+id/avatar_chat"
+        android:layout_toRightOf="@+id/avatar_request"
+        android:layout_toEndOf="@+id/avatar_request"
+        android:layout_toLeftOf="@+id/button_request"
+        android:layout_toStartOf="@+id/button_request"
         android:layout_marginLeft="@dimen/size_edges"
         android:layout_marginStart="@dimen/size_edges"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_name_chat"
-            android:hint="@string/hint_chat_name"
+            android:id="@+id/text_name_request"
+            android:hint="@string/hint_display_name"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -35,12 +37,23 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/text_last_msg_chat"
-            android:hint="@string/hint_chat"
+            android:id="@+id/text_email_request"
+            android:hint="@string/hint_email"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:maxLines="1"
             android:textAppearance="?android:textAppearanceListItemSmall" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/button_request"
+        android:src="@drawable/ic_action_add_friend"
+        android:tint="@color/colorPrimary"
+        android:contentDescription="@string/action_search_username"
+        android:layout_width="@dimen/size_avatar"
+        android:layout_height="@dimen/size_avatar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        style="@style/Widget.AppCompat.Button.Borderless" />
 </RelativeLayout>

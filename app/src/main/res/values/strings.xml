@@ -22,9 +22,15 @@
     <string name="action_logout">Logout</string>
 
     <!--Friends-->
-    <string name="action_add_friend">Add Friend</string>
     <string name="hint_chat_name">Your Friend Alice from Wonderland</string>
     <string name="hint_chat">Tap to read messages!</string>
+    <string name="action_add_friend">Add Friend</string>
+    <string name="action_view_request">Friend Requests</string>
+    <string name="action_search_username">Find friend via username</string>
+    <string name="status_not_found">Not Found</string>
+    <string name="action_share_username">Share my username</string>
+    <string name="action_other_options">Other ??</string>
+    <string name="action_share_username_to">Share my username to...</string>
 
     <!--Messages-->
     <string name="action_view_photo">See the Photo</string>
