@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tabs">
+        <item>Friends</item>
+        <item>Chat</item>
+        <item>Snap</item>
+        <item>Stories</item>
+        <item>Me</item>
+    </string-array>
+    <array name="avators">
+        <item>@drawable/a_avator</item>
+        <item>@drawable/b_avator</item>
+        <item>@drawable/c_avator</item>
+        <item>@drawable/d_avator</item>
+        <item>@drawable/e_avator</item>
+        <item>@drawable/f_avator</item>
+    </array>
+    <array name="pictures">
+        <item>@drawable/a</item>
+        <item>@drawable/b</item>
+        <item>@drawable/c</item>
+        <item>@drawable/d</item>
+        <item>@drawable/e</item>
+        <item>@drawable/f</item>
+    </array>
+</resources>

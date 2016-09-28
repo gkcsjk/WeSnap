@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_add_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <Button
+        android:id="@+id/option_search_username"
+        android:text="@string/action_search_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_edges"
+        android:layout_marginLeft="@dimen/size_edges"
+        android:layout_marginStart="@dimen/size_edges"
+        style="@style/Widget.AppCompat.Button.Borderless" />
+    <!--android:textAppearance="?android:textAppearanceSearchResultTitle"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textStyle="bold"-->
+
+    <Button
+        android:id="@+id/option_share_username"
+        android:text="@string/action_share_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_edges"
+        android:layout_marginLeft="@dimen/size_edges"
+        android:layout_marginStart="@dimen/size_edges"
+        style="@style/Widget.AppCompat.Button.Borderless" />
+
+    <Button
+        android:id="@+id/option_other_options"
+        android:text="@string/action_other_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_edges"
+        android:layout_marginLeft="@dimen/size_edges"
+        android:layout_marginStart="@dimen/size_edges"
+        style="@style/Widget.AppCompat.Button.Borderless" />
+
+</LinearLayout>

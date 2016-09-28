@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "381372629798",
-    "firebase_url": "https://wesnap-e3048.firebaseio.com",
-    "project_id": "wesnap-e3048",
-    "storage_bucket": "wesnap-e3048.appspot.com"
+    "project_number": "806597592473",
+    "firebase_url": "https://gof-wesnap.firebaseio.com",
+    "project_id": "gof-wesnap",
+    "storage_bucket": "gof-wesnap.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:381372629798:android:783632f86d685395",
+        "mobilesdk_app_id": "1:806597592473:android:e192d50f548cc941",
         "android_client_info": {
-          "package_name": "com.unimelb.wesnap"
+          "package_name": "com.unimelb.gof.wesnap"
         }
       },
       "oauth_client": [
         {
-          "client_id": "381372629798-0htp8jie436sd7tq2t1gp5r2la6a45og.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.unimelb.wesnap",
-            "certificate_hash": "D1DB69D8199B5F15F29A1D0FA475763076F072C8"
-          }
-        },
-        {
-          "client_id": "381372629798-ql2m12l72g2r1u2l4qv24ukuudleb7br.apps.googleusercontent.com",
+          "client_id": "806597592473-ovd1ks0ohg10gqitndafev1hmo0qv7ad.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXjjnjNOq9G2E3PJADe0bKjRlJ3mIfTG4"
+          "current_key": "AIzaSyCZwjnpDWappuCLCZfvT3lvpKg3SGbbhn4"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "381372629798-ql2m12l72g2r1u2l4qv24ukuudleb7br.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
