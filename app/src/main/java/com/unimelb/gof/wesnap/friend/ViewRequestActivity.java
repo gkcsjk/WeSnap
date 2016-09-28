@@ -47,10 +47,6 @@ public class ViewRequestActivity extends BaseActivity {
         /* Firebase Database variables */
         refCurrentRequests = FirebaseUtil.getCurrentRequestsRef();
         idCurrentUser = FirebaseUtil.getCurrentUserId();
-        if (idCurrentUser == null) {
-            // something wrong TODO
-            goToLogin();
-        }
 
         /* UI components */
         // toolbar with title

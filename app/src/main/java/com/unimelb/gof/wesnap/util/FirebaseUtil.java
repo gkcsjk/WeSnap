@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.unimelb.gof.wesnap.BaseActivity;
 
 /**
  * Created by qideng on 18/09/2016.
@@ -27,6 +28,7 @@ public class FirebaseUtil {
     // =============================================
     /* Current user */
 
+    // current user's  uid
     public static String getCurrentUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -35,46 +37,49 @@ public class FirebaseUtil {
         return null;
     }
 
+    // current user's ref
     public static DatabaseReference getCurrentUserRef() {
         String uid = getCurrentUserId();
         if (uid != null) {
-            return getBaseRef().child("users").child(getCurrentUserId());
+            return getUsersRef().child(uid);
         }
         return null;
     }
 
-    public static DatabaseReference getCurrentUserUsername() {
-        DatabaseReference currentUserRef = getCurrentUserRef();
-        if (currentUserRef != null) {
-            return currentUserRef.child("username");
-        }
-        return null;
-    }
-
-    /* List of Chat-IDs of the current user */
+    // current user's List of Chat-IDs
     public static DatabaseReference getCurrentChatsRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef != null) {
             return currentUserRef.child("chats");
+        } else {
+            // null value, error out
+            handleNullValue("getCurrentUserRef");
+            return null;
         }
-        return null;
     }
 
-    /* List of User-IDs of the current user's friends */
+    // current user's List of Friends' uid
     public static DatabaseReference getCurrentFriendsRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef != null) {
             return currentUserRef.child("friends");
+        } else {
+            // null value, error out
+            handleNullValue("getCurrentUserRef");
+            return null;
         }
-        return null;
     }
 
-    /* List of pending requests for the current user */
+    // current user's List of Pending Requests
     public static DatabaseReference getCurrentRequestsRef() {
-        if (getCurrentUserId() != null) {
-            return getRequestsRef().child(getCurrentUserId());
+        String uid = getCurrentUserId();
+        if (uid != null) {
+            return getRequestsRef().child(uid);
+        } else {
+            // null value, error out
+            handleNullValue("getCurrentUserId");
+            return null;
         }
-        return null;
     }
 
     // =============================================
@@ -135,4 +140,14 @@ public class FirebaseUtil {
     public static String getMessagesPath() {
         return "messages/";
     }
+
+    // =============================================
+
+    private static void handleNullValue(String field) {
+        Log.e(TAG, field + " unexpectedly null; goToLogin()");
+        BaseActivity a = new BaseActivity();
+        a.goToLogin("null value");
+    }
+
+    // =============================================
 }

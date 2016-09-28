@@ -67,9 +67,6 @@ public class AddFriendChooserActivity extends BaseActivity
                 doSearch();
                 break;
             case R.id.option_share_username:
-                Toast.makeText(AddFriendChooserActivity.this,
-                        R.string.action_share_username,
-                        Toast.LENGTH_SHORT).show();
                 doShare();
                 break;
             case R.id.option_other_options:
@@ -94,7 +91,7 @@ public class AddFriendChooserActivity extends BaseActivity
     // ========================================================
     /* Share username (plain text) by invoking the system share action */
     private void doShare() {
-        DatabaseReference refCurrentUsername = FirebaseUtil.getCurrentUserUsername();
+        DatabaseReference refCurrentUsername = FirebaseUtil.getCurrentUserRef().child("username");
         refCurrentUsername.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override

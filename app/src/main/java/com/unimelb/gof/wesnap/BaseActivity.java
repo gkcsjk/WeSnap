@@ -88,7 +88,7 @@ public class BaseActivity extends AppCompatActivity {
 
     // ========================================================
     // TODO for network failure ???
-    public void goToLogin() {
+    public void goToLogin(String message) {
         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
