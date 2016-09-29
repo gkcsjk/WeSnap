@@ -14,25 +14,24 @@ tools:context="com.unimelb.wesnap.CameraFragment">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textSize="25sp"/>
+        android:textSize="25dp"/>
 
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/phview"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/camera_txt"
-        android:layout_marginBottom="70dp"
-        android:contentDescription="@string/camera_button"/>
+        android:contentDescription="@string/camera_button"
+        android:layout_below="@+id/camera_b1"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Camera"
         android:id="@+id/camera_b1"
-        android:layout_alignBottom="@+id/phview"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/camera_txt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp" />
 
 </RelativeLayout>
