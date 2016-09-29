@@ -2,9 +2,7 @@ package com.unimelb.gof.wesnap.friend;
 
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,13 +10,19 @@ import android.widget.TextView;
 import com.unimelb.gof.wesnap.R;
 
 /**
- * Created by qideng on 28/9/16.
+ * RequestsListViewHolder
+ * ViewHolder for item_friend_request.
+ * It provides a method to change the "Add" ImageButton to "Done".
+ * Access to the variables and method is package local.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 public class RequestsListViewHolder extends RecyclerView.ViewHolder {
-    public ImageView avatarView;
-    public TextView nameView;
-    public TextView emailView;
-    public ImageButton doButton;
+    ImageView avatarView;
+    TextView nameView;
+    TextView emailView;
+    ImageButton doButton;
 
     public RequestsListViewHolder(View v) {
         super(v);
@@ -30,7 +34,7 @@ public class RequestsListViewHolder extends RecyclerView.ViewHolder {
     }
 
     /* Update the button UI after friend request sent or if already isFriend */
-    public void changeToDoneButton() {
+    void changeToDoneButton() {
         doButton.setImageResource(R.drawable.ic_action_done);
         doButton.setColorFilter(R.color.colorAccent);
         doButton.setOnClickListener(new View.OnClickListener() {

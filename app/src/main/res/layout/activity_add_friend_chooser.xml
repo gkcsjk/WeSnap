@@ -16,19 +16,22 @@
     <Button
         android:id="@+id/option_search_username"
         android:text="@string/action_search_username"
+        android:textColor="@color/colorPrimary"
+        android:drawableLeft="@drawable/ic_action_search"
+        android:drawableStart="@drawable/ic_action_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_edges"
         android:layout_marginLeft="@dimen/size_edges"
         android:layout_marginStart="@dimen/size_edges"
         style="@style/Widget.AppCompat.Button.Borderless" />
-    <!--android:textAppearance="?android:textAppearanceSearchResultTitle"-->
-    <!--android:textAllCaps="true"-->
-    <!--android:textStyle="bold"-->
 
     <Button
         android:id="@+id/option_share_username"
         android:text="@string/action_share_username"
+        android:textColor="@color/colorPrimary"
+        android:drawableLeft="@drawable/ic_action_share"
+        android:drawableStart="@drawable/ic_action_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_edges"
@@ -39,6 +42,9 @@
     <Button
         android:id="@+id/option_other_options"
         android:text="@string/action_other_options"
+        android:textColor="@color/colorPrimary"
+        android:drawableLeft="@drawable/ic_action_nearby"
+        android:drawableStart="@drawable/ic_action_nearby"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_edges"

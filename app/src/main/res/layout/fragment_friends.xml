@@ -25,6 +25,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/action_add_friend"
+            android:textColor="@color/colorPrimary"
+            android:drawableLeft="@drawable/ic_action_add_friend_blue"
+            android:drawableStart="@drawable/ic_action_add_friend_blue"
             style="@style/Widget.AppCompat.Button.Borderless"/>
 
         <!-- View Friend Request Button -->
@@ -34,6 +37,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/action_view_request"
+            android:textColor="@color/colorPrimary"
+            android:drawableLeft="@drawable/ic_action_friend_requests"
+            android:drawableStart="@drawable/ic_action_friend_requests"
             style="@style/Widget.AppCompat.Button.Borderless"/>
     </LinearLayout>
 

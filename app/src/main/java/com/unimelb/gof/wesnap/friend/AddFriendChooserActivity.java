@@ -19,7 +19,7 @@ import com.unimelb.gof.wesnap.R;
 
 /**
  * AddFriendChooserActivity
- * This activity provides the different ways for users to add friends.
+ * This activity provides the different options for users to add friends.
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -27,6 +27,7 @@ import com.unimelb.gof.wesnap.R;
 public class AddFriendChooserActivity extends BaseActivity
         implements View.OnClickListener {
     private static final String TAG = "AddFriendChooser";
+    private static final String SHARE_MESSAGE = "Add me on WeSnap!!! Username: ";
 
     /* UI components */
     private Button mSearchButton;
@@ -83,17 +84,16 @@ public class AddFriendChooserActivity extends BaseActivity
     // ========================================================
     /* Search for other users by usernames */
     private void doSearch() {
-        // TODO doSearch()
         Intent intent = new Intent(AddFriendChooserActivity.this, SearchUsernameActivity.class);
         startActivity(intent);
     }
 
     // ========================================================
     /* Share username (plain text) by invoking the system share action */
+    // TODO share link that trigger the app?
     private void doShare() {
-        DatabaseReference refCurrentUsername = FirebaseUtil.getCurrentUserRef().child("username");
-        refCurrentUsername.addListenerForSingleValueEvent(
-                new ValueEventListener() {
+        FirebaseUtil.getCurrentUserRef().child("username")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.w(TAG, "getUsername:onDataChange");
@@ -110,8 +110,8 @@ public class AddFriendChooserActivity extends BaseActivity
                             Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
                             sendIntent.putExtra(Intent.EXTRA_TEXT,
-                                    "Add me on WeSnap!!! Username: " + username);
-                            sendIntent.setType("text/plain"); // TODO url links?
+                                    SHARE_MESSAGE + username);
+                            sendIntent.setType("text/plain");
                             startActivity(Intent.createChooser(
                                     sendIntent,
                                     getResources().getText(R.string.action_share_username_to)));
