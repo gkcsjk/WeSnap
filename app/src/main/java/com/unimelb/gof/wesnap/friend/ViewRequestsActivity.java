@@ -4,49 +4,73 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.User;
 
+import java.util.HashMap;
+
 /**
- * ViewRequestActivity
- * This activity ... TODO comments: ViewRequestActivity
+ * ViewRequestsActivity
+ * This activity ... TODO comments: ViewRequestsActivity
  *
  * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class ViewRequestActivity extends BaseActivity {
-    private static final String TAG = "ViewRequestActivity";
+public class ViewRequestsActivity extends BaseActivity {
+    private static final String TAG = "ViewRequestsActivity";
 
     /* UI components */
     private TextView mNotFoundText;
-    private RecyclerView mResultsRecyclerView;
+    private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter<
             User, RequestsListViewHolder> mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
-    private String idCurrentUser;
     private DatabaseReference refCurrentRequests;
+    private DatabaseReference refCurrentFriends;
+    private ValueEventListener mListenerCurrentFriends;
+    private HashMap<String, Boolean> mFriendIds;
 
     // ========================================================
     /* onCreate() */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_request);
+        setContentView(R.layout.activity_view_requests);
 
         /* Firebase Database variables */
         refCurrentRequests = FirebaseUtil.getCurrentRequestsRef();
-        idCurrentUser = FirebaseUtil.getCurrentUserId();
+
+        /* Listen for my current friend list */
+        refCurrentFriends = FirebaseUtil.getCurrentFriendsRef();
+        mFriendIds = new HashMap<>();
+        mListenerCurrentFriends = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.w(TAG, "getMyFriends:onDataChange");
+                mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
+            }
+        };
+        refCurrentFriends.addValueEventListener(mListenerCurrentFriends);
 
         /* UI components */
         // toolbar with title
@@ -58,23 +82,26 @@ public class ViewRequestActivity extends BaseActivity {
         mNotFoundText.setVisibility(View.GONE);
 
         // RecyclerView for "found"
-        mResultsRecyclerView = (RecyclerView) findViewById(R.id.recycler_friend_requests);
-        mResultsRecyclerView.setTag(TAG);
-        mLinearLayoutManager = new LinearLayoutManager(ViewRequestActivity.this);
-        mResultsRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_friend_requests);
+        mRecyclerView.setTag(TAG);
+        mRecyclerView.setVisibility(View.GONE);
+        mLinearLayoutManager = new LinearLayoutManager(ViewRequestsActivity.this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // create the recycler adapter
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<
-                User, RequestsListViewHolder>(
+        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestsListViewHolder>(
                 User.class,
                 R.layout.item_friend_request,
                 RequestsListViewHolder.class,
                 refCurrentRequests) {
+
             @Override
             protected void populateViewHolder(final RequestsListViewHolder viewHolder,
                                               final User requestSender,
                                               final int position) {
-                DatabaseReference refRequest = getRef(position);
+                Log.w(TAG, "populateViewHolder:" + position);
+
+                final DatabaseReference refRequest = getRef(position);
 
                 // Load item view with user info
                 viewHolder.nameView.setText(requestSender.getDisplayedName());
@@ -87,28 +114,25 @@ public class ViewRequestActivity extends BaseActivity {
                 }
 
                 // Check if is friend already, and set up button action and UI accordingly
-                boolean isFriend = requestSender.getFriends().contains(idCurrentUser);
-                if (isFriend) {
-                    // update UI
+                final String fromUid = refRequest.getKey();
+                if (mFriendIds != null && mFriendIds.containsKey(fromUid)) {
+                    // isFriend = true;
                     viewHolder.changeToDoneButton();
-                    // remove request node from database
+                    // remove request node from database TODO confirm deletion???
                     refRequest.removeValue();
-                } else {
-                    // enable the button to reply to friend request
-                    final String fromUserId = refRequest.getKey();
-                    viewHolder.doButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // send friend requests
-                            FriendRequest.replyFriendRequest(fromUserId, viewHolder);
-                            // TODO if false?
-                        }
-                    });
                 }
+                // otherwise, enable the button to accept friend request
+                viewHolder.doButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // send friend requests to "mResultUid"
+                        FriendRequest.acceptFriendRequest(refRequest, viewHolder, v);
+                    }
+                });
             }
         };
-        mResultsRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
 
-        mResultsRecyclerView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 }

@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".friend.ViewRequestActivity"
+            android:name=".friend.ViewRequestsActivity"
             android:label="@string/action_view_request">
         </activity>
 

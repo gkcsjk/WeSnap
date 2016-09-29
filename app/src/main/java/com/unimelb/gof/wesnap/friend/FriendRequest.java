@@ -1,19 +1,14 @@
 package com.unimelb.gof.wesnap.friend;
 
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
@@ -22,74 +17,140 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by qideng on 28/9/16.
+ * FriendRequest
+ * This class contains methods for sending/accepting friend requests.
+ *
+ * @author Qi Deng (dengq@student.unimelb.edu.au)
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 public class FriendRequest {
     private static final String TAG = "FriendRequest";
+    private static final String SENT = "Friend request sent";
+    private static final String NOT_SENT = "Failed to send the request. Try again.";
+    private static final String ACCEPTED = "Friend request accepted";
 
-    public static boolean sendFriendRequest(final String toUserId) {
+    // ========================================================
+    /* sendFriendRequest()
+     * send request to Firebase Database and update UI accordingly */
+    public static void sendFriendRequest(final String toUserId,
+                                         final RequestsListViewHolder viewHolder,
+                                         final View v) {
         Log.w(TAG, "sendFriendRequest");
 
         final String fromUserId = FirebaseUtil.getCurrentUserId();
-        if (fromUserId != null) {
-            FirebaseUtil.getCurrentUserRef()
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.w(TAG, "getCurrentUser:onDataChange");
-
-                            // fetch current user info
-                            User currentUser = dataSnapshot.getValue(User.class);
-                            Map<String, Object> requestValues = currentUser.toFriendRequest();
-
-                            // add request to destination user
-                            FirebaseUtil.getRequestsRef()
-                                    .child(toUserId).child(fromUserId).setValue(requestValues);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
-                        }
-                    });
-            return true;
-        } else {
-            Log.w(TAG, "getCurrentUserId: unexpected null id");
-            // TODO null user id?
-            return false;
+        if (fromUserId == null) { // null value; error out
+            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
+            BaseActivity error = new BaseActivity();
+            error.goToLogin("null value");
+            return;
         }
-    }
 
-    public static boolean replyFriendRequest(final String fromUserId, final RequestsListViewHolder viewHolder) {
-        Log.w(TAG, "replyFriendRequest");
-        viewHolder.changeToDoneButton();
-        // TODO: replyFriendRequest
-
-        return false;
-    }
-
-    public static void deleteMyFriend(final String friendId) {
-        Log.w(TAG, "deleteMyFriend:id=" + friendId);
-
-        final Map<String, Object> friendIds = new HashMap<String, Object>();
-        FirebaseUtil.getCurrentFriendsRef()
+        // update Firebase Database
+        FirebaseUtil.getCurrentUserRef()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.w(TAG, "deleteMyFriend:getMyFriends:onDataChange");
-                if (dataSnapshot.exists()) {
-                    List<String> myFriends = (List<String>) dataSnapshot.getValue();
-                    if (myFriends.contains(friendId)) {
-                        myFriends.remove(friendId);
-                        friendIds.put("friends", myFriends);
-                        FirebaseUtil.getCurrentUserRef().updateChildren(friendIds);
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.w(TAG, "getCurrentUser:onDataChange");
+                        // fetch current user info
+                        User currentUser = dataSnapshot.getValue(User.class);
+                        Map<String, Object> requestValues = currentUser.toFriendRequest();
+                        // add request to destination user
+                        FirebaseUtil.getRequestsRef()
+                                .child(toUserId).child(fromUserId).setValue(requestValues);
+                        // update UI
+                        Snackbar.make(v, SENT, Snackbar.LENGTH_LONG).show();
+                        viewHolder.changeToDoneButton();
                     }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "deleteMyFriend:getMyFriends:onCancelled", databaseError.toException());
-            }
-        });
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
+                        // update UI
+                        Snackbar.make(v, NOT_SENT, Snackbar.LENGTH_LONG).show();
+                    }
+                });
     }
+
+    // ========================================================
+    public static void acceptFriendRequest(final DatabaseReference refRequest,
+                                           final RequestsListViewHolder viewHolder,
+                                           final View v) {
+        Log.w(TAG, "acceptFriendRequest");
+
+        final String fromUserId = refRequest.getKey();
+        final String toUserId = FirebaseUtil.getCurrentUserId();
+        if (toUserId == null) { // null value; error out
+            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
+            BaseActivity error = new BaseActivity();
+            error.goToLogin("null value");
+            return;
+        }
+
+        // update Firebase Database
+        insertFriendAtoB(fromUserId, toUserId);
+        insertFriendAtoB(toUserId, fromUserId);
+        refRequest.removeValue();
+
+        // update UI
+        Snackbar.make(v, ACCEPTED, Snackbar.LENGTH_LONG).show();
+        viewHolder.changeToDoneButton();
+    }
+
+    // ========================================================
+    /* Insert "someFriendId" to "toUserId"'s friend list */
+    public static void insertFriendAtoB(final String someFriendId,
+                                        final String toUserId) {
+        Log.w(TAG, "insertFriend:" + someFriendId + " to " + toUserId);
+
+        if (someFriendId != null && toUserId != null) {
+            FirebaseUtil.getUsersRef().child(toUserId).child("friends")
+                    .child(someFriendId).setValue(true);
+        }
+        // TODO null?
+    }
+
+    // ========================================================
+    /* Remove "someFriendId" to "toUserId"'s friend list */
+    public static void removeFriendAfromB(final String someFriendId,
+                                          final String fromUserId) {
+        Log.w(TAG, "insertFriend:" + someFriendId + " to " + fromUserId);
+        if (someFriendId != null && fromUserId != null) {
+            FirebaseUtil.getUsersRef().child(fromUserId).child("friends")
+                    .child(someFriendId).setValue(true);
+        }
+        // TODO null?
+    }
+
+    // ========================================================
+    /* Delete "friendId" from current user's list of friend ids */
+//    public static void deleteMyFriend(final String friendId) {
+//        Log.w(TAG, "deleteMyFriend:id=" + friendId);
+//
+//        FirebaseUtil.getCurrentFriendsRef().child(friendId).removeValue();
+//
+//        final Map<String, Object> friendIds = new HashMap<String, Object>();
+//        FirebaseUtil.getCurrentFriendsRef()
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        Log.w(TAG, "deleteMyFriend:getMyFriends:onDataChange");
+//                        //if (dataSnapshot.exists()) {
+//                        Map<String, Boolean> myFriends =
+//                                (Map<String, Boolean>) dataSnapshot.getValue();
+//                        if (myFriends != null && myFriends.containsKey(friendId)) {
+//                            myFriends.remove(friendId);
+//                            friendIds.put("friends", myFriends);
+//                            FirebaseUtil.getCurrentUserRef().updateChildren(friendIds);
+//                        }
+//                        //}
+//                    }
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                        Log.w(TAG, "deleteMyFriend:getMyFriends:onCancelled", databaseError.toException());
+//                    }
+//                });
+//    }
+
+
 }

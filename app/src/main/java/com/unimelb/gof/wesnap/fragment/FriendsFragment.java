@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.friend.FriendRequest;
-import com.unimelb.gof.wesnap.friend.ViewRequestActivity;
+import com.unimelb.gof.wesnap.friend.ViewRequestsActivity;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 import com.unimelb.gof.wesnap.R;
@@ -87,7 +87,7 @@ public class FriendsFragment extends Fragment {
         mViewRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ViewRequestActivity.class);
+                Intent intent = new Intent(getActivity(), ViewRequestsActivity.class);
                 startActivity(intent);
             }
         });
@@ -162,7 +162,7 @@ public class FriendsFragment extends Fragment {
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "getFriends:onChildAdded:" + dataSnapshot.getKey());
                     // get friend id and ref
-                    final String newFriendId = (String) dataSnapshot.getValue();
+                    final String newFriendId = (String) dataSnapshot.getKey();
                     FirebaseUtil.getUsersRef().child(newFriendId)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -177,7 +177,8 @@ public class FriendsFragment extends Fragment {
                                 notifyItemInserted(mFriends.size() - 1);
                             } else {
                                 Log.d(TAG, "refMyFriendIds:unexpected null user id=" + newFriendId);
-                                FriendRequest.deleteMyFriend(newFriendId);
+                                FriendRequest.removeFriendAfromB(
+                                        newFriendId, FirebaseUtil.getCurrentUserId());
                             }
                         }
                         @Override
@@ -190,7 +191,7 @@ public class FriendsFragment extends Fragment {
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "getFriends:onChildChanged:" + dataSnapshot.getKey());
-                    Toast.makeText(mContext, "Changed:"+dataSnapshot.getKey(),
+                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
                             Toast.LENGTH_SHORT).show();
                 }
 
@@ -198,7 +199,7 @@ public class FriendsFragment extends Fragment {
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     Log.d(TAG, "getFriends:onChildRemoved:" + dataSnapshot.getKey());
                     // get friend id and index
-                    String removedFriendId = (String) dataSnapshot.getValue();
+                    String removedFriendId = (String) dataSnapshot.getKey();
                     int friendIndex = mFriendIds.indexOf(removedFriendId);
                     if (friendIndex > -1) {
                         // Remove data from the list
@@ -216,7 +217,7 @@ public class FriendsFragment extends Fragment {
                 public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "getFriends:onChildMoved:" + dataSnapshot.getKey());
                     // This method is triggered when a child location's priority changes.
-                    Toast.makeText(mContext, "Moved:"+dataSnapshot.getKey(),
+                    Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
                             Toast.LENGTH_SHORT).show();
                 }
 

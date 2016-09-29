@@ -1,7 +1,6 @@
 package com.unimelb.gof.wesnap.friend;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +22,7 @@ import com.unimelb.gof.wesnap.util.GlideUtil;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.User;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * SearchUsernameActivity
@@ -122,7 +121,7 @@ public class SearchUsernameActivity extends BaseActivity {
     // ========================================================
     /* showSearchResults(): Update recycler view with the retrieved user data */
     private void showSearchResults(Query queryUser) {
-        Log.w(TAG, "showSearchResults:username=" + queryUser.toString());
+        Log.w(TAG, "showSearchResults:username=" + mSearchKeyword);
 
         // create the recycler adapter for search result
         mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestsListViewHolder>(
@@ -133,7 +132,8 @@ public class SearchUsernameActivity extends BaseActivity {
 
             @Override
             protected void populateViewHolder(final RequestsListViewHolder viewHolder,
-                                              final User resultUser, final int position) {
+                                              final User resultUser,
+                                              final int position) {
                 Log.w(TAG, "populateViewHolder:" + position);
 
                 // Load item view with user info
@@ -149,35 +149,33 @@ public class SearchUsernameActivity extends BaseActivity {
                 // Check if is friend already, and set up button action and UI accordingly
                 FirebaseUtil.getCurrentFriendsRef()
                         .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.w(TAG, "getMyFriends:onDataChange");
-                        if (dataSnapshot.exists()) {
-                            List<String> myFriends = (List<String>) dataSnapshot.getValue();
-                            if (myFriends != null && myFriends.contains(mResultUid)) {
-                                // isFriend = true;
-                                viewHolder.changeToDoneButton();
-                            } else {
-                                // enable the button to send friend request
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.w(TAG, "getMyFriends:onDataChange");
+                                //if (dataSnapshot.exists()) {
+                                Map<String, Boolean> myFriends =
+                                        (Map<String, Boolean>) dataSnapshot.getValue();
+
+                                if (myFriends != null && myFriends.containsKey(mResultUid)) {
+                                    // isFriend = true;
+                                    viewHolder.changeToDoneButton();
+                                }
+                                // otherwise, enable the button to send friend request
                                 viewHolder.doButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        // send friend requests TODO: if false?
-                                        FriendRequest.sendFriendRequest(mResultUid);
-                                        Snackbar.make(v, "Friend request sent", Snackbar.LENGTH_LONG).show();
-                                        // update UI
-                                        viewHolder.changeToDoneButton();
+                                        // send friend requests to "mResultUid"
+                                        FriendRequest.sendFriendRequest(mResultUid, viewHolder, v);
                                     }
                                 });
+                                //}
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
-                    }
-                });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
+                            }
+                        });
             }
         };
 

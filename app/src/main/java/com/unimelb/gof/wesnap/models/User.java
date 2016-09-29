@@ -18,7 +18,7 @@ public class User {
     private String username;
     private String displayedName;
     private String avatarUrl; // TODO user-supplied avatar?
-    private List<String> friends; // "uid: true"
+    private Map<String, Boolean> friends; // "uid: true"
     private List<String> chats; // "chat-id: true"
 
     // private Map<String, Object> stories; //TODO
@@ -41,9 +41,9 @@ public class User {
 
         this.avatarUrl = null; // "null" for a newly registered user
 
-        this.friends = new ArrayList<>();
+        this.friends = new HashMap<>();
         if (initialFriendId != null) {
-            this.friends.add(initialFriendId);
+            this.friends.put(initialFriendId, true);
         }
 
         this.chats = new ArrayList<>();
@@ -68,7 +68,7 @@ public class User {
         return avatarUrl;
     }
 
-    public List<String> getFriends() {
+    public Map<String, Boolean> getFriends() {
         return this.friends;
     }
 
