@@ -53,7 +53,6 @@ public class FriendsFragment extends Fragment {
 
     /* Firebase Database variables */
     private DatabaseReference refMyFriendIds;
-    private ChildEventListener mListenerMyFriendIds;
 
     public FriendsFragment() {
     }
@@ -127,13 +126,12 @@ public class FriendsFragment extends Fragment {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop");
-        mRecyclerAdapter.cleanupListener();
+        //mRecyclerAdapter.cleanupListener();
     }
 
     // ======================================================
     /* FriendsListViewHolder */
-    private static class FriendsListViewHolder
-            extends RecyclerView.ViewHolder {
+    private class FriendsListViewHolder extends RecyclerView.ViewHolder {
         public ImageView avatarView;
         public TextView nameView;
 
@@ -146,8 +144,7 @@ public class FriendsFragment extends Fragment {
 
     // ======================================================
     /* FriendsAdapter */
-    private static class FriendsAdapter
-            extends RecyclerView.Adapter<FriendsListViewHolder> {
+    private class FriendsAdapter extends RecyclerView.Adapter<FriendsListViewHolder> {
 
         private Context mContext;
         private DatabaseReference mDatabaseReference;
@@ -166,15 +163,16 @@ public class FriendsFragment extends Fragment {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "getFriendIds:onChildAdded:" + dataSnapshot.getKey());
-                    // get friend id and ref
+                    // get friendId
                     final String newFriendId = dataSnapshot.getKey();
+                    // get "users/friendId/"
                     FirebaseUtil.getUsersRef().child(newFriendId)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
                             if (!dataSnapshot.exists()) {
-                                Log.w(TAG, "refMyFriendIds:unexpected null user id=" + newFriendId);
+                                Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
                                 FriendRequest.removeFriendAfromB(
                                         newFriendId, FirebaseUtil.getCurrentUserId());
                                 return;
@@ -204,7 +202,7 @@ public class FriendsFragment extends Fragment {
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     Log.d(TAG, "getFriendIds:onChildRemoved:" + dataSnapshot.getKey());
                     // get friend id and index
-                    String removedFriendId = (String) dataSnapshot.getKey();
+                    String removedFriendId = dataSnapshot.getKey();
                     int friendIndex = mFriendIds.indexOf(removedFriendId);
                     if (friendIndex > -1) {
                         // Remove data from the list
@@ -249,7 +247,7 @@ public class FriendsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(FriendsListViewHolder viewHolder, int position) {
-            Log.w(TAG, "populateViewHolder:" + position);
+            Log.d(TAG, "populateViewHolder:" + position);
 
             // Load the item view with friend user info
             User friend = mFriends.get(position);

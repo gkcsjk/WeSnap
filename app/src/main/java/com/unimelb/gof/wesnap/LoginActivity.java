@@ -3,6 +3,7 @@ package com.unimelb.gof.wesnap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -108,8 +109,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     // for new user: save the user info to Firebase Database
                     if (isNewUser) {
                         saveNewUser(user.getUid());
-                        hideProgressDialog();
                     }
+                    hideProgressDialog();
 
                     // direct to main
                     goToMain();
@@ -118,6 +119,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     Log.d(TAG, "onAuthStateChanged:signed_out");
 
                     // reset to login
+                    hideProgressDialog();
                     showLogin();
                 }
             }
@@ -134,14 +136,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // initial Friend/Chat/Message from Dev Team!!!
         String newChatId = FirebaseUtil.getChatsRef().push().getKey();
         String newMessageId = FirebaseUtil.getMessagesRef().child(newChatId).push().getKey();
-        // save to database
-        FirebaseUtil.getMessagesRef().child(newChatId).child(newMessageId)
-                .setValue(AppParams.MESSAGE_WELCOME);
-        Chat newChat = new Chat(
-                new String[]{AppParams.ID_DEV_TEAM, newUserId},
-                AppParams.TEXT_WELCOME);
-        FirebaseUtil.getChatsRef().child(newChatId)
-                .setValue(newChat);
+        Chat newChat = AppParams.getWelcomeChat(newUserId);
+        Message newMessage = AppParams.getWelcomeMessage();
 
         // create new user instance
         User newUser = new User(
@@ -152,11 +148,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 AppParams.ID_DEV_TEAM,
                 newChatId
         );
+
         // save to database
+        FirebaseUtil.getChatsRef().child(newChatId).setValue(newChat);
+        FirebaseUtil.getMessagesRef().child(newChatId).child(newMessageId).setValue(newMessage);
         FirebaseUtil.getUsersRef().child(newUserId).setValue(newUser);
-        FirebaseUtil.getUsernamesRef()
-                .child(mRegUsernameField.getText().toString())
-                .setValue(newUserId);
+        FirebaseUtil.getUsernamesRef().child(mRegUsernameField.getText().toString()).setValue(newUserId);
+
+//        Map<String, Object> childUpdates = new HashMap<>();
+//        childUpdates.put(FirebaseUtil.getChatsPath() + newChatId, newChatId);
+//        childUpdates.put(FirebaseUtil.getMessagesPath() + newChatId + "/" + newMessageId, newMessage);
+//        childUpdates.put(FirebaseUtil.getUsersPath() + newUserId, newUser);
+//        childUpdates.put(FirebaseUtil.getUsernamesPath() + mRegUsernameField.getText().toString(), newUserId);
+//        FirebaseUtil.getBaseRef().updateChildren(childUpdates);
     }
 
     // ========================================================
@@ -216,9 +220,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void login() {
         final String email = mEmailField.getText().toString();
         final String password = mPasswordField.getText().toString();
+        final EditText[] fields = new EditText[]{mEmailField, mPasswordField};
+        final String[] values = new String[]{email, password};
         // input validation
-        EditText[] fields = new EditText[]{mEmailField, mPasswordField};
-        String[] values = new String[]{email, password};
         if (!validateEmpty(fields, values)) {
             return;
         }
@@ -226,6 +230,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // show loading
         mLoginButton.setVisibility(View.GONE);
         mRegisterButton.setVisibility(View.GONE);
+        disableInput(fields);
         showProgressDialog();
 
         // [START sign_in_with_email]
@@ -242,13 +247,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             Toast.makeText(LoginActivity.this,
                                     R.string.status_auth_failed,
                                     Toast.LENGTH_SHORT).show();
+                            enableInput(fields);
+                            hideProgressDialog();
                         }
 
                         // If sign in succeeds, the auth state listener will be notified
                         // and logic to handle the signed in user can be handled in the listener.
-
-                        // hide loading
-                        hideProgressDialog();
                     }
                 });
         // [END sign_in_with_email]
@@ -270,11 +274,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         final String displayedName = mRegDisplayedNameField.getText().toString();
         final String email = mRegEmailField.getText().toString();
         final String password = mRegPasswordField.getText().toString();
+        final EditText[] fields = new EditText[]{mRegUsernameField,
+                mRegDisplayedNameField, mRegEmailField, mRegPasswordField};
+        final String[] values = new String[]{username, displayedName, email, password};
 
         // input validation
-        EditText[] fields = new EditText[]{mRegUsernameField,
-                mRegDisplayedNameField, mRegEmailField, mRegPasswordField};
-        String[] values = new String[]{username, displayedName, email, password};
         if (!validateEmpty(fields, values)) {
             return;
         }
@@ -293,6 +297,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         // update UI
         mRegSubmitButton.setVisibility(View.GONE);
+        disableInput(fields);
         showProgressDialog();
 
         // [START check_username_unique]
@@ -305,10 +310,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if (dataSnapshot.exists()) { // isUnique = false;
                             mRegUsernameField.setError(USERNAME_EXIST);
                             mRegSubmitButton.setVisibility(View.VISIBLE);
+                            enableInput(fields);
                             hideProgressDialog();
                         } else {
                             // isUnique = true;
-                            createAccount(email, password);
+                            createAccount(email, password, fields);
                         }
                     }
                     @Override
@@ -320,7 +326,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     /* createAccount(): create account via the given username/name/email/password */
-    private void createAccount(String email, String password) {
+    private void createAccount(String email, String password, final EditText[] fields) {
         Log.d(TAG, "createAccount:email=" + email);
 
         // [START create_new_acccount]
@@ -338,6 +344,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                     Toast.LENGTH_SHORT).show();
                             isNewUser = false;
                             mRegSubmitButton.setVisibility(View.VISIBLE);
+                            enableInput(fields);
                             hideProgressDialog();
                         }
 
@@ -346,6 +353,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     }
                 });
         // [END create_new_acccount]
+    }
+
+    // ========================================================
+    private void disableInput(EditText[] fields) {
+//        EditText[] fields = new EditText[]{
+//                mRegUsernameField, mRegDisplayedNameField,
+//                mRegEmailField, mRegPasswordField,
+//                mEmailField, mPasswordField
+//        };
+        for(EditText f : fields) {
+            f.setInputType(InputType.TYPE_NULL);
+        }
+    }
+
+    private void enableInput(EditText[] fields) {
+        for(EditText f : fields) {
+            f.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
     }
 
     // ========================================================

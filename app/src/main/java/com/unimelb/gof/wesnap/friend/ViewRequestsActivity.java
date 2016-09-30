@@ -62,7 +62,7 @@ public class ViewRequestsActivity extends BaseActivity {
         mListenerCurrentFriends = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.w(TAG, "getMyFriends:onDataChange");
+                Log.d(TAG, "getMyFriends:onDataChange");
                 mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
             }
 
@@ -100,7 +100,7 @@ public class ViewRequestsActivity extends BaseActivity {
             protected void populateViewHolder(final RequestsListViewHolder viewHolder,
                                               final User requestSender,
                                               final int position) {
-                Log.w(TAG, "populateViewHolder:" + position);
+                Log.d(TAG, "populateViewHolder:" + position);
 
                 final DatabaseReference refRequest = getRef(position);
 
@@ -118,22 +118,32 @@ public class ViewRequestsActivity extends BaseActivity {
                 final String fromUid = refRequest.getKey();
                 if (mFriendIds != null && mFriendIds.containsKey(fromUid)) {
                     // isFriend = true;
-                    viewHolder.changeToDoneButton();
+                    viewHolder.useDoneButton();
                     // remove request node from database TODO confirm deletion???
                     refRequest.removeValue();
+                } else {
+                    // otherwise, enable the button to accept friend request
+                    viewHolder.useAcceptButton(refRequest);
                 }
-                // otherwise, enable the button to accept friend request
-                viewHolder.doButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // send friend requests to "mResultUid"
-                        FriendRequest.acceptFriendRequest(refRequest, viewHolder, v);
-                    }
-                });
             }
         };
         mRecyclerView.setAdapter(mRecyclerAdapter);
 
         mRecyclerView.setVisibility(View.VISIBLE);
     }
+
+    // ========================================================
+    /* onStop(): Remove database value event listener */
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+        if (mListenerCurrentFriends != null) {
+            refCurrentFriends.removeEventListener(mListenerCurrentFriends);
+        }
+    }
+
+    // ========================================================
 }
+
+

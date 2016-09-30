@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
@@ -93,14 +92,14 @@ public class SearchUsernameActivity extends BaseActivity {
     // ========================================================
     /* retrieveSearchResults(): Access the Firebase Database to retrieve user data */
     private void retrieveSearchResults() {
-        Log.w(TAG, "retrieveSearchResults:username=" + mSearchKeyword);
+        Log.d(TAG, "retrieveSearchResults:username=" + mSearchKeyword);
 
         // retrieve the uid corresponding to the given username
         FirebaseUtil.getUsernamesRef().child(mSearchKeyword)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.w(TAG, "getUsername:onDataChange:username=" + mSearchKeyword);
+                        Log.d(TAG, "getUsername:onDataChange:username=" + mSearchKeyword);
                         if (dataSnapshot.exists()) {
                             // username found
                             mResultUid = (String) dataSnapshot.getValue();
@@ -121,7 +120,7 @@ public class SearchUsernameActivity extends BaseActivity {
     // ========================================================
     /* showSearchResults(): Update recycler view with the retrieved user data */
     private void showSearchResults(Query queryUser) {
-        Log.w(TAG, "showSearchResults:username=" + mSearchKeyword);
+        Log.d(TAG, "showSearchResults:username=" + mSearchKeyword);
 
         // create the recycler adapter for search result
         mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestsListViewHolder>(
@@ -134,7 +133,7 @@ public class SearchUsernameActivity extends BaseActivity {
             protected void populateViewHolder(final RequestsListViewHolder viewHolder,
                                               final User resultUser,
                                               final int position) {
-                Log.w(TAG, "populateViewHolder:" + position);
+                Log.d(TAG, "populateViewHolder:" + position);
 
                 // Load item view with user info
                 viewHolder.nameView.setText(resultUser.getDisplayedName());
@@ -151,26 +150,18 @@ public class SearchUsernameActivity extends BaseActivity {
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Log.w(TAG, "getMyFriends:onDataChange");
+                                Log.d(TAG, "getMyFriends:onDataChange");
                                 //if (dataSnapshot.exists()) {
                                 Map<String, Boolean> myFriends =
                                         (Map<String, Boolean>) dataSnapshot.getValue();
-
                                 if (myFriends != null && myFriends.containsKey(mResultUid)) {
                                     // isFriend = true;
-                                    viewHolder.changeToDoneButton();
+                                    viewHolder.useDoneButton();
+                                } else {
+                                    // otherwise, enable the button to send friend request
+                                    viewHolder.useAddButton(mResultUid);
                                 }
-                                // otherwise, enable the button to send friend request
-                                viewHolder.doButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        // send friend requests to "mResultUid"
-                                        FriendRequest.sendFriendRequest(mResultUid, viewHolder, v);
-                                    }
-                                });
-                                //}
                             }
-
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());

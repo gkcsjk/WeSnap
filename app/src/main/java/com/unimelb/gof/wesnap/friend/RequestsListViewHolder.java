@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
 import com.unimelb.gof.wesnap.R;
 
 /**
@@ -33,8 +34,21 @@ public class RequestsListViewHolder extends RecyclerView.ViewHolder {
         doButton = (ImageButton) itemView.findViewById(R.id.button_request);
     }
 
+    /* Default as "add friend" button */
+    void useAddButton(final String uid) {
+        doButton.setImageResource(R.drawable.ic_action_add_friend);
+        doButton.setColorFilter(R.color.colorPrimary);
+        doButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // send friend requests to "mResultUid"
+                FriendRequest.sendFriendRequest(uid, RequestsListViewHolder.this, v);
+            }
+        });
+    }
+
     /* Update the button UI after friend request sent or if already isFriend */
-    void changeToDoneButton() {
+    void useDoneButton() {
         doButton.setImageResource(R.drawable.ic_action_done);
         doButton.setColorFilter(R.color.colorAccent);
         doButton.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +56,19 @@ public class RequestsListViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 Snackbar.make(v, "Friend request sent, or you are friends already!",
                         Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /* Accept rquest */
+    void useAcceptButton(final DatabaseReference refRequest) {
+        doButton.setImageResource(R.drawable.ic_action_add_friend);
+        doButton.setColorFilter(R.color.colorPrimary);
+        doButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // accept friend requests
+                FriendRequest.acceptFriendRequest(refRequest, RequestsListViewHolder.this, v);
             }
         });
     }

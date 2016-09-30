@@ -12,8 +12,6 @@ import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +34,7 @@ public class FriendRequest {
     public static void sendFriendRequest(final String toUserId,
                                          final RequestsListViewHolder viewHolder,
                                          final View v) {
-        Log.w(TAG, "sendFriendRequest");
+        Log.d(TAG, "sendFriendRequest");
 
         final String fromUserId = FirebaseUtil.getCurrentUserId();
         if (fromUserId == null) { // null value; error out
@@ -60,7 +58,7 @@ public class FriendRequest {
                                 .child(toUserId).child(fromUserId).setValue(requestValues);
                         // update UI
                         Snackbar.make(v, SENT, Snackbar.LENGTH_LONG).show();
-                        viewHolder.changeToDoneButton();
+                        viewHolder.useDoneButton();
                     }
 
                     @Override
@@ -94,14 +92,14 @@ public class FriendRequest {
 
         // update UI
         Snackbar.make(v, ACCEPTED, Snackbar.LENGTH_LONG).show();
-        viewHolder.changeToDoneButton();
+        viewHolder.useDoneButton();
     }
 
     // ========================================================
     /* Insert "someFriendId" to "toUserId"'s friend list */
     public static void insertFriendAtoB(final String someFriendId,
                                         final String toUserId) {
-        Log.w(TAG, "insertFriend:" + someFriendId + " to " + toUserId);
+        Log.d(TAG, "insertFriend:" + someFriendId + " to " + toUserId);
 
         if (someFriendId != null && toUserId != null) {
             FirebaseUtil.getUsersRef().child(toUserId).child("friends")
@@ -114,7 +112,7 @@ public class FriendRequest {
     /* Remove "someFriendId" to "toUserId"'s friend list */
     public static void removeFriendAfromB(final String someFriendId,
                                           final String fromUserId) {
-        Log.w(TAG, "insertFriend:" + someFriendId + " to " + fromUserId);
+        Log.d(TAG, "insertFriend:" + someFriendId + " to " + fromUserId);
         if (someFriendId != null && fromUserId != null) {
             FirebaseUtil.getUsersRef().child(fromUserId).child("friends")
                     .child(someFriendId).setValue(true);

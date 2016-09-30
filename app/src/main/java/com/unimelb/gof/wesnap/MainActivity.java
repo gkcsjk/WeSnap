@@ -24,7 +24,6 @@ import com.unimelb.gof.wesnap.fragment.CameraFragment;
 import com.unimelb.gof.wesnap.fragment.ChatsFragment;
 import com.unimelb.gof.wesnap.fragment.FriendsFragment;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
-import com.unimelb.gof.wesnap.util.CurrentUserParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +59,6 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
             finish();
         }
-        // Set up CurrentUserParams
-        CurrentUserParams.getInstance();
 
         /* Render UI */
         // Set up view
@@ -103,7 +100,7 @@ public class MainActivity extends BaseActivity {
     }
 
     /* MyTabAdapter */
-    private class MyTabAdapter extends FragmentPagerAdapter {
+    private class MyTabAdapter extends FragmentPagerAdapter {//FragmentStatePagerAdapter
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
         private final List<Integer> mFragmentIconList = new ArrayList<>();
@@ -186,9 +183,6 @@ public class MainActivity extends BaseActivity {
         if(mFirebaseAuth != null) {
             mFirebaseAuth.signOut();
         }
-
-        // Reset current user params
-        CurrentUserParams.resetCurrentUserParams();
 
         // Restart from LoginActivity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

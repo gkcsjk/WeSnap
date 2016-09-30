@@ -12,33 +12,37 @@ import java.util.List;
 public class Chat {
     // private String chatId;
 
-    private String chatTitle = "Another Chat"; // TODO
+    private String chatTitle = "Just Another Chat"; // TODO
+    private String chatAvatarUrl = null;
+
     private String lastMessageBody;
     private List<String> participants = new ArrayList<String>();
 
     public Chat() {
     }
 
-    public Chat(String[] participantsIds) {
-        int i;
-        for (i = 0; i < participantsIds.length; i++) {
-            this.participants.add(participantsIds[i]);
-        }
-
-        this.lastMessageBody = null;
-    }
-
-    public Chat(String[] participantsIds, String lastMessageBody) {
+    public Chat(String[] participantsIds, String lastMessageBody,
+                String chatAvatarUrl, String chatTitle) {
         int i;
         for (i = 0; i < participantsIds.length; i++) {
             this.participants.add(participantsIds[i]);
         }
 
         this.lastMessageBody = lastMessageBody;
+        this.chatAvatarUrl = chatAvatarUrl;
+        this.chatTitle = chatTitle;
     }
 
     public String getChatTitle() {
         return chatTitle;
+    }
+
+    public void setChatTitle(String chatTitle) {
+        this.chatTitle = chatTitle;
+    }
+
+    public String getChatAvatarUrl() {
+        return chatAvatarUrl;
     }
 
     public String getLastMessageBody() {
