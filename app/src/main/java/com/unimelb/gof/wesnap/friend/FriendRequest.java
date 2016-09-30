@@ -40,7 +40,7 @@ public class FriendRequest {
         if (fromUserId == null) { // null value; error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
             BaseActivity error = new BaseActivity();
-            error.goToLogin("null value");
+            error.goToLogin("current user uid: null");
             return;
         }
 
@@ -120,36 +120,4 @@ public class FriendRequest {
         }
         // TODO null?
     }
-
-    // ========================================================
-    /* Delete "friendId" from current user's list of friend ids */
-//    public static void deleteMyFriend(final String friendId) {
-//        Log.w(TAG, "deleteMyFriend:id=" + friendId);
-//
-//        FirebaseUtil.getCurrentFriendsRef().child(friendId).removeValue();
-//
-//        final Map<String, Object> friendIds = new HashMap<String, Object>();
-//        FirebaseUtil.getCurrentFriendsRef()
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        Log.w(TAG, "deleteMyFriend:getMyFriends:onDataChange");
-//                        //if (dataSnapshot.exists()) {
-//                        Map<String, Boolean> myFriends =
-//                                (Map<String, Boolean>) dataSnapshot.getValue();
-//                        if (myFriends != null && myFriends.containsKey(friendId)) {
-//                            myFriends.remove(friendId);
-//                            friendIds.put("friends", myFriends);
-//                            FirebaseUtil.getCurrentUserRef().updateChildren(friendIds);
-//                        }
-//                        //}
-//                    }
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Log.w(TAG, "deleteMyFriend:getMyFriends:onCancelled", databaseError.toException());
-//                    }
-//                });
-//    }
-
-
 }

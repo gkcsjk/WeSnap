@@ -74,7 +74,7 @@ public class ChatsFragment extends Fragment {
     }
 
     // ========================================================
-    /** onActivityCreated() */
+    /* onActivityCreated() */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -223,16 +223,35 @@ public class ChatsFragment extends Fragment {
         public void onBindViewHolder(final ChatsListViewHolder viewHolder, final int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
-            // Load the item view with friend user info
             final Chat chat = mChats.get(position);
+
+            // Load the item view with friend user info
             viewHolder.lastmsgView.setText(chat.getLastMessageBody());
             viewHolder.titleView.setText(chat.getChatTitle());
             String avatarUrl = chat.getChatAvatarUrl();
             if (avatarUrl != null && avatarUrl.length() != 0) {
                 GlideUtil.loadProfileIcon(avatarUrl, viewHolder.avatarView);
             } else {
-                viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
+                viewHolder.avatarView.setImageResource(R.drawable.ic_default_chat);
             }
+
+            // on click: directs to message list
+            viewHolder.itemView.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Context context = v.getContext();
+                            Intent intent = new Intent(context, MessagesActivity.class);
+                            intent.putExtra(
+                                    MessagesActivity.EXTRA_CHAT_KEY,
+                                    mChatIds.get(position));
+                            intent.putExtra(
+                                    MessagesActivity.EXTRA_CHAT_TITLE,
+                                    mChats.get(position).getChatTitle());
+                            context.startActivity(intent);
+                        }
+                    }
+            );
         }
 
         @Override
@@ -245,6 +264,5 @@ public class ChatsFragment extends Fragment {
                 mDatabaseReference.removeEventListener(mChildEventListener);
             }
         }
-
     }
 }

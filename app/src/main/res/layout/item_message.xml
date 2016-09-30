@@ -1,19 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:padding="@dimen/size_edges">
+    android:padding="@dimen/size_edges_small"
+    android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/button_message_view_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/action_view_photo" />
+    <ImageView
+        android:id="@+id/image_message_sender"
+        android:background="@color/colorSenderGreen"
+        android:contentDescription="@string/desc_image_avatar"
+        android:layout_width="@dimen/size_edges_small"
+        android:layout_height="match_parent">
+    </ImageView>
 
-    <TextView
-        android:id="@+id/text_message"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginLeft="@dimen/size_edges_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_message_sender"
+            android:hint="@string/hint_chat_name"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/button_message_view_photo"
+            android:src="@drawable/ic_action_photo_view"
+            android:contentDescription="@string/action_view_photo"
+            android:layout_width="@dimen/size_photo_message"
+            android:layout_height="@dimen/size_photo_message" />
+
+        <TextView
+            android:id="@+id/text_message"
+            android:text="@string/hint_message"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

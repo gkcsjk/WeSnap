@@ -1,52 +1,45 @@
-package com.unimelb.gof.wesnap.fragment;
+package com.unimelb.gof.wesnap.friend;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-
-import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
-import com.unimelb.gof.wesnap.friend.FriendRequest;
-import com.unimelb.gof.wesnap.friend.ViewRequestsActivity;
-import com.unimelb.gof.wesnap.util.FirebaseUtil;
-import com.unimelb.gof.wesnap.util.GlideUtil;
+import com.google.firebase.database.ValueEventListener;
+import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.util.FirebaseUtil;
+import com.unimelb.gof.wesnap.util.GlideUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * FriendsFragment
- * This fragment monitors the list of friends of the current user
+ * ViewFriendsActivity
+ * This activity shows monitors the list of friends of the current user
  * from Firebase Database, and displays the friend info.
- * It also directs the user to do "Add Friends" and "View Friend Requests".
  *
+ * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class FriendsFragment extends Fragment {
-    private static final String TAG = "FriendsFragment";
+public class ViewFriendsActivity extends BaseActivity {
+    private static final String TAG = "ViewFriendsActivity";
 
     /* UI Variables */
-    private Button mAddFriendButton;
-    private Button mViewRequestButton;
     private RecyclerView mFriendsRecyclerView;
     private FriendsAdapter mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
@@ -54,88 +47,40 @@ public class FriendsFragment extends Fragment {
     /* Firebase Database variables */
     private DatabaseReference refMyFriendIds;
 
-    public FriendsFragment() {
-    }
-
-//    /* Returns a singleton instance of this fragment */
-//    private static FriendsFragment mFriendsFragment = null;
-//    public static FriendsFragment getInstance() {
-//        if (mFriendsFragment == null) {
-//            mFriendsFragment = new FriendsFragment();
-//        }
-//        return mFriendsFragment;
-//    }
-
     // ========================================================
-    /* onCreateView() */
+    /* onCreate() */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view_friends);
 
-        View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
-
-        mAddFriendButton = (Button) rootView.findViewById(R.id.button_add_friend);
-        mAddFriendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddFriendChooserActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mViewRequestButton = (Button) rootView.findViewById(R.id.button_view_request);
-        mViewRequestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ViewRequestsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mFriendsRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_friends);
-        mFriendsRecyclerView.setTag(TAG);
-
-        return rootView;
-    }
-
-    // ========================================================
-    /** onActivityCreated() */
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-
-        // Database Refs
+        /* Firebase Database variables */
         refMyFriendIds = FirebaseUtil.getCurrentFriendsRef();
 
+        /* UI components */
+        // UI: toolbar with title
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_request);
+        setSupportActionBar(mToolbar);
+
         // UI: LinearLayoutManager
-        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mLinearLayoutManager = new LinearLayoutManager(ViewFriendsActivity.this);
         mLinearLayoutManager.setReverseLayout(false);
         mLinearLayoutManager.setStackFromEnd(false);
         mFriendsRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // UI: RecyclerAdapter
-        mRecyclerAdapter = new FriendsAdapter(getActivity(), refMyFriendIds);
+        mRecyclerAdapter = new FriendsAdapter(ViewFriendsActivity.this, refMyFriendIds);
         mFriendsRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
-    // ========================================================
-    /* onStop(): Remove database value event listener */
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-        //mRecyclerAdapter.cleanupListener();
-    }
 
     // ======================================================
-    /* FriendsListViewHolder */
-    private class FriendsListViewHolder extends RecyclerView.ViewHolder {
+    /* FriendViewHolder */
+    private class FriendViewHolder extends RecyclerView.ViewHolder {
         public ImageView avatarView;
         public TextView nameView;
 
-        public FriendsListViewHolder(View itemView) {
+        public FriendViewHolder(View itemView) {
             super(itemView);
             avatarView = (ImageView) itemView.findViewById(R.id.avatar_friend);
             nameView = (TextView) itemView.findViewById(R.id.text_name_friend);
@@ -144,7 +89,7 @@ public class FriendsFragment extends Fragment {
 
     // ======================================================
     /* FriendsAdapter */
-    private class FriendsAdapter extends RecyclerView.Adapter<FriendsListViewHolder> {
+    private class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
         private Context mContext;
         private DatabaseReference mDatabaseReference;
@@ -168,34 +113,33 @@ public class FriendsFragment extends Fragment {
                     // get "users/friendId/"
                     FirebaseUtil.getUsersRef().child(newFriendId)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
-                            if (!dataSnapshot.exists()) {
-                                Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
-                                FriendRequest.removeFriendAfromB(
-                                        newFriendId, FirebaseUtil.getCurrentUserId());
-                                return;
-                            }
-                            // load friend's user data
-                            User friend = dataSnapshot.getValue(User.class);
-                            // update RecyclerView
-                            mFriends.add(friend);
-                            mFriendIds.add(newFriendId);
-                            notifyItemInserted(mFriends.size() - 1);
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                        }
-                    });
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
+                                    if (!dataSnapshot.exists()) {
+                                        Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
+                                        FriendRequest.removeFriendAfromB(
+                                                newFriendId, FirebaseUtil.getCurrentUserId());
+                                        return;
+                                    }
+                                    // load friend's user data
+                                    User friend = dataSnapshot.getValue(User.class);
+                                    // update RecyclerView
+                                    mFriends.add(friend);
+                                    mFriendIds.add(newFriendId);
+                                    notifyItemInserted(mFriends.size() - 1);
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                                }
+                            });
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "getFriendIds:onChildChanged:" + dataSnapshot.getKey());
-                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -239,14 +183,14 @@ public class FriendsFragment extends Fragment {
         }
 
         @Override
-        public FriendsListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.item_friend, parent, false);
-            return new FriendsListViewHolder(view);
+            return new FriendViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(FriendsListViewHolder viewHolder, int position) {
+        public void onBindViewHolder(FriendViewHolder viewHolder, int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             // Load the item view with friend user info
@@ -270,6 +214,7 @@ public class FriendsFragment extends Fragment {
                 mDatabaseReference.removeEventListener(mChildEventListener);
             }
         }
-
     }
 }
+
+

@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.unimelb.gof.wesnap.fragment.CameraFragment;
 import com.unimelb.gof.wesnap.fragment.ChatsFragment;
-import com.unimelb.gof.wesnap.fragment.FriendsFragment;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 
 import java.util.ArrayList;
@@ -58,6 +57,7 @@ public class MainActivity extends BaseActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
+            return;
         }
 
         /* Render UI */
@@ -78,7 +78,6 @@ public class MainActivity extends BaseActivity {
     private void setupTabs() {
         // Create MyTabAdapter that contains info of each tab
         MyTabAdapter myTabAdapter = new MyTabAdapter(getSupportFragmentManager());
-        myTabAdapter.addFragment(new FriendsFragment(), "Friends", R.drawable.ic_action_friends);
         myTabAdapter.addFragment(new ChatsFragment(), "Chats", R.drawable.ic_action_chat);
         myTabAdapter.addFragment(new CameraFragment(), "Snap", R.drawable.ic_action_camera);
         myTabAdapter.addFragment(new CameraFragment(), "Stories", R.drawable.ic_action_stories);

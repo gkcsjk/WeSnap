@@ -6,6 +6,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_loading">Loading</string>
     <string name="action_exit_app">Exit App</string>
+    <string name="status_not_found">Not Found</string>
 
     <!--Auth-->
     <string name="text_title_login">Log In</string>
@@ -22,17 +23,19 @@
     <string name="action_logout">Logout</string>
 
     <!--Friends-->
-    <string name="hint_chat_name">Your Friend Alice from Wonderland</string>
-    <string name="hint_chat">Tap to read messages!</string>
-    <string name="action_add_friend">Add Friends</string>
-    <string name="action_view_request">View Requests</string>
-    <string name="action_search_username">Find friend via username</string>
-    <string name="status_not_found">Not Found</string>
-    <string name="action_share_username">Share my username</string>
+    <string name="action_view_friends">My Friends</string>
+    <string name="action_view_requests">Added Me (View Requests)</string>
+    <string name="action_add_friends">Add Friends</string>
+    <string name="action_search_username">Add by Username</string>
+    <string name="action_share_username">Share My Username</string>
+    <string name="action_share_username_to">Share my username to ...</string>
     <string name="action_other_options">Other ?? Search Nearby ??</string>
-    <string name="action_share_username_to">Share my username to...</string>
 
     <!--Messages-->
+    <string name="hint_chat_name">Your Friend Alice from Wonderland</string>
+    <string name="hint_chat">Tap to read messages!</string>
+    <string name="hint_message">text message</string>
+    <string name="action_send">Send</string>
     <string name="action_view_photo">See the Photo</string>
     <string name="action_replay_photo">Replay the Photo</string>
 
@@ -51,4 +54,5 @@
         culpa qui officia deserunt mollit anim id est laborum.
     </string>
     <string name="desc_image_avatar">Avatar of User</string>
+    <string name="desc_message_sender">Color Bar for Message Sender</string>
 </resources>
