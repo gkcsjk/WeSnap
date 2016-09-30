@@ -19,7 +19,7 @@ public class User {
     private String displayedName;
     private String avatarUrl; // TODO user-supplied avatar?
     private Map<String, Boolean> friends; // "uid: true"
-    private List<String> chats; // "chat-id: true"
+    private Map<String, Boolean> chats; // "chat-id: true"
 
     // private Map<String, Object> stories; //TODO
     // private Map<String, Object> memories; //TODO
@@ -28,8 +28,8 @@ public class User {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String uid, String username, String displayName, String email) {
-        this(uid, username, displayName, email, null, null);
+    public User(String uid, String username, String displayedName, String email) {
+        this(uid, username, displayedName, email, null, null);
     }
 
     public User(String uid, String username, String displayName, String email,
@@ -46,9 +46,9 @@ public class User {
             this.friends.put(initialFriendId, true);
         }
 
-        this.chats = new ArrayList<>();
+        this.chats = new HashMap<>();
         if (initialChatId != null) {
-            this.chats.add(initialChatId);
+            this.chats.put(initialChatId, true);
         }
     }
 
@@ -64,15 +64,19 @@ public class User {
     public String getDisplayedName() {
         return displayedName;
     }
+
     public String getAvatarUrl() {
         return avatarUrl;
+    }
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public Map<String, Boolean> getFriends() {
         return this.friends;
     }
 
-    public List<String> getChats() {
+    public Map<String, Boolean> getChats() {
         return this.chats;
     }
 

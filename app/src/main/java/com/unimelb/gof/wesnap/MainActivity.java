@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,9 +24,18 @@ import com.unimelb.gof.wesnap.fragment.CameraFragment;
 import com.unimelb.gof.wesnap.fragment.ChatsFragment;
 import com.unimelb.gof.wesnap.fragment.FriendsFragment;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
+import com.unimelb.gof.wesnap.util.CurrentUserParams;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * TODO add comments: MainActivity
+ * MainActivity
+ * Provides tab views for each major section.
+ * Provides menu options at the action bar.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -34,44 +44,26 @@ public class MainActivity extends BaseActivity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
 
-    /* Settings for the Tabs */
-    private static final int TAB_NUM = 5;
-    private static final String[] TAB_TITLES = new String[] {
-            "Friends",
-            "Chat",
-            "Snap",
-            "Stories",
-            "Me"
-    };
-    private static final Fragment[] TAB_FRAGMENTS = new Fragment[] {
-            FriendsFragment.getInstance(),
-            ChatsFragment.getInstance(),
-            CameraFragment.getInstance(),
-            new CameraFragment(),   // TODO
-            new CameraFragment()    // TODO
-    };
-    private static final int[] TAB_ICONS_INT = {
-            R.drawable.ic_action_friends,
-            R.drawable.ic_action_chat,
-            R.drawable.ic_action_camera,
-            R.drawable.ic_action_stories,
-            R.drawable.ic_action_me
-    };
-
+    // ========================================================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
 
-        // Check if user already logged in
+        /* Get User */
+        // Check if user already logged in; if not, direct to Login activity
         mFirebaseAuth = FirebaseAuth.getInstance();
         if (mFirebaseAuth.getCurrentUser() == null) {
-            // If not, direct to Login activity
+            Log.d(TAG, "goToLogin");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
+        // Set up CurrentUserParams
+        CurrentUserParams.getInstance();
 
+        /* Render UI */
         // Set up view
         setContentView(R.layout.activity_main);
         // Add Toolbar to main screen
@@ -85,93 +77,91 @@ public class MainActivity extends BaseActivity {
     }
 
     // ========================================================
-    /**
-     * Set up the tabs in main screen
-     * */
+    /* Set up the tabs in main screen */
     private void setupTabs() {
         // Create MyTabAdapter that contains info of each tab
-        MyTabAdapter myTabAdapter =
-                new MyTabAdapter(getSupportFragmentManager());
+        MyTabAdapter myTabAdapter = new MyTabAdapter(getSupportFragmentManager());
+        myTabAdapter.addFragment(new FriendsFragment(), "Friends", R.drawable.ic_action_friends);
+        myTabAdapter.addFragment(new ChatsFragment(), "Chats", R.drawable.ic_action_chat);
+        myTabAdapter.addFragment(new CameraFragment(), "Snap", R.drawable.ic_action_camera);
+        myTabAdapter.addFragment(new CameraFragment(), "Stories", R.drawable.ic_action_stories);
+        myTabAdapter.addFragment(new CameraFragment(), "Me", R.drawable.ic_action_me);
 
-        // Setup ViewPager for each Tabs
+        // Set ViewPager for each Tabs
         ViewPager mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(myTabAdapter);
 
-        // Setup Tabs with TabLayout
+        // Set Tabs with TabLayout
         TabLayout mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(mViewPager);
 
-        // Set up the given viewPager with one Fragment instance for tab
+        // Set the title and icon for each tab
         for (int i = 0; i < myTabAdapter.getCount(); i++) {
             TabLayout.Tab mTab = mTabs.getTabAt(i);
             mTab.setCustomView(myTabAdapter.getTabView(i));
         }
     }
 
-    // ========================================================
-    /**
-     * MyTabAdapter
-     * */
+    /* MyTabAdapter */
     private class MyTabAdapter extends FragmentPagerAdapter {
-        private Fragment[] mFragmentList;
-        private String[] mFragmentTitleList;
-        private int[] mFragmentIconList;
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+        private final List<Integer> mFragmentIconList = new ArrayList<>();
 
         public MyTabAdapter(FragmentManager manager) {
             super(manager);
+        }
 
-            mFragmentList = TAB_FRAGMENTS;
-            mFragmentTitleList = TAB_TITLES;
-            mFragmentIconList = TAB_ICONS_INT;
+        public void addFragment(Fragment fragment, String title, int icon) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+            mFragmentIconList.add(icon);
         }
 
         @Override
         public int getCount() {
-            return TAB_NUM;
+            return mFragmentList.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return mFragmentList[position];
+            return mFragmentList.get(position);
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList[position];
+            return mFragmentTitleList.get(position);
         }
 
-        /** returns the view for the tab at the given position */
+        public int getPageIcon(int position) {
+            return mFragmentIconList.get(position);
+        }
+
+        /* returns the view for the tab at the given position */
         public View getTabView(int position) {
             View view = LayoutInflater.from(MainActivity.this)
                     .inflate(R.layout.item_tab, null);
-
             TextView mTabTitle = (TextView) view.findViewById(R.id.title_tab);
+            mTabTitle.setText(getPageTitle(position));
             ImageView mTabIcon = (ImageView) view.findViewById(R.id.icon_tab);
-
-            mTabTitle.setText(mFragmentTitleList[position]);
-            mTabIcon.setImageResource(mFragmentIconList[position]);
-
+            mTabIcon.setImageResource(getPageIcon(position));
             return view;
         }
     }
-    // [END MyTabAdapter]
 
     // ========================================================
-
+    /* onCreateOptionsMenu()
+     * Inflate the menu: add items to the action bar if it is present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-
-        // Inflate menu resource file
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Return true to display menu
         return true;
     }
 
+    /* onOptionsItemSelected()
+     * Handle action bar item clicks */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here.
         switch(item.getItemId()) {
             case R.id.add_friend:
                 Intent intent = new Intent(MainActivity.this, AddFriendChooserActivity.class);
@@ -186,14 +176,19 @@ public class MainActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    /*
-    * Logout from Firebase
-    * */
-    public void logout() {
+
+    // ========================================================
+    /* Logout from Firebase */
+    private void logout() {
+        Log.d(TAG, "logout");
+
         // Logout
         if(mFirebaseAuth != null) {
             mFirebaseAuth.signOut();
         }
+
+        // Reset current user params
+        CurrentUserParams.resetCurrentUserParams();
 
         // Restart from LoginActivity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -203,7 +198,7 @@ public class MainActivity extends BaseActivity {
     }
 
     // ========================================================
-
+    /* Let back key triggers exit app dialog */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

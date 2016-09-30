@@ -23,7 +23,8 @@ import java.util.HashMap;
 
 /**
  * ViewRequestsActivity
- * This activity ... TODO comments: ViewRequestsActivity
+ * This activity shows the pending friend requests received by current user and
+ * allows the user accept or deny the requests.
  *
  * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016

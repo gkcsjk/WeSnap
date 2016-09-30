@@ -118,6 +118,7 @@ public class FriendRequest {
         if (someFriendId != null && fromUserId != null) {
             FirebaseUtil.getUsersRef().child(fromUserId).child("friends")
                     .child(someFriendId).setValue(true);
+            return;
         }
         // TODO null?
     }

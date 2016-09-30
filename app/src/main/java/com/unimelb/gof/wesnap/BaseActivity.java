@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 
 /**
  * BaseActivity
@@ -94,4 +93,6 @@ public class BaseActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    // ========================================================
 }

@@ -44,14 +44,14 @@ public class ChatsFragment extends Fragment {
     public ChatsFragment() {
     }
 
-    /* Returns a singleton instance of this fragment */
-    private static ChatsFragment mChatsFragment = null;
-    public static ChatsFragment getInstance() {
-        if (mChatsFragment == null) {
-            mChatsFragment = new ChatsFragment();
-        }
-        return mChatsFragment;
-    }
+//    /* Returns a singleton instance of this fragment */
+//    private static ChatsFragment mChatsFragment = null;
+//    public static ChatsFragment getInstance() {
+//        if (mChatsFragment == null) {
+//            mChatsFragment = new ChatsFragment();
+//        }
+//        return mChatsFragment;
+//    }
 
     // ======================================================
     @Override

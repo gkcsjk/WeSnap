@@ -19,6 +19,8 @@ import com.unimelb.gof.wesnap.BaseActivity;
 public class FirebaseUtil {
     private static final String TAG = "FirebaseUtil";
 
+    public static final String[] NOT_ALLOWED_CHAR = new String[]{".","$","#","[","]","/"};
+
     // TODO check network???
 
     public static DatabaseReference getBaseRef() {
@@ -42,8 +44,11 @@ public class FirebaseUtil {
         String uid = getCurrentUserId();
         if (uid != null) {
             return getUsersRef().child(uid);
+        } else {
+            // null value, error out
+            handleNullValue("getCurrentUserId");
+            return null;
         }
-        return null;
     }
 
     // current user's List of Chat-IDs
@@ -51,11 +56,8 @@ public class FirebaseUtil {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef != null) {
             return currentUserRef.child("chats");
-        } else {
-            // null value, error out
-            handleNullValue("getCurrentUserRef");
-            return null;
         }
+        return null;
     }
 
     // current user's List of Friends' uid
@@ -63,11 +65,8 @@ public class FirebaseUtil {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef != null) {
             return currentUserRef.child("friends");
-        } else {
-            // null value, error out
-            handleNullValue("getCurrentUserRef");
-            return null;
         }
+        return null;
     }
 
     // current user's List of Pending Requests

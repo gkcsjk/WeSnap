@@ -58,20 +58,22 @@ public class FriendsFragment extends Fragment {
     public FriendsFragment() {
     }
 
-    /* Returns a singleton instance of this fragment */
-    private static FriendsFragment mFriendsFragment = null;
-    public static FriendsFragment getInstance() {
-        if (mFriendsFragment == null) {
-            mFriendsFragment = new FriendsFragment();
-        }
-        return mFriendsFragment;
-    }
+//    /* Returns a singleton instance of this fragment */
+//    private static FriendsFragment mFriendsFragment = null;
+//    public static FriendsFragment getInstance() {
+//        if (mFriendsFragment == null) {
+//            mFriendsFragment = new FriendsFragment();
+//        }
+//        return mFriendsFragment;
+//    }
 
     // ========================================================
     /* onCreateView() */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
+
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
         mAddFriendButton = (Button) rootView.findViewById(R.id.button_add_friend);
@@ -103,6 +105,7 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
 
         // Database Refs
         refMyFriendIds = FirebaseUtil.getCurrentFriendsRef();
@@ -119,17 +122,18 @@ public class FriendsFragment extends Fragment {
     }
 
     // ========================================================
-    /* onStop() */
+    /* onStop(): Remove database value event listener */
     @Override
     public void onStop() {
         super.onStop();
-        // Remove database value event listener
+        Log.d(TAG, "onStop");
         mRecyclerAdapter.cleanupListener();
     }
 
     // ======================================================
-    /** FriendsListViewHolder */
-    public static class FriendsListViewHolder extends RecyclerView.ViewHolder {
+    /* FriendsListViewHolder */
+    private static class FriendsListViewHolder
+            extends RecyclerView.ViewHolder {
         public ImageView avatarView;
         public TextView nameView;
 
@@ -141,8 +145,9 @@ public class FriendsFragment extends Fragment {
     }
 
     // ======================================================
-    /** FriendsListViewHolder */
-    private static class FriendsAdapter extends RecyclerView.Adapter<FriendsListViewHolder> {
+    /* FriendsAdapter */
+    private static class FriendsAdapter
+            extends RecyclerView.Adapter<FriendsListViewHolder> {
 
         private Context mContext;
         private DatabaseReference mDatabaseReference;
@@ -160,26 +165,26 @@ public class FriendsFragment extends Fragment {
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getFriends:onChildAdded:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getFriendIds:onChildAdded:" + dataSnapshot.getKey());
                     // get friend id and ref
-                    final String newFriendId = (String) dataSnapshot.getKey();
+                    final String newFriendId = dataSnapshot.getKey();
                     FirebaseUtil.getUsersRef().child(newFriendId)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
-                            if (dataSnapshot.exists()) {
-                                // load friend's user data
-                                User friend = dataSnapshot.getValue(User.class);
-                                // update RecyclerView
-                                mFriends.add(friend);
-                                mFriendIds.add(newFriendId);
-                                notifyItemInserted(mFriends.size() - 1);
-                            } else {
-                                Log.d(TAG, "refMyFriendIds:unexpected null user id=" + newFriendId);
+                            if (!dataSnapshot.exists()) {
+                                Log.w(TAG, "refMyFriendIds:unexpected null user id=" + newFriendId);
                                 FriendRequest.removeFriendAfromB(
                                         newFriendId, FirebaseUtil.getCurrentUserId());
+                                return;
                             }
+                            // load friend's user data
+                            User friend = dataSnapshot.getValue(User.class);
+                            // update RecyclerView
+                            mFriends.add(friend);
+                            mFriendIds.add(newFriendId);
+                            notifyItemInserted(mFriends.size() - 1);
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -190,14 +195,14 @@ public class FriendsFragment extends Fragment {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getFriends:onChildChanged:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getFriendIds:onChildChanged:" + dataSnapshot.getKey());
                     Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
                             Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "getFriends:onChildRemoved:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getFriendIds:onChildRemoved:" + dataSnapshot.getKey());
                     // get friend id and index
                     String removedFriendId = (String) dataSnapshot.getKey();
                     int friendIndex = mFriendIds.indexOf(removedFriendId);
@@ -208,14 +213,14 @@ public class FriendsFragment extends Fragment {
                         // Update the RecyclerView
                         notifyItemRemoved(friendIndex);
                     } else {
-                        Log.w(TAG, "getFriends:onChildRemoved:unknown_child:" + removedFriendId);
+                        Log.w(TAG, "getFriendIds:onChildRemoved:unknown_child:" + removedFriendId);
                     }
                     // TODO how does the active "Chat" knows when a friendship ends?
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getFriends:onChildMoved:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getFriendIds:onChildMoved:" + dataSnapshot.getKey());
                     // This method is triggered when a child location's priority changes.
                     Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
                             Toast.LENGTH_SHORT).show();
@@ -223,7 +228,7 @@ public class FriendsFragment extends Fragment {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "getFriends:onCancelled", databaseError.toException());
+                    Log.w(TAG, "getFriendIds:onCancelled", databaseError.toException());
                     Toast.makeText(mContext, "Failed to load friends.",
                             Toast.LENGTH_SHORT).show();
                 }
