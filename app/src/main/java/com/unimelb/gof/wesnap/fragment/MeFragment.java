@@ -21,6 +21,7 @@ import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.friend.ViewFriendsActivity;
 import com.unimelb.gof.wesnap.friend.ViewRequestsActivity;
 import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
@@ -119,7 +120,9 @@ public class MeFragment extends Fragment {
                 } else {
                     mAvatar.setImageResource(R.drawable.ic_default_avatar);
                 }
+                String name = currentUser.getDisplayedName();
                 mDisplayedName.setText(currentUser.getDisplayedName());
+                AppParams.setMyDisplayedName(name);
                 mUsername.setText(currentUser.getUsername());
             }
 

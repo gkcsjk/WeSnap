@@ -33,6 +33,15 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/size_edges" >
 
+        <ImageButton
+            android:id="@+id/button_upload_photo"
+            android:src="@drawable/ic_action_upload_photo"
+            android:contentDescription="@string/action_upload_photo"
+            android:layout_width="@dimen/size_image_button"
+            android:layout_height="@dimen/size_image_button"
+            android:layout_gravity="center"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
         <EditText
             android:id="@+id/field_text_message"
             android:hint="@string/hint_message"
@@ -46,10 +55,11 @@
             android:id="@+id/button_send_message"
             android:src="@drawable/ic_action_send"
             android:contentDescription="@string/action_send"
-            android:layout_width="@dimen/size_icon_tab"
-            android:layout_height="@dimen/size_icon_tab"
+            android:layout_width="@dimen/size_image_button"
+            android:layout_height="@dimen/size_image_button"
             android:layout_gravity="center"
             style="@style/Widget.AppCompat.Button.Borderless" />
+
     </LinearLayout>
 
 </LinearLayout>

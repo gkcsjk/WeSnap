@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap.friend;
+package com.unimelb.gof.wesnap.chat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
-import com.unimelb.gof.wesnap.MessagesActivity;
 import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.friend.FriendRequest;
 import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -275,14 +275,10 @@ public class ChooseFriendActivity extends BaseActivity {
                                     // check if contains selectedFriendId
                                     Chat chat = dataSnapshot.getValue(Chat.class);
                                     if (chat.getParticipants().containsKey(uid)) {
-                                        // found one!
-                                        final String selectedChatId = chatId;
-                                        final String selectedChatTitle = chat.getChatTitle();
-                                        // enter that chat
-                                        goToChat(selectedChatId, selectedChatTitle);
+                                        // found one! enter that chat
+                                        goToChat(chatId, name);
                                     } else if (chatId.equals(mChatIdArray[mChatIdArray.length - 1].toString())) {
-                                        // the last one!
-                                        // start a new chat
+                                        // the last one! start a new chat
                                         startNewChat(uid, name);
                                     }
                                 }
@@ -302,11 +298,11 @@ public class ChooseFriendActivity extends BaseActivity {
 
     // ======================================================
     /* Direct User to an existing chat */
-    private void goToChat(final String selectedChatId, final String selectedChatTitle) {
-        Log.d(TAG, "goToChat:id=" + selectedChatId);
+    private void goToChat(String chatId, String chatTitle) {
+        Log.d(TAG, "goToChat:id=" + chatId);
         Intent intent = new Intent(ChooseFriendActivity.this, MessagesActivity.class);
-        intent.putExtra(MessagesActivity.EXTRA_CHAT_KEY, selectedChatId);
-        intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, selectedChatTitle);
+        intent.putExtra(MessagesActivity.EXTRA_CHAT_ID, chatId);
+        intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, chatTitle);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // TODO proper flag?
         startActivity(intent);
         finish();
@@ -317,41 +313,41 @@ public class ChooseFriendActivity extends BaseActivity {
     private void startNewChat(final String uid, final String name) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
-        final String myUid = FirebaseUtil.getCurrentUserId();
-        if (myUid == null) { // error out
-            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
-            goToLogin("current user uid: null");
+        DatabaseReference refCurrentUser = FirebaseUtil.getCurrentUserRef();
+        if (refCurrentUser == null) { // error out
+            Log.e(TAG, "current user ref unexpectedly null; goToLogin()");
+            goToLogin("current user ref: null");
             return;
         }
 
         // get current user info
-        FirebaseUtil.getCurrentUserRef()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "getCurrentUser:onDataChange:" + dataSnapshot.getKey());
+        refCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "getCurrentUser:onDataChange:" + dataSnapshot.getKey());
 
-                        if (!dataSnapshot.exists()) {
-                            Log.e(TAG, "unexpected non-existing user; goToLogin()");
-                            goToLogin("current user uid: null");
-                            return;
-                        }
+                if (!dataSnapshot.exists()) {
+                    Log.e(TAG, "unexpected non-existing user; goToLogin()");
+                    goToLogin("current user: null");
+                    return;
+                }
 
-                        // create a new chat item
-                        User me = dataSnapshot.getValue(User.class);
-                        String newChatTitle = name + me.getDisplayedName();
-                        Chat newChat = new Chat(new String[]{myUid, uid},
-                                null, null, newChatTitle);
-                        DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
-                        newChatRef.setValue(newChat);
+                // create a new chat item
+                User me = dataSnapshot.getValue(User.class);
+                HashMap<String, String> participants = new HashMap<>();
+                participants.put(uid, name);
+                participants.put(me.getUid(), me.getDisplayedName());
+                Chat newChat = new Chat(participants, null, null, null);
+                DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
+                newChatRef.setValue(newChat);
 
-                        // now go to the new chat
-                        goToChat(newChatRef.getKey(), newChatTitle);
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
-                    }
-                });
+                // now go to the new chat
+                goToChat(newChatRef.getKey(), name);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+            }
+        });
     }
 }

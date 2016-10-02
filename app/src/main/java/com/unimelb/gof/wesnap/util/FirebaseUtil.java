@@ -145,4 +145,10 @@ public class FirebaseUtil {
     }
 
     // =============================================
+//        Map<String, Object> childUpdates = new HashMap<>();
+//        childUpdates.put(FirebaseUtil.getChatsPath() + newChatId, newChatId);
+//        childUpdates.put(FirebaseUtil.getMessagesPath() + newChatId + "/" + newMessageId, newMessage);
+//        childUpdates.put(FirebaseUtil.getUsersPath() + newUserId, newUser);
+//        childUpdates.put(FirebaseUtil.getUsernamesPath() + mRegUsernameField.getText().toString(), newUserId);
+//        FirebaseUtil.getBaseRef().updateChildren(childUpdates);
 }

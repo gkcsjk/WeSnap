@@ -46,12 +46,12 @@
         </activity>
 
         <activity
-            android:name=".friend.ChooseFriendActivity"
+            android:name=".chat.ChooseFriendActivity"
             android:label="@string/action_chat_with">
         </activity>
 
         <activity
-            android:name=".MessagesActivity">
+            android:name=".chat.MessagesActivity">
         </activity>
 
     </application>

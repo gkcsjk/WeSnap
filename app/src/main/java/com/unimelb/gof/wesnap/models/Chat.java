@@ -9,31 +9,41 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by qideng on 18/09/2016.
+ * Chat class for Firebase Database
  */
 @IgnoreExtraProperties
 public class Chat {
-    private String chatTitle = "Just Another Chat"; // TODO
-    private String chatAvatarUrl = null;
-
+    private Map<String, String> participants = new HashMap<>(); // {uid: displayedName}
     private String lastMessageBody;
-    private Map<String, Boolean> participants = new HashMap<>();
+
+    private String chatTitle = null; // TODO for group chats; use null for now
+    private String chatAvatarUrl = null; // TODO use default icon for now
 
     public Chat() {
     }
 
-    public Chat(String[] participantsIds, String lastMessageBody,
-                String chatAvatarUrl, String chatTitle) {
-        int i;
-        for (i = 0; i < participantsIds.length; i++) {
-            this.participants.put(participantsIds[i], true);
-        }
+    public Chat(Map<String, String> participants, String lastMessageBody) {
+        this(participants, lastMessageBody, null, null);
+    }
 
+    public Chat(Map<String, String> participants, String lastMessageBody,
+                String chatAvatarUrl, String chatTitle) {
+        this.participants.putAll(participants);
         this.lastMessageBody = lastMessageBody;
-        //this.chatAvatarUrl = chatAvatarUrl; TODO use default icon for now
         if (chatTitle != null) {
             this.chatTitle = chatTitle;
         }
+        if (chatAvatarUrl != null) {
+            this.chatAvatarUrl = chatAvatarUrl;
+        }
+    }
+
+    public Map<String, String> getParticipants() {
+        return participants;
+    }
+
+    public String getLastMessageBody() {
+        return lastMessageBody;
     }
 
     public String getChatTitle() {
@@ -42,14 +52,6 @@ public class Chat {
 
     public String getChatAvatarUrl() {
         return chatAvatarUrl;
-    }
-
-    public String getLastMessageBody() {
-        return lastMessageBody;
-    }
-
-    public Map<String, Boolean> getParticipants() {
-        return participants;
     }
 
     // ======================================================
