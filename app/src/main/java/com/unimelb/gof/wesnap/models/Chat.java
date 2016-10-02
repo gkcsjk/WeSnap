@@ -17,7 +17,7 @@ public class Chat {
     private String chatAvatarUrl = null;
 
     private String lastMessageBody;
-    private List<String> participants = new ArrayList<String>();
+    private Map<String, Boolean> participants = new HashMap<>();
 
     public Chat() {
     }
@@ -26,12 +26,14 @@ public class Chat {
                 String chatAvatarUrl, String chatTitle) {
         int i;
         for (i = 0; i < participantsIds.length; i++) {
-            this.participants.add(participantsIds[i]);
+            this.participants.put(participantsIds[i], true);
         }
 
         this.lastMessageBody = lastMessageBody;
-        this.chatAvatarUrl = chatAvatarUrl;
-        this.chatTitle = chatTitle;
+        //this.chatAvatarUrl = chatAvatarUrl; TODO use default icon for now
+        if (chatTitle != null) {
+            this.chatTitle = chatTitle;
+        }
     }
 
     public String getChatTitle() {
@@ -46,7 +48,7 @@ public class Chat {
         return lastMessageBody;
     }
 
-    public List<String> getParticipants() {
+    public Map<String, Boolean> getParticipants() {
         return participants;
     }
 

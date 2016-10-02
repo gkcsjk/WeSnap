@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.friend.ViewFriendsActivity;
@@ -50,49 +51,13 @@ public class MeFragment extends Fragment {
 
     // ======================================================
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        refCurrentUser = FirebaseUtil.getCurrentUserRef();
-        if (refCurrentUser == null) {
-            // TODO null value; error out
-            return;
-        }
-
-        // [START person_value_event_listener]
-        ValueEventListener profileListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.w(TAG, "getCurrentUser:onDataChange");
-                User currentUser = dataSnapshot.getValue(User.class);
-
-                String avatarUrl = currentUser.getAvatarUrl();
-                if (avatarUrl != null) {
-                    GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
-                } else {
-                    mAvatar.setImageResource(R.drawable.ic_default_avatar);
-                }
-                mDisplayedName.setText(currentUser.getDisplayedName());
-                mUsername.setText(currentUser.getUsername());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
-            }
-        };
-        refCurrentUser.addValueEventListener(profileListener);
-        // [END person_value_event_listener]
-
-        // Keep copy of post listener so we can remove it when app stops
-        mListenerCurrentUser = profileListener;
-    }
-
-    // ======================================================
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_me, container, false);
+
+        mAvatar = (ImageView) rootView.findViewById(R.id.my_avatar);
+        mDisplayedName = (TextView) rootView.findViewById(R.id.my_name);
+        mUsername = (TextView) rootView.findViewById(R.id.my_username);
 
         mAddFriendButton = (Button) rootView.findViewById(R.id.button_add_friends);
         mAddFriendButton.setOnClickListener(new View.OnClickListener() {
@@ -130,5 +95,43 @@ public class MeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
+
+        /* Confirm Current User */
+        refCurrentUser = FirebaseUtil.getCurrentUserRef();
+        if (refCurrentUser == null) {
+            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
+            BaseActivity error = new BaseActivity();
+            error.goToLogin("current user uid: null");
+            return;
+        }
+
+        /* ValueEventListener for Current User */
+        // [START person_value_event_listener]
+        ValueEventListener profileListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.w(TAG, "getCurrentUser:onDataChange");
+                User currentUser = dataSnapshot.getValue(User.class);
+
+                String avatarUrl = currentUser.getAvatarUrl();
+                if (avatarUrl != null) {
+                    GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
+                } else {
+                    mAvatar.setImageResource(R.drawable.ic_default_avatar);
+                }
+                mDisplayedName.setText(currentUser.getDisplayedName());
+                mUsername.setText(currentUser.getUsername());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+            }
+        };
+        refCurrentUser.addValueEventListener(profileListener);
+        // [END person_value_event_listener]
+
+        // Keep copy of post listener so we can remove it when app stops
+        mListenerCurrentUser = profileListener;
     }
 }

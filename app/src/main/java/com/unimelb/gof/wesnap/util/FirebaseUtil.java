@@ -88,10 +88,6 @@ public class FirebaseUtil {
         return getBaseRef().child("users");
     }
 
-    public static Query getUser(String uid) {
-        return getUsersRef().orderByKey().equalTo(uid);
-    }
-
     public static String getUsersPath() {
         return "users/";
     }

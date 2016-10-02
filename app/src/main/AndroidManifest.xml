@@ -36,13 +36,18 @@
         </activity>
 
         <activity
+            android:name=".friend.SearchUsernameActivity"
+            android:label="@string/action_search_username">
+        </activity>
+
+        <activity
             android:name=".friend.ViewFriendsActivity"
             android:label="@string/action_view_friends">
         </activity>
 
         <activity
-            android:name=".friend.SearchUsernameActivity"
-            android:label="@string/action_search_username">
+            android:name=".friend.ChooseFriendActivity"
+            android:label="@string/action_chat_with">
         </activity>
 
         <activity

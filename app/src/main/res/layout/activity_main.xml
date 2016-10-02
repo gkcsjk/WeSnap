@@ -27,15 +27,17 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="right|bottom"-->
-    <!--android:layout_marginBottom="@dimen/size_edges"-->
-    <!--android:layout_marginRight="@dimen/size_edges"-->
-    <!--app:srcCompat="@drawable/ic_add"-->
-    <!--android:tint="@color/colorBlack"/>-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/viewpager"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_marginBottom="@dimen/size_edges"
+        android:layout_marginRight="@dimen/size_edges"
+        android:layout_marginEnd="@dimen/size_edges"
+        android:baselineAlignBottom="true"
+        app:srcCompat="@drawable/ic_add" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"

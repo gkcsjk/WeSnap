@@ -37,7 +37,7 @@ public class ViewRequestsActivity extends BaseActivity {
     private TextView mNotFoundText;
     private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter<
-            User, RequestsListViewHolder> mRecyclerAdapter;
+            User, RequestViewHolder> mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -90,14 +90,14 @@ public class ViewRequestsActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // create the recycler adapter
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestsListViewHolder>(
+        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestViewHolder>(
                 User.class,
                 R.layout.item_friend_request,
-                RequestsListViewHolder.class,
+                RequestViewHolder.class,
                 refCurrentRequests) {
 
             @Override
-            protected void populateViewHolder(final RequestsListViewHolder viewHolder,
+            protected void populateViewHolder(final RequestViewHolder viewHolder,
                                               final User requestSender,
                                               final int position) {
                 Log.d(TAG, "populateViewHolder:" + position);

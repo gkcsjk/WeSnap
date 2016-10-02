@@ -41,7 +41,7 @@ public class SearchUsernameActivity extends BaseActivity {
     private TextView mNotFoundText;
     private RecyclerView mResultsRecyclerView;
     private FirebaseRecyclerAdapter<
-            User, RequestsListViewHolder> mRecyclerAdapter;
+            User, RequestViewHolder> mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -103,7 +103,9 @@ public class SearchUsernameActivity extends BaseActivity {
                         if (dataSnapshot.exists()) {
                             // username found
                             mResultUid = (String) dataSnapshot.getValue();
-                            showSearchResults(FirebaseUtil.getUser(mResultUid));
+                            Query queryUser = FirebaseUtil.getUsersRef()
+                                    .orderByKey().equalTo(mResultUid);
+                            showSearchResults(queryUser);
                         } else {
                             // username not found
                             mNotFoundText.setVisibility(View.VISIBLE);
@@ -123,14 +125,14 @@ public class SearchUsernameActivity extends BaseActivity {
         Log.d(TAG, "showSearchResults:username=" + mSearchKeyword);
 
         // create the recycler adapter for search result
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestsListViewHolder>(
+        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestViewHolder>(
                 User.class,
                 R.layout.item_friend_request,
-                RequestsListViewHolder.class,
+                RequestViewHolder.class,
                 queryUser) {
 
             @Override
-            protected void populateViewHolder(final RequestsListViewHolder viewHolder,
+            protected void populateViewHolder(final RequestViewHolder viewHolder,
                                               final User resultUser,
                                               final int position) {
                 Log.d(TAG, "populateViewHolder:" + position);

@@ -54,15 +54,6 @@ public class ChatsFragment extends Fragment {
     public ChatsFragment() {
     }
 
-//    /* Returns a singleton instance of this fragment */
-//    private static ChatsFragment mChatsFragment = null;
-//    public static ChatsFragment getInstance() {
-//        if (mChatsFragment == null) {
-//            mChatsFragment = new ChatsFragment();
-//        }
-//        return mChatsFragment;
-//    }
-
     // ======================================================
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,7 +86,7 @@ public class ChatsFragment extends Fragment {
     }
 
     // ========================================================
-    /* onStop(): Remove database value event listener */
+    /* onStop() */
     @Override
     public void onStop() {
         super.onStop();

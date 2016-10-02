@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.unimelb.gof.wesnap.R;
 
 /**
- * RequestsListViewHolder
+ * RequestViewHolder
  * ViewHolder for item_friend_request.
  * It provides a method to change the "Add" ImageButton to "Done".
  * Access to the variables and method is package local.
@@ -19,13 +19,13 @@ import com.unimelb.gof.wesnap.R;
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class RequestsListViewHolder extends RecyclerView.ViewHolder {
+public class RequestViewHolder extends RecyclerView.ViewHolder {
     ImageView avatarView;
     TextView nameView;
     TextView emailView;
     ImageButton doButton;
 
-    public RequestsListViewHolder(View v) {
+    public RequestViewHolder(View v) {
         super(v);
 
         avatarView = (ImageView) itemView.findViewById(R.id.avatar_request);
@@ -42,7 +42,7 @@ public class RequestsListViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 // send friend requests to "mResultUid"
-                FriendRequest.sendFriendRequest(uid, RequestsListViewHolder.this, v);
+                FriendRequest.sendFriendRequest(uid, RequestViewHolder.this, v);
             }
         });
     }
@@ -68,7 +68,7 @@ public class RequestsListViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 // accept friend requests
-                FriendRequest.acceptFriendRequest(refRequest, RequestsListViewHolder.this, v);
+                FriendRequest.acceptFriendRequest(refRequest, RequestViewHolder.this, v);
             }
         });
     }

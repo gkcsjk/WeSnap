@@ -1,6 +1,7 @@
 package com.unimelb.gof.wesnap;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,9 +21,9 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.unimelb.gof.wesnap.fragment.CameraFragment;
-import com.unimelb.gof.wesnap.fragment.ChatsFragment;
+import com.unimelb.gof.wesnap.fragment.*;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
+import com.unimelb.gof.wesnap.friend.ChooseFriendActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,11 @@ public class MainActivity extends BaseActivity {
     /* Variables for the Logged-in User */
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
+
+    /* UI components */
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private FloatingActionButton mFab;
 
     // ========================================================
     @Override
@@ -68,6 +74,16 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         // Add tabs to main screen
         this.setupTabs();
+        // Add FAB to chat screen: starting a new chat
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Snackbar.make(v,"WHAT",Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ChooseFriendActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Firebase
         // TODO
@@ -81,21 +97,44 @@ public class MainActivity extends BaseActivity {
         myTabAdapter.addFragment(new ChatsFragment(), "Chats", R.drawable.ic_action_chat);
         myTabAdapter.addFragment(new CameraFragment(), "Snap", R.drawable.ic_action_camera);
         myTabAdapter.addFragment(new CameraFragment(), "Stories", R.drawable.ic_action_stories);
-        myTabAdapter.addFragment(new CameraFragment(), "Me", R.drawable.ic_action_me);
+        myTabAdapter.addFragment(new MeFragment(), "Me", R.drawable.ic_action_me);
 
         // Set ViewPager for each Tabs
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(myTabAdapter);
 
         // Set Tabs with TabLayout
-        TabLayout mTabs = (TabLayout) findViewById(R.id.tabs);
-        mTabs.setupWithViewPager(mViewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
 
         // Set the title and icon for each tab
         for (int i = 0; i < myTabAdapter.getCount(); i++) {
-            TabLayout.Tab mTab = mTabs.getTabAt(i);
+            TabLayout.Tab mTab = mTabLayout.getTabAt(i);
             mTab.setCustomView(myTabAdapter.getTabView(i));
         }
+
+        // Set diff FAB actions
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+
+                mFab.clearAnimation();
+                if (mTabLayout.getSelectedTabPosition() != 0) {
+                    mFab.hide();
+                } else { // only show FAB for chat screen
+                    mFab.show();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
     }
 
     /* MyTabAdapter */

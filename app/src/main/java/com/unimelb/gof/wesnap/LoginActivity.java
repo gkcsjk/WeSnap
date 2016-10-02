@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import com.unimelb.gof.wesnap.models.*;
@@ -133,13 +134,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void saveNewUser(String newUserId) {
         Log.d(TAG, "saveNewUser:id=" + newUserId);
 
-        // initial Friend/Chat/Message from Dev Team!!!
-        String newChatId = FirebaseUtil.getChatsRef().push().getKey();
-        String newMessageId = FirebaseUtil.getMessagesRef().child(newChatId).push().getKey();
+        // initial Friend/Chat/Message from Dev Team
         Chat newChat = AppParams.getWelcomeChat(newUserId);
-        Message newMessage = AppParams.getWelcomeMessage();
+        DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
+        String newChatId = newChatRef.getKey();
+        newChatRef.setValue(newChat);
 
-        // create new user instance
+        Message newMessage = AppParams.getWelcomeMessage();
+        DatabaseReference newMessageRef = FirebaseUtil.getMessagesRef().child(newChatId).push();
+        newMessageRef.setValue(newMessage);
+
+        // new user & username to database
         User newUser = new User(
                 newUserId,
                 mRegUsernameField.getText().toString(),
@@ -148,10 +153,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 AppParams.ID_DEV_TEAM,
                 newChatId
         );
-
-        // save to database
-        FirebaseUtil.getChatsRef().child(newChatId).setValue(newChat);
-        FirebaseUtil.getMessagesRef().child(newChatId).child(newMessageId).setValue(newMessage);
         FirebaseUtil.getUsersRef().child(newUserId).setValue(newUser);
         FirebaseUtil.getUsernamesRef().child(mRegUsernameField.getText().toString()).setValue(newUserId);
 

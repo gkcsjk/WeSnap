@@ -32,7 +32,7 @@ public class FriendRequest {
     /* sendFriendRequest()
      * send request to Firebase Database and update UI accordingly */
     public static void sendFriendRequest(final String toUserId,
-                                         final RequestsListViewHolder viewHolder,
+                                         final RequestViewHolder viewHolder,
                                          final View v) {
         Log.d(TAG, "sendFriendRequest");
 
@@ -72,7 +72,7 @@ public class FriendRequest {
 
     // ========================================================
     public static void acceptFriendRequest(final DatabaseReference refRequest,
-                                           final RequestsListViewHolder viewHolder,
+                                           final RequestViewHolder viewHolder,
                                            final View v) {
         Log.w(TAG, "acceptFriendRequest");
 
