@@ -131,37 +131,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     // ========================================================
     /* saveNewUser(): save account info to Firebase Database, and
      * send out the initial messages */
-    private void saveNewUser(String newUserId) {
-        Log.d(TAG, "saveNewUser:id=" + newUserId);
+    private void saveNewUser(String newUid) {
+        Log.d(TAG, "saveNewUser:id=" + newUid);
+        String newName = mRegDisplayedNameField.getText().toString();
 
-        // initial Friend/Chat/Message from Dev Team
-        Chat newChat = AppParams.getWelcomeChat(newUserId);
+        // initial Chat & Message from Dev Team
+        Chat newChat = AppParams.getWelcomeChat(newUid, newName);
         DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
         String newChatId = newChatRef.getKey();
         newChatRef.setValue(newChat);
 
         Message newMessage = AppParams.getWelcomeMessage();
-        DatabaseReference newMessageRef = FirebaseUtil.getMessagesRef().child(newChatId).push();
-        newMessageRef.setValue(newMessage);
+        FirebaseUtil.getMessagesRef().child(newChatId).push().setValue(newMessage);
 
         // new user & username to database
         User newUser = new User(
-                newUserId,
-                mRegUsernameField.getText().toString(),
-                mRegDisplayedNameField.getText().toString(),
-                mRegEmailField.getText().toString(),
-                AppParams.ID_DEV_TEAM,
-                newChatId
+                newUid, mRegUsernameField.getText().toString(),
+                newName, mRegEmailField.getText().toString(),
+                AppParams.ID_DEV_TEAM, newChatId
         );
-        FirebaseUtil.getUsersRef().child(newUserId).setValue(newUser);
-        FirebaseUtil.getUsernamesRef().child(mRegUsernameField.getText().toString()).setValue(newUserId);
-
-//        Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put(FirebaseUtil.getChatsPath() + newChatId, newChatId);
-//        childUpdates.put(FirebaseUtil.getMessagesPath() + newChatId + "/" + newMessageId, newMessage);
-//        childUpdates.put(FirebaseUtil.getUsersPath() + newUserId, newUser);
-//        childUpdates.put(FirebaseUtil.getUsernamesPath() + mRegUsernameField.getText().toString(), newUserId);
-//        FirebaseUtil.getBaseRef().updateChildren(childUpdates);
+        FirebaseUtil.getUsersRef().child(newUid).setValue(newUser);
+        FirebaseUtil.getUsernamesRef().child(mRegUsernameField.getText().toString()).setValue(newUid);
     }
 
     // ========================================================

@@ -1,11 +1,10 @@
-package com.unimelb.gof.wesnap;
+package com.unimelb.gof.wesnap.chat;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,17 +12,19 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
+import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Message;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
-
-import org.w3c.dom.Text;
 
 
 /**
  * MessagesActivity
  * This activity shows the messages in a chat conversation and
- * provides the action of view/replay/send messages. TODO
+ * provides the action of view/replay/send messages.
+ * (message: upload photo from local / text input) TODO take photo ???
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -33,67 +34,87 @@ public class MessagesActivity extends BaseActivity {
 
     private static final int COLOR_SELF = R.color.colorSenderRed;
     private static final int COLOR_OTHER = R.color.colorSenderGreen;
-    public static final String EXTRA_CHAT_KEY = "chat_key";
+    public static final String EXTRA_CHAT_ID = "chat_id";
     public static final String EXTRA_CHAT_TITLE = "chat_title";
 
-    private String idCurrentUser;
-    private String mChatKey;
+    /* Firebase Database */
+    private String idChat;
     private DatabaseReference refChatMessages;
+    private String idCurrentUser;
+    private DatabaseReference refCurrentUser;
 
+    /* UI components */
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private FirebaseRecyclerAdapter<Message, MessageViewHolder> mFirebaseAdapter;
-
     private TextView mChatTitle;
+    private ImageButton mMessageUploadPhoto;
     private EditText mMessageEditText;
-    private Button mMessageSendButton;
+    private ImageButton mMessageSendButton;
 
+    // ======================================================
+    /* onCreate() */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-        /* Get chat id from intent */
-        mChatKey = getIntent().getStringExtra(EXTRA_CHAT_KEY);
-        if (mChatKey == null) {
-            throw new IllegalArgumentException("Must pass EXTRA_CHAT_KEY");
+        /* Get chat info from intent */
+        idChat = getIntent().getStringExtra(EXTRA_CHAT_ID);
+        if (idChat == null) {
+            throw new IllegalArgumentException("Must pass EXTRA_CHAT_ID");
         }
-
-        /* Get chat title from intent */
         String chatTitle = getIntent().getStringExtra(EXTRA_CHAT_TITLE);
         if (chatTitle == null) {
             throw new IllegalArgumentException("Must pass EXTRA_CHAT_TITLE");
         }
+
+        /* Firebase Database */
+        // get current user id & ref
+        idCurrentUser = FirebaseUtil.getCurrentUserId();
+        refCurrentUser = FirebaseUtil.getCurrentUserRef();
+        if (idCurrentUser == null || refCurrentUser == null) {
+            // null value; error out
+            Log.e(TAG, "current user uid/ref unexpectedly null; goToLogin()");
+            goToLogin("current user uid/ref: null");
+            return;
+        }
+        // get current chat ref
+        refChatMessages = FirebaseUtil.getMessagesRef().child(idChat);
+
+        /* UI */
+        // top: title text
         mChatTitle = (TextView) findViewById(R.id.text_title_messages);
         mChatTitle.setText(chatTitle);
 
-        /* Firebase Database */
-        idCurrentUser = FirebaseUtil.getCurrentUserId();
-        if (idCurrentUser == null) {
-            // null value; error out
-            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
-            goToLogin("current user uid: null");
-            return;
-        }
-        refChatMessages = FirebaseUtil.getMessagesRef().child(mChatKey);
+        // bottom: input field & buttons
+        mMessageUploadPhoto = (ImageButton) findViewById(R.id.button_upload_photo);
+        mMessageEditText = (EditText) findViewById(R.id.field_text_message);
+        mMessageSendButton = (ImageButton) findViewById(R.id.button_send_message);
 
-        /* UI : RecyclerView */
+        // middle: RecyclerView
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.recycler_messages);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
+        setupRecyclerAdapter();
+        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
-        /* FirebaseRecyclerAdapter */
+        setupButtonListener();
+    }
+
+    // ======================================================
+    /* UI: FirebaseRecyclerAdapter */
+    private void setupRecyclerAdapter() {
         // [START setting up mFirebaseAdapter]
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(
                 Message.class,
                 R.layout.item_message,
                 MessageViewHolder.class,
                 refChatMessages) {
-
             @Override
             protected void populateViewHolder(final MessageViewHolder viewHolder,
-                                              final Message message,
-                                              final int position) {
+                                              final Message message, final int position) {
                 Log.d(TAG, "populateViewHolder:" + position);
                 final DatabaseReference refMessage = getRef(position);
 
@@ -125,7 +146,7 @@ public class MessagesActivity extends BaseActivity {
                         return;
                     }
 
-                    if (message.getPhotoTimeToLive() <= 0) {
+                    if (message.getTimeToLive() <= 0) {
                         // photo uploaded from local
                         GlideUtil.loadImage(photoUrl, viewHolder.messengeImageButtonView);
                         viewHolder.messengeImageButtonView.setOnClickListener(
@@ -135,9 +156,9 @@ public class MessagesActivity extends BaseActivity {
                                         // TODO show full-screen photo
                                     }
                                 });
-                    } else {// message.getPhotoTimeToLive() > 0
+                    } else {// message.getTimeToLive() > 0
                         // photo taken in app (timeout rule!!)
-                        if (!message.isPhotoIsViewed()) {
+                        if (!message.isViewed()) {
                             // for first-time view
                             viewHolder.messengeImageButtonView.setImageResource(R.drawable.ic_action_photo_view);
                             viewHolder.messengeImageButtonView.setOnClickListener(
@@ -188,11 +209,40 @@ public class MessagesActivity extends BaseActivity {
                     }
                 });
         // [END setting up mFirebaseAdapter]
-
-        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
     }
 
+    // ======================================================
+    private void setupButtonListener() {
+        /* upload photo */
+        mMessageUploadPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO choose photo from local memory
+            }
+        });
+
+        /* send message */
+        mMessageSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO check for message data
+                String text = mMessageEditText.getText().toString();
+                Message m;
+                if (text.length() > 0) { // text message
+                    m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), text, false);
+                } else { // photo message
+                    // TODO save photo to firebase storage & get url
+                    m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), "dummy", false);
+                }
+
+                // TODO create & send new message instance
+                refChatMessages.push().setValue(m);
+            }
+        });
+    }
+
+    // ======================================================
+    /* MessageViewHolder */
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         public ImageView messageSenderBarView;
         public TextView messageSenderNameView;

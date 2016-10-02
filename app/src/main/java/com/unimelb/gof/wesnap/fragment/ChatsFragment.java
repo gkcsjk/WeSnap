@@ -3,7 +3,6 @@ package com.unimelb.gof.wesnap.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,15 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import com.google.firebase.database.ValueEventListener;
-import com.unimelb.gof.wesnap.MessagesActivity;
-import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.chat.MessagesActivity;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Chat;
@@ -31,6 +29,7 @@ import com.unimelb.gof.wesnap.util.GlideUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ChatsFragment
@@ -50,6 +49,7 @@ public class ChatsFragment extends Fragment {
 
     /* Firebase Database variables */
     private DatabaseReference refMyChatIds;
+    private String idCurrentUser;
 
     public ChatsFragment() {
     }
@@ -73,6 +73,13 @@ public class ChatsFragment extends Fragment {
 
         // Database Refs
         refMyChatIds = FirebaseUtil.getCurrentChatsRef();
+        idCurrentUser = FirebaseUtil.getCurrentUserId();
+        if (refMyChatIds == null || idCurrentUser == null) {
+            // null value error out
+            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
+            (new BaseActivity()).goToLogin("unexpected null value");
+            return;
+        }
 
         // UI: LinearLayoutManager
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
@@ -85,25 +92,15 @@ public class ChatsFragment extends Fragment {
         mChatsRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
-    // ========================================================
-    /* onStop() */
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-        //mRecyclerAdapter.cleanupListener();
-    }
-
     // ======================================================
-    /* ChatsListViewHolder */
-    public static class ChatsListViewHolder extends RecyclerView.ViewHolder {
+    /* ChatViewHolder */
+    public static class ChatViewHolder extends RecyclerView.ViewHolder {
         public TextView lastmsgView;
         public ImageView avatarView;
         public TextView titleView;
 
-        public ChatsListViewHolder(View v) {
+        public ChatViewHolder(View v) {
             super(v);
-
             lastmsgView = (TextView) itemView.findViewById(R.id.text_last_msg_chat);
             avatarView = (ImageView) itemView.findViewById(R.id.avatar_chat);
             titleView = (TextView) itemView.findViewById(R.id.text_title_chat);
@@ -112,7 +109,7 @@ public class ChatsFragment extends Fragment {
 
     // ======================================================
     /* ChatsAdapter */
-    private class ChatsAdapter extends RecyclerView.Adapter<ChatsListViewHolder> {
+    private class ChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         private Context mContext;
         private DatabaseReference mDatabaseReference;
         private ChildEventListener mChildEventListener;
@@ -204,26 +201,38 @@ public class ChatsFragment extends Fragment {
         }
 
         @Override
-        public ChatsListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.item_chat, parent, false);
-            return new ChatsListViewHolder(view);
+            return new ChatViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ChatsListViewHolder viewHolder, final int position) {
+        public void onBindViewHolder(final ChatViewHolder viewHolder, final int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             final Chat chat = mChats.get(position);
 
             // Load the item view with friend user info
             viewHolder.lastmsgView.setText(chat.getLastMessageBody());
-            viewHolder.titleView.setText(chat.getChatTitle());
+
+            Map<String, String> participants = chat.getParticipants();
+            String chatTitle = chat.getChatTitle();
+            if (chatTitle == null || participants.size() <= 2) {
+                // use participants names
+                chatTitle = "";
+                for (String uid : participants.keySet()) {
+                    if (!uid.equals(idCurrentUser)) {
+                        chatTitle += participants.get(uid);
+                        chatTitle += " ";
+                    }
+                }
+            } // else: group chat with title
+            viewHolder.titleView.setText(chatTitle);
+
             String avatarUrl = chat.getChatAvatarUrl();
             if (avatarUrl != null && avatarUrl.length() != 0) {
                 GlideUtil.loadProfileIcon(avatarUrl, viewHolder.avatarView);
-            } else {
-                viewHolder.avatarView.setImageResource(R.drawable.ic_default_chat);
             }
 
             // on click: directs to message list
@@ -234,11 +243,11 @@ public class ChatsFragment extends Fragment {
                             Context context = v.getContext();
                             Intent intent = new Intent(context, MessagesActivity.class);
                             intent.putExtra(
-                                    MessagesActivity.EXTRA_CHAT_KEY,
+                                    MessagesActivity.EXTRA_CHAT_ID,
                                     mChatIds.get(position));
                             intent.putExtra(
                                     MessagesActivity.EXTRA_CHAT_TITLE,
-                                    mChats.get(position).getChatTitle());
+                                    viewHolder.titleView.getText().toString());
                             context.startActivity(intent);
                         }
                     }

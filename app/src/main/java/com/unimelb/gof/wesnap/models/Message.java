@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by qideng on 18/09/2016.
+ * Message class for Firebase Database
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 @IgnoreExtraProperties
 public class Message {
@@ -21,34 +24,34 @@ public class Message {
     // isPhoto: false for text messages
     private boolean isPhoto;
 
-    // photoTimeToLive:
+    // timeToLive:
     // positive int for photo taken in app (timeout rule);
     // -1 for photo uploaded from local or text
-    private int photoTimeToLive;
+    private int timeToLive;
 
     // for photo viewing rules: view -> replay -> not accessible
-    private boolean photoIsViewed;
+    private boolean isViewed;
 
     public Message() {
     }
 
-    // without photoTimeToLive
+    // without timeToLive
     public Message(String senderUid, String senderDisplayedName,
                    String messageBody, boolean isPhoto) {
         this(senderUid, senderDisplayedName, messageBody, isPhoto, -1);
     }
 
-    // with photoTimeToLive
+    // with timeToLive
     public Message(String senderUid, String senderDisplayedName,
-                   String messageBody, boolean isPhoto, int photoTimeToLive) {
+                   String messageBody, boolean isPhoto, int timeToLive) {
         this.senderUid = senderUid;
         this.senderDisplayedName = senderDisplayedName;
 
         this.messageBody = messageBody;
         this.isPhoto = isPhoto;
-        this.photoTimeToLive = photoTimeToLive;
+        this.timeToLive = timeToLive;
 
-        this.photoIsViewed = false;
+        this.isViewed = false;
     }
 
     // ======================================================
@@ -69,12 +72,12 @@ public class Message {
         return isPhoto;
     }
 
-    public boolean isPhotoIsViewed() {
-        return photoIsViewed;
+    public boolean isViewed() {
+        return isViewed;
     }
 
-    public int getPhotoTimeToLive() {
-        return photoTimeToLive;
+    public int getTimeToLive() {
+        return timeToLive;
     }
 
     // ======================================================
@@ -86,8 +89,8 @@ public class Message {
         result.put("senderDisplayedName", this.senderDisplayedName);
         result.put("messageBody", this.messageBody);
         result.put("isPhoto", this.isPhoto);
-        result.put("photoIsViewed", this.photoIsViewed);
-        result.put("photoTimeToLive", this.photoTimeToLive);
+        result.put("isViewed", this.isViewed);
+        result.put("timeToLive", this.timeToLive);
         return result;
     }
 }

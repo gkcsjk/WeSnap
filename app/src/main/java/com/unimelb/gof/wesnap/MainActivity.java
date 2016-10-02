@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.unimelb.gof.wesnap.fragment.*;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
-import com.unimelb.gof.wesnap.friend.ChooseFriendActivity;
+import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
 
 import java.util.ArrayList;
 import java.util.List;
