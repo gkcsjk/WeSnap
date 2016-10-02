@@ -4,33 +4,29 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 
 public class EditPhotoActivity extends BaseActivity implements View.OnClickListener {
 
+    private static final String TAG = "EditPhoto Activity";
     private String mCurrentPhotoPath;
     private Bitmap mBitmap;
     private Button mButtonSend;
     private Button mButton1, mButton2, mButton3;
     private Canvas mCanvas;
-    private Paint mPaint;
-    private DrawView mDrawView;
     private ImageView mImageView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
@@ -38,6 +34,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.acticity_edit_photo);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_edit_photo);
         setSupportActionBar(mToolbar);
+
 
         mButton1 = (Button) findViewById(R.id.bt_freehand);
         mButton1.setOnClickListener(this);
@@ -50,7 +47,6 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         mImageView = (ImageView) findViewById(R.id.iv_show);
         mBitmap = setPic();
         mCanvas = new Canvas(mBitmap);
-        mPaint = new Paint(mPaint);
 
     }
 
@@ -58,10 +54,9 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bt_freehand:
-                mImageView.setVisibility(View.GONE);
-                mDrawView.setVisibility(View.VISIBLE);
-                mDrawView = new DrawView(this, mCanvas, mBitmap, mPaint);
-                mDrawView.findViewById(R.id.iv_edit);
+                Intent freehandIntent = new Intent(this, FreehandDrawActivity.class);
+                freehandIntent.putExtra(TAG, mBitmap);
+                startActivity(freehandIntent);
                 break;
             case R.id.bt_emoji:
                 //drawEmoji();

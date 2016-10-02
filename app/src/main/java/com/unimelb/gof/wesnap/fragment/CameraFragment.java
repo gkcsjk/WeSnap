@@ -97,7 +97,7 @@ public class CameraFragment extends Fragment {
         mImageView.setImageBitmap(bitmap);
         mImageView.setVisibility(View.VISIBLE);
         editPhotoB.setVisibility(View.VISIBLE);
-        startCameraB.setVisibility(View.GONE);
+        startCameraB.setVisibility(View.GONE    );
     }
 
     @Override
