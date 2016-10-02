@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO comments
+ * User class for Firebase Database
  */
 @IgnoreExtraProperties
 public class User {
@@ -17,7 +17,8 @@ public class User {
     private String email;
     private String username;
     private String displayedName;
-    private String avatarUrl; // TODO user-supplied avatar?
+    private String avatarUrl; // TODO user-supplied avatar? snapcode?
+
     private Map<String, Boolean> friends; // "uid: true"
     private Map<String, Boolean> chats; // "chat-id: true"
 
@@ -68,9 +69,6 @@ public class User {
     public String getAvatarUrl() {
         return avatarUrl;
     }
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
 
     public Map<String, Boolean> getFriends() {
         return this.friends;
@@ -81,7 +79,15 @@ public class User {
     }
 
     @Exclude
-    public Map<String, Object> toChatParticipant() {
+    public Map<String, String> toChatParticipant() {
+        // used "@Exclude" to mark a field as excluded from the Database
+        HashMap<String, String> result = new HashMap<>();
+        result.put(this.uid, this.displayedName);
+        return result;
+    }
+
+    @Exclude
+    public Map<String, Object> toFriendRequest() {
         // used "@Exclude" to mark a field as excluded from the Database
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", this.uid);
@@ -89,10 +95,5 @@ public class User {
         result.put("displayedName", this.displayedName);
         result.put("avatarUrl", this.avatarUrl);
         return result;
-    }
-
-    @Exclude
-    public Map<String, Object> toFriendRequest() {
-        return toChatParticipant();
     }
 }
