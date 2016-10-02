@@ -45,6 +45,12 @@
     <!--Camera-->
     <string name="action_camera">Start Camera</string>
     <string name="text_title_camera">It\'s SNAP TIME</string>
+    <string name="action_edit_photo">Edit Photo</string>
+    <string name="text_current_photo_path">Current Path</string>
+    <string name="action_draw_free_hand">Free Draw</string>
+    <string name="action_draw_emoji">Emoji</string>
+    <string name="action_draw_text">Text</string>
+    <string name="action_send_photo">Send</string>
 
     <!--Dummy-->
     <string name="text_dummy">
