@@ -256,10 +256,10 @@ public class ChooseFriendActivity extends BaseActivity {
                     return;
                 }
 
-                final String[] mChatIdArray = (String[]) mChatIds.keySet().toArray();
-                for (String c : mChatIdArray) {
+                final Object[] mChatIdArray = mChatIds.keySet().toArray();
+                for (Object c : mChatIdArray) {
                     // get the chat record with id = c
-                    FirebaseUtil.getChatsRef().child(c)
+                    FirebaseUtil.getChatsRef().child(c.toString())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -280,7 +280,7 @@ public class ChooseFriendActivity extends BaseActivity {
                                         final String selectedChatTitle = chat.getChatTitle();
                                         // enter that chat
                                         goToChat(selectedChatId, selectedChatTitle);
-                                    } else if (chatId.equals(mChatIdArray[mChatIdArray.length - 1])) {
+                                    } else if (chatId.equals(mChatIdArray[mChatIdArray.length - 1].toString())) {
                                         // the last one!
                                         // start a new chat
                                         startNewChat(uid, name);
