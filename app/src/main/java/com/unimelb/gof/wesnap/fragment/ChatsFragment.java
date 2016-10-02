@@ -1,5 +1,6 @@
 package com.unimelb.gof.wesnap.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,14 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.MessagesActivity;
+import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Chat;
+import com.unimelb.gof.wesnap.util.GlideUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ChatsFragment
@@ -32,160 +43,217 @@ import com.unimelb.gof.wesnap.models.Chat;
 public class ChatsFragment extends Fragment {
     private static final String TAG = "ChatsFragment";
 
-    /* Firebase Database variables */
-    private String idCurrentUser;
-    private DatabaseReference refCurrentChats;
-
-    /* UI variables */
-    private RecyclerView mChatRecyclerView;
-    private FirebaseRecyclerAdapter<Chat, ChatListViewHolder> mFirebaseAdapter;
+    /* UI Variables */
+    private RecyclerView mChatsRecyclerView;
+    private ChatsAdapter mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
-    public ChatsFragment() {
-    }
+    /* Firebase Database variables */
+    private DatabaseReference refMyChatIds;
 
-    /* Returns a singleton instance of this fragment */
-    private static ChatsFragment mChatsFragment = null;
-    public static ChatsFragment getInstance() {
-        if (mChatsFragment == null) {
-            mChatsFragment = new ChatsFragment();
-        }
-        return mChatsFragment;
+    public ChatsFragment() {
     }
 
     // ======================================================
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mChatRecyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        mChatRecyclerView.setTag(TAG);
-        return mChatRecyclerView;
+        View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
+        mChatsRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_chats);
+        mChatsRecyclerView.setTag(TAG);
+        return rootView;
     }
 
-    // ======================================================
+    // ========================================================
+    /* onActivityCreated() */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
 
         // Database Refs
-        idCurrentUser = FirebaseUtil.getCurrentUserId();
-        //refCurrentChats = FirebaseUtil.getCurrentChatsRef();
-        refCurrentChats = FirebaseUtil.getChatsRef();//TODO change
+        refMyChatIds = FirebaseUtil.getCurrentChatsRef();
 
         // UI: LinearLayoutManager
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setReverseLayout(false);
         mLinearLayoutManager.setStackFromEnd(false);
+        mChatsRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // UI: RecyclerAdapter
-        // [START create the recycler adapter for chat]
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Chat, ChatListViewHolder>(
-                Chat.class,
-                R.layout.item_chat,
-                ChatListViewHolder.class,
-                refCurrentChats) {
+        mRecyclerAdapter = new ChatsAdapter(getActivity(), refMyChatIds);
+        mChatsRecyclerView.setAdapter(mRecyclerAdapter);
+    }
 
-            @Override
-            protected void populateViewHolder(final ChatListViewHolder viewHolder,
-                                              final Chat chat, final int position) {
-                Log.w(TAG, "populateViewHolder:" + position);
-
-                // Set click listener for the chat item
-                final DatabaseReference refChat = getRef(position);
-                final String keyChat = refChat.getKey();
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Snackbar.make(v, "Chat-Message detail view: TBD",
-                                Snackbar.LENGTH_LONG).show();
-                        // Launch MessagesActivity
-                        Intent intent = new Intent(getActivity(), MessagesActivity.class);
-                        intent.putExtra(MessagesActivity.EXTRA_CHAT_KEY, keyChat);
-                        startActivity(intent);
-                    }
-                });
-
-                // Load data to the chat item
-                viewHolder.lastmsgView.setText(chat.getLastMessageBody());
-                viewHolder.nameView.setText(chat.getChatTitle()); // dummy
-                viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar); // dummy
-
-//                for (String p : chat.getParticipants()) {
-//                    if (!p.equals(idCurrentUser)) {
-//                        // use the first non-myself user as the "receiver"
-//                        // TODO reading "user.class" with "getUsersRef().child(p)" ??
-//                        FirebaseUtil.getUsersRef().child(p)
-//                                .addValueEventListener(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                Log.w(TAG, "getUser:onDataChange");
-//                                // retrieve the user
-//                                User receiver = dataSnapshot.getValue(User.class);
-//                                // load the user data to the chat item view
-//                                viewHolder.nameView.setText(receiver.getDisplayedName());
-//                                String avatarUrl = receiver.getAvatarUrl();
-//                                if (avatarUrl != null && avatarUrl.length() != 0) {
-//                                    GlideUtil.loadProfileIcon(
-//                                            avatarUrl, viewHolder.avatarView);
-//                                } else {
-//                                    viewHolder.avatarView.setImageResource(
-//                                            R.drawable.ic_default_avatar);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(DatabaseError databaseError) {
-//                                Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-//                            }
-//                        });
-//                        break;
-//                    }
-//                }
-            }
-        };
-
-        mFirebaseAdapter.registerAdapterDataObserver(
-                new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-//                int chatCount = mFirebaseAdapter.getItemCount();
-//                int lastVisiblePosition = mLinearLayoutManager
-//                        .findLastCompletelyVisibleItemPosition();
-//
-//                // If the recycler view is initially being loaded or
-//                // the user is at the bottom of the list,
-//                // scroll to the bottom of the list to show the newly added message.
-//                if (lastVisiblePosition == -1 ||
-//                        (positionStart >= (chatCount - 1) &&
-//                                lastVisiblePosition == (positionStart - 1))) {
-//                    mChatRecyclerView.scrollToPosition(positionStart);
-//                }
-            }
-        });
-        // [END create the recycler adapter for chat]
-
-        // UI: link them to RecyclerView
-        mChatRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mChatRecyclerView.setAdapter(mFirebaseAdapter);
+    // ========================================================
+    /* onStop() */
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+        //mRecyclerAdapter.cleanupListener();
     }
 
     // ======================================================
-    /** ChatListViewHolder */
-    public static class ChatListViewHolder extends RecyclerView.ViewHolder {
+    /* ChatsListViewHolder */
+    public static class ChatsListViewHolder extends RecyclerView.ViewHolder {
         public TextView lastmsgView;
         public ImageView avatarView;
-        public TextView nameView;
+        public TextView titleView;
 
-        public ChatListViewHolder(View v) {
+        public ChatsListViewHolder(View v) {
             super(v);
 
             lastmsgView = (TextView) itemView.findViewById(R.id.text_last_msg_chat);
             avatarView = (ImageView) itemView.findViewById(R.id.avatar_chat);
-            nameView = (TextView) itemView.findViewById(R.id.text_name_chat);
+            titleView = (TextView) itemView.findViewById(R.id.text_title_chat);
         }
     }
 
     // ======================================================
+    /* ChatsAdapter */
+    private class ChatsAdapter extends RecyclerView.Adapter<ChatsListViewHolder> {
+        private Context mContext;
+        private DatabaseReference mDatabaseReference;
+        private ChildEventListener mChildEventListener;
+
+        private List<String> mChatIds = new ArrayList<>();
+        private List<Chat> mChats = new ArrayList<>();
+
+        public ChatsAdapter(final Context context, DatabaseReference ref) {
+            mContext = context;
+            mDatabaseReference = ref;
+
+            // Create child event listener
+            // [START child_event_listener_recycler]
+            ChildEventListener childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "getChatIds:onChildAdded:" + dataSnapshot.getKey());
+                    // get chatId
+                    final String newChatId = dataSnapshot.getKey();
+                    // get "chats/chatId/"
+                    FirebaseUtil.getChatsRef().child(newChatId)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Log.d(TAG, "getChat:onDataChange:" + dataSnapshot.getKey());
+                                    if (!dataSnapshot.exists()) {
+                                        Log.w(TAG, "refMyChatIds:unexpected non-existing chat id=" + newChatId);
+                                        refMyChatIds.child(newChatId).removeValue();
+                                        return;
+                                    }
+                                    // load friend's user data
+                                    Chat chat = dataSnapshot.getValue(Chat.class);
+                                    // update RecyclerView
+                                    mChats.add(chat);
+                                    mChatIds.add(newChatId);
+                                    notifyItemInserted(mChats.size() - 1);
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.w(TAG, "getChat:onCancelled", databaseError.toException());
+                                }
+                            });
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "getChatIds:onChildChanged:" + dataSnapshot.getKey());
+                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "getChatIds:onChildRemoved:" + dataSnapshot.getKey());
+                    // get chat id and index
+                    String removedChatId = dataSnapshot.getKey();
+                    int chatIndex = mChatIds.indexOf(removedChatId);
+                    if (chatIndex > -1) {
+                        // Remove data from the list
+                        mChatIds.remove(chatIndex);
+                        mChats.remove(chatIndex);
+                        // Update the RecyclerView
+                        notifyItemRemoved(chatIndex);
+                    } else {
+                        Log.w(TAG, "getChatIds:onChildRemoved:unknown_child:" + removedChatId);
+                    }
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "getChatIds:onChildMoved:" + dataSnapshot.getKey());
+                    // This method is triggered when a child location's priority changes.
+                    Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "getChatIds:onCancelled", databaseError.toException());
+                    Toast.makeText(mContext, "Failed to load friends.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            };
+            ref.addChildEventListener(childEventListener);
+            // [END child_event_listener_recycler]
+
+            // Store reference to listener so it can be removed on app stop
+            mChildEventListener = childEventListener;
+        }
+
+        @Override
+        public ChatsListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view = inflater.inflate(R.layout.item_chat, parent, false);
+            return new ChatsListViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final ChatsListViewHolder viewHolder, final int position) {
+            Log.d(TAG, "populateViewHolder:" + position);
+
+            final Chat chat = mChats.get(position);
+
+            // Load the item view with friend user info
+            viewHolder.lastmsgView.setText(chat.getLastMessageBody());
+            viewHolder.titleView.setText(chat.getChatTitle());
+            String avatarUrl = chat.getChatAvatarUrl();
+            if (avatarUrl != null && avatarUrl.length() != 0) {
+                GlideUtil.loadProfileIcon(avatarUrl, viewHolder.avatarView);
+            } else {
+                viewHolder.avatarView.setImageResource(R.drawable.ic_default_chat);
+            }
+
+            // on click: directs to message list
+            viewHolder.itemView.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Context context = v.getContext();
+                            Intent intent = new Intent(context, MessagesActivity.class);
+                            intent.putExtra(
+                                    MessagesActivity.EXTRA_CHAT_KEY,
+                                    mChatIds.get(position));
+                            intent.putExtra(
+                                    MessagesActivity.EXTRA_CHAT_TITLE,
+                                    mChats.get(position).getChatTitle());
+                            context.startActivity(intent);
+                        }
+                    }
+            );
+        }
+
+        @Override
+        public int getItemCount() {
+            return mChats.size();
+        }
+
+        public void cleanupListener() {
+            if (mChildEventListener != null) {
+                mDatabaseReference.removeEventListener(mChildEventListener);
+            }
+        }
+    }
 }

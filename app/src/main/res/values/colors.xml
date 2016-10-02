@@ -12,4 +12,7 @@
     <color name="colorGreyMedium">#607D8B</color>    <!-- Blue Grey 500 -->
     <color name="colorGreyLight">#CFD8DC</color>    <!-- Blue Grey 100 -->
     <color name="colorGreyButton">#90A4AE</color>   <!-- Blue Grey 300 -->
+
+    <color name="colorSenderGreen">#4CAF50</color>   <!-- Green 500 -->
+    <color name="colorSenderRed">#F44336</color>   <!-- Red 500 -->
 </resources>
