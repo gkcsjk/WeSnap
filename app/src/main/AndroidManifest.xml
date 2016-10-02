@@ -3,6 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.unimelb.gof.wesnap">
 
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="true"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_wesnap_launcher"
@@ -53,6 +61,22 @@
         <activity
             android:name=".MessagesActivity">
         </activity>
+        
+        <activity 
+            android:name=".camera.EditPhotoActivity"
+            android:label="@string/action_edit_photo">
+        </activity>
+            
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.unimelb.gof.wesnap.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
 
     </application>
 

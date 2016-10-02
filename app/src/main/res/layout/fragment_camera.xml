@@ -23,20 +23,27 @@
         android:layout_gravity="center_vertical"/>
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/size_spaces"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/button_start_camera"
             android:text="@string/action_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/camera_txt"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:visibility="visible"
+            android:theme="@style/ThemeOverlay.MyDarkButton"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_edit_photo"
+            android:visibility="gone"
+            android:id="@+id/button_edit_photo"
             android:theme="@style/ThemeOverlay.MyDarkButton"/>
     </LinearLayout>
 
@@ -44,6 +51,7 @@
         android:id="@+id/image_preview_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="30dp"
         android:contentDescription="@string/action_camera"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </LinearLayout>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_edit_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_show"
+            android:contentDescription="@string/text_current_photo_path"
+            android:visibility="visible">
+
+        </ImageView>
+
+        <com.unimelb.gof.wesnap.camera.DrawView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_edit"
+            android:contentDescription="@string/text_current_photo_path"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_send"
+        android:text="@string/action_send_photo"
+        android:theme="@style/ThemeOverlay.MyDarkButton"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_freehand"
+            android:layout_weight="1"
+            android:text="@string/action_draw_free_hand"
+            android:theme="@style/ThemeOverlay.MyDarkButton"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/bt_emoji"
+            android:layout_weight="1"
+            android:text="@string/action_draw_emoji"
+            android:theme="@style/ThemeOverlay.MyDarkButton"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/bt_text"
+            android:layout_weight="1"
+            android:text="@string/action_draw_text"
+            android:theme="@style/ThemeOverlay.MyDarkButton"/>
+    </LinearLayout>
+
+
+</LinearLayout>
