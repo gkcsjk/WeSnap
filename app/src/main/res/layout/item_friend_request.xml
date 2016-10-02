@@ -47,8 +47,6 @@
 
     <ImageButton
         android:id="@+id/button_request"
-        android:src="@drawable/ic_action_add_friend"
-        android:tint="@color/colorPrimary"
         android:contentDescription="@string/action_search_username"
         android:layout_width="@dimen/size_avatar"
         android:layout_height="@dimen/size_avatar"

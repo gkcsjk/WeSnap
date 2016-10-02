@@ -27,12 +27,12 @@
 
         <activity
             android:name=".friend.AddFriendChooserActivity"
-            android:label="@string/action_add_friend">
+            android:label="@string/action_add_friends">
         </activity>
 
         <activity
-            android:name=".friend.ViewRequestActivity"
-            android:label="@string/action_view_request">
+            android:name=".friend.ViewRequestsActivity"
+            android:label="@string/action_view_requests">
         </activity>
 
         <activity
@@ -41,8 +41,17 @@
         </activity>
 
         <activity
-            android:name=".MessagesActivity"
-            android:label="@string/hint_chat">
+            android:name=".friend.ViewFriendsActivity"
+            android:label="@string/action_view_friends">
+        </activity>
+
+        <activity
+            android:name=".friend.ChooseFriendActivity"
+            android:label="@string/action_chat_with">
+        </activity>
+
+        <activity
+            android:name=".MessagesActivity">
         </activity>
 
     </application>

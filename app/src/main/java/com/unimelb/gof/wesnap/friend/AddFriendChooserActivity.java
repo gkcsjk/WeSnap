@@ -96,7 +96,7 @@ public class AddFriendChooserActivity extends BaseActivity
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.w(TAG, "getUsername:onDataChange");
+                        Log.d(TAG, "getUsername:onDataChange");
                         String username = (String) dataSnapshot.getValue();
 
                         if (username == null) {
