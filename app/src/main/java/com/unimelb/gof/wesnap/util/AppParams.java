@@ -16,6 +16,7 @@ import java.util.Map;
 public class AppParams {
     private static final String TAG = "AppParams";
 
+    // ======================================================
     /* WeSnap Dev Team */
     public static final String ID_DEV_TEAM = "ZqiNmgsuE1hJlHOFZNnTSot8l882";
     public static final String EMAIL_DEV_TEAM = "wesnap@example.com";
@@ -33,16 +34,35 @@ public class AppParams {
         HashMap<String, String> participants = new HashMap<>();
         participants.put(ID_DEV_TEAM, NAME_DEV_TEAM);
         participants.put(newUserId, newUserName);
-        setMyDisplayedName(newUserName);
         return new Chat(participants, TEXT_WELCOME, URL_DEV_TEAM, null);
     }
 
+    // ======================================================
     /* Current User */
-    private static String myDisplayedName;
-    public static String getMyDisplayedName() {
-        return myDisplayedName;
+    public static User currentUser = null;
+
+    public static String getMyEmail() {
+        if (currentUser != null) {
+            return currentUser.getEmail();
+        }
+        return null;
     }
-    public static void setMyDisplayedName(String name) {
-        myDisplayedName = name;
+    public static String getMyUsername() {
+        if (currentUser != null) {
+            return currentUser.getUsername();
+        }
+        return null;
+    }
+    public static String getMyDisplayedName() {
+        if (currentUser != null) {
+            return currentUser.getDisplayedName();
+        }
+        return null;
+    }
+    public static String getMyAvatarUrl() {
+        if (currentUser != null) {
+            return currentUser.getAvatarUrl();
+        }
+        return null;
     }
 }

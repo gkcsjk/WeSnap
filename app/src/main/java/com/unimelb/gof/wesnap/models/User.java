@@ -53,6 +53,8 @@ public class User {
         }
     }
 
+    // ======================================================
+
     public String getUid() {
         return uid;
     }
@@ -65,7 +67,6 @@ public class User {
     public String getDisplayedName() {
         return displayedName;
     }
-
     public String getAvatarUrl() {
         return avatarUrl;
     }
@@ -78,6 +79,7 @@ public class User {
         return this.chats;
     }
 
+    // ======================================================
     @Exclude
     public Map<String, String> toChatParticipant() {
         // used "@Exclude" to mark a field as excluded from the Database
@@ -86,6 +88,7 @@ public class User {
         return result;
     }
 
+    // ======================================================
     @Exclude
     public Map<String, Object> toFriendRequest() {
         // used "@Exclude" to mark a field as excluded from the Database

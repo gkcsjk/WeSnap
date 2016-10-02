@@ -51,22 +51,7 @@ public class MainActivity extends BaseActivity {
     private FirebaseUser mFirebaseUser;
 
     /* ValueEventListener for Current User */
-    // [START person_value_event_listener]
-    ValueEventListener profileListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.w(TAG, "getCurrentUser:onDataChange");
-            User currentUser = dataSnapshot.getValue(User.class);
-            AppParams.setMyDisplayedName(currentUser.getDisplayedName());
-            // String avatarUrl = currentUser.getAvatarUrl();
-            // String myUsername = currentUser.getUsername();
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
-        }
-    };
+    ValueEventListener profileListener;
 
     /* UI components */
     private ViewPager mViewPager;
@@ -90,7 +75,25 @@ public class MainActivity extends BaseActivity {
             finish();
             return;
         } else {
-            FirebaseUtil.getCurrentUserRef().addListenerForSingleValueEvent(profileListener);
+            // store a local copy of current user
+            profileListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "getCurrentUser:onDataChange");
+                    User currentUser = dataSnapshot.getValue(User.class);
+                    if (currentUser != null) {
+                        AppParams.currentUser = currentUser;
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+                    goToLogin("Fail to retrieve current user info.");
+                }
+            };
+            FirebaseUtil.getCurrentUserRef()
+                    .addListenerForSingleValueEvent(profileListener);
         }
 
         /* Render UI */
@@ -248,6 +251,9 @@ public class MainActivity extends BaseActivity {
         if(mFirebaseAuth != null) {
             mFirebaseAuth.signOut();
         }
+
+        // Reset local copy of user info
+        AppParams.currentUser = null;
 
         // Restart from LoginActivity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
