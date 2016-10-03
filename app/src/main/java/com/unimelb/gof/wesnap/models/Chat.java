@@ -38,6 +38,8 @@ public class Chat {
         }
     }
 
+    // ======================================================
+
     public Map<String, String> getParticipants() {
         return participants;
     }

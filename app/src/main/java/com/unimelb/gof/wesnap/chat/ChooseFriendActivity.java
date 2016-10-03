@@ -252,7 +252,8 @@ public class ChooseFriendActivity extends BaseActivity {
                 HashMap<String, Boolean> mChatIds =
                         (HashMap<String, Boolean>) dataSnapshot.getValue();
                 if (mChatIds == null) {
-                    // no chat!
+                    // no chat! start a new one
+                    startNewChat(uid, name);
                     return;
                 }
 
@@ -313,7 +314,7 @@ public class ChooseFriendActivity extends BaseActivity {
     private void startNewChat(final String uid, final String name) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
-        DatabaseReference refCurrentUser = FirebaseUtil.getCurrentUserRef();
+        final DatabaseReference refCurrentUser = FirebaseUtil.getCurrentUserRef();
         if (refCurrentUser == null) { // error out
             Log.e(TAG, "current user ref unexpectedly null; goToLogin()");
             goToLogin("current user ref: null");
@@ -341,8 +342,13 @@ public class ChooseFriendActivity extends BaseActivity {
                 DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
                 newChatRef.setValue(newChat);
 
+                // add this chat to both user TODO notifications?
+                String newChatId = newChatRef.getKey();
+                refCurrentUser.child("chats").child(newChatId).setValue(true);
+                FirebaseUtil.getUsersRef().child(uid).child("chats").child(newChatId).setValue(true);
+
                 // now go to the new chat
-                goToChat(newChatRef.getKey(), name);
+                goToChat(newChatId, name);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
