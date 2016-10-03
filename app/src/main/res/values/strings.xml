@@ -51,6 +51,9 @@
     <string name="action_draw_emoji">Emoji</string>
     <string name="action_draw_text">Text</string>
     <string name="action_send_photo">Send</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_set">Set</string>
+    <string name="text_draw_text_tip">Please touch the Image to set position.</string>
 
     <!--Dummy-->
     <string name="text_dummy">

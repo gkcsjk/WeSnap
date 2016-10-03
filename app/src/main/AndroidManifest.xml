@@ -66,6 +66,16 @@
             android:name=".camera.EditPhotoActivity"
             android:label="@string/action_edit_photo">
         </activity>
+
+        <activity
+            android:name=".camera.FreehandDrawActivity"
+            android:label="@string/action_edit_photo">
+        </activity>
+
+        <activity
+            android:name=".camera.TextDrawActivity"
+            android:label="@string/text_draw_text_tip">
+        </activity>
             
 
         <provider

@@ -144,6 +144,9 @@ public class CameraFragment extends Fragment {
                 Intent editPhotoIntent = new Intent(getActivity(), EditPhotoActivity.class);
                 editPhotoIntent.putExtra(TAG, mCurrentPhotoPath);
                 startActivity(editPhotoIntent);
+                mImageView.setVisibility(View.GONE);
+                startCameraB.setVisibility(View.VISIBLE);
+                editPhotoB.setVisibility(View.GONE);
             }
         };
         editPhotoB.setOnClickListener(clickListener_editphoto);
