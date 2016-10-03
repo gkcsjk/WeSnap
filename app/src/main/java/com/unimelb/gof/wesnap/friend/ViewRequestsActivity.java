@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 import com.unimelb.gof.wesnap.R;
@@ -57,21 +58,22 @@ public class ViewRequestsActivity extends BaseActivity {
         refCurrentRequests = FirebaseUtil.getCurrentRequestsRef();
 
         /* Listen for my current friend list */
-        refCurrentFriends = FirebaseUtil.getCurrentFriendsRef();
-        mFriendIds = new HashMap<>();
-        mListenerCurrentFriends = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "getMyFriends:onDataChange");
-                mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
-            }
-        };
-        refCurrentFriends.addValueEventListener(mListenerCurrentFriends);
+        mFriendIds = (HashMap) AppParams.currentUser.getFriends();
+//        refCurrentFriends = FirebaseUtil.getCurrentFriendsRef();
+//        mFriendIds = new HashMap<>();
+//        mListenerCurrentFriends = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.d(TAG, "getMyFriends:onDataChange");
+//                mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
+//            }
+//        };
+//        refCurrentFriends.addValueEventListener(mListenerCurrentFriends);
 
         /* UI components */
         // toolbar with title

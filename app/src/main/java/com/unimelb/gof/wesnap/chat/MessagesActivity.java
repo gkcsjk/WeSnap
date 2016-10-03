@@ -228,10 +228,13 @@ public class MessagesActivity extends BaseActivity {
                 // TODO check for message data
                 String text = mMessageEditText.getText().toString();
                 Message m;
-                if (text.length() > 0) { // text message
+                if (text.length() > 0) { /* text message */
+                    // send out a text message
                     m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), text, false);
                     FirebaseUtil.getChatsRef().child(idChat).child("lastMessageBody").setValue(text);
-                } else { // photo message
+                    // clear the text input field
+                    mMessageEditText.setText("");
+                } else { /* photo message */
                     // TODO save photo to firebase storage & get url
                     m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), "dummy", false);
                 }

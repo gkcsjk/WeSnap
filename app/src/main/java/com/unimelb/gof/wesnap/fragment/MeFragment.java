@@ -57,8 +57,16 @@ public class MeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_me, container, false);
 
         mAvatar = (ImageView) rootView.findViewById(R.id.my_avatar);
+        String avatarUrl = AppParams.currentUser.getAvatarUrl();
+        if (avatarUrl != null) {
+            GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
+        } else {
+            mAvatar.setImageResource(R.drawable.ic_default_avatar);
+        }
         mDisplayedName = (TextView) rootView.findViewById(R.id.my_name);
+        mDisplayedName.setText(AppParams.getMyDisplayedName());
         mUsername = (TextView) rootView.findViewById(R.id.my_username);
+        mUsername.setText(AppParams.getMyUsername());
 
         mAddFriendButton = (Button) rootView.findViewById(R.id.button_add_friends);
         mAddFriendButton.setOnClickListener(new View.OnClickListener() {
@@ -92,49 +100,48 @@ public class MeFragment extends Fragment {
 
     // ========================================================
     /* onActivityCreated() */
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-
-        /* Confirm Current User */
-        refCurrentUser = FirebaseUtil.getCurrentUserRef();
-        if (refCurrentUser == null) {
-            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
-            BaseActivity error = new BaseActivity();
-            error.goToLogin("current user uid: null");
-            return;
-        }
-
-        /* ValueEventListener for Current User */
-        // [START person_value_event_listener]
-        ValueEventListener profileListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.w(TAG, "getCurrentUser:onDataChange");
-                User currentUser = dataSnapshot.getValue(User.class);
-
-                String avatarUrl = currentUser.getAvatarUrl();
-                if (avatarUrl != null) {
-                    GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
-                } else {
-                    mAvatar.setImageResource(R.drawable.ic_default_avatar);
-                }
-                String name = currentUser.getDisplayedName();
-                mDisplayedName.setText(currentUser.getDisplayedName());
-                AppParams.setMyDisplayedName(name);
-                mUsername.setText(currentUser.getUsername());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
-            }
-        };
-        refCurrentUser.addValueEventListener(profileListener);
-        // [END person_value_event_listener]
-
-        // Keep copy of post listener so we can remove it when app stops
-        mListenerCurrentUser = profileListener;
-    }
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        Log.d(TAG, "onActivityCreated");
+//
+//        /* Confirm Current User */
+//        refCurrentUser = FirebaseUtil.getCurrentUserRef();
+//        if (refCurrentUser == null) {
+//            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
+//            BaseActivity error = new BaseActivity();
+//            error.goToLogin("current user uid: null");
+//            return;
+//        }
+//
+//        /* ValueEventListener for Current User */
+//        // [START person_value_event_listener]
+//        ValueEventListener profileListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.w(TAG, "getCurrentUser:onDataChange");
+//                User currentUser = dataSnapshot.getValue(User.class);
+//
+//                String avatarUrl = currentUser.getAvatarUrl();
+//                if (avatarUrl != null) {
+//                    GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
+//                } else {
+//                    mAvatar.setImageResource(R.drawable.ic_default_avatar);
+//                }
+//                String name = currentUser.getDisplayedName();
+//                mDisplayedName.setText(currentUser.getDisplayedName());
+//                mUsername.setText(currentUser.getUsername());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+//            }
+//        };
+//        refCurrentUser.addValueEventListener(profileListener);
+//        // [END person_value_event_listener]
+//
+//        // Keep copy of post listener so we can remove it when app stops
+//        mListenerCurrentUser = profileListener;
+//    }
 }

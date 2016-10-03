@@ -65,17 +65,19 @@ public class MainActivity extends BaseActivity {
         Log.d(TAG, "onCreate");
 
         /* Get User */
-        // Check if user already logged in; if not, direct to Login activity
+        // Check if user already logged in
         mFirebaseAuth = FirebaseAuth.getInstance();
         if (mFirebaseAuth.getCurrentUser() == null) {
+            // if not, direct to Login activity
             Log.d(TAG, "goToLogin");
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            goToLogin("user logged out"); // TODO confirm usage
+//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            finish();
             return;
         } else {
-            // store a local copy of current user
+            // if yes, get current user info and store a local copy
             profileListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -85,7 +87,6 @@ public class MainActivity extends BaseActivity {
                         AppParams.currentUser = currentUser;
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
@@ -109,7 +110,6 @@ public class MainActivity extends BaseActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Snackbar.make(v,"WHAT",Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ChooseFriendActivity.class);
                 startActivity(intent);
             }
@@ -254,12 +254,12 @@ public class MainActivity extends BaseActivity {
 
         // Reset local copy of user info
         AppParams.currentUser = null;
+        if (profileListener != null) {
+            FirebaseUtil.getCurrentUserRef().removeEventListener(profileListener);
+        }
 
         // Restart from LoginActivity
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        goToLogin("user logged out");
     }
 
     // ========================================================
@@ -276,4 +276,5 @@ public class MainActivity extends BaseActivity {
         }
         return false;
     }
+    // ========================================================
 }
