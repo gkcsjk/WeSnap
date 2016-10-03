@@ -8,26 +8,28 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.unimelb.gof.wesnap.BaseActivity;
 
 /**
  * Created by Karl on 2/10/2016.
  */
 
-public class FreehandDrawActivity extends BaseActivity {
+public class FreehandDrawActivity extends BaseEditPhotoActivity {
     DrawingView dv;
     private Paint mPaint;
     private Bitmap mBitmap;
+    private String mCurrentPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        mBitmap = (Bitmap) intent.getParcelableExtra("EditPhoto Activity");
-
+        mCurrentPath = intent.getStringExtra("EditPhoto Activity");
+        mBitmap = setPic(mCurrentPath);
         dv = new DrawingView(this);
         setContentView(dv);
         mPaint = new Paint();
@@ -46,7 +48,7 @@ public class FreehandDrawActivity extends BaseActivity {
         public  int height;
         private Canvas mCanvas;
         private Path mPath;
-        private Paint   mBitmapPaint;
+        private Paint mBitmapPaint;
         Context context;
         private Paint circlePaint;
         private Path circlePath;
@@ -68,7 +70,8 @@ public class FreehandDrawActivity extends BaseActivity {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-
+            mBitmap = Bitmap.createScaledBitmap(
+                    mBitmap, w, h, true);
             mCanvas = new Canvas(mBitmap);
         }
 
@@ -134,6 +137,19 @@ public class FreehandDrawActivity extends BaseActivity {
             }
             return true;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isFinishing()) {
+                savePic(mCurrentPath, mBitmap);
+                finish();
+            }
+            return true;
+        }
+        return false;
     }
 }
 

@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 
-public class EditPhotoActivity extends BaseActivity implements View.OnClickListener {
+public class EditPhotoActivity extends BaseEditPhotoActivity implements View.OnClickListener {
 
     private static final String TAG = "EditPhoto Activity";
     private String mCurrentPhotoPath;
@@ -45,9 +45,14 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         mButtonSend = (Button) findViewById(R.id.bt_send);
         mButtonSend.setOnClickListener(this);
         mImageView = (ImageView) findViewById(R.id.iv_show);
-        mBitmap = setPic();
-        mCanvas = new Canvas(mBitmap);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBitmap = setPic(mCurrentPhotoPath, mImageView);
+        mCanvas = new Canvas(mBitmap);
     }
 
     @Override
@@ -55,14 +60,18 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.bt_freehand:
                 Intent freehandIntent = new Intent(this, FreehandDrawActivity.class);
-                freehandIntent.putExtra(TAG, mBitmap);
+                freehandIntent.putExtra(TAG, mCurrentPhotoPath);
                 startActivity(freehandIntent);
                 break;
             case R.id.bt_emoji:
-                //drawEmoji();
+                Intent emojiIntent = new Intent(this, EmojiDrawActivity.class);
+                emojiIntent.putExtra(TAG, mCurrentPhotoPath);
+                startActivity(emojiIntent);
                 break;
             case R.id.bt_text:
-                //drawText();
+                Intent textIntent = new Intent(this, TextDrawActivity.class);
+                textIntent.putExtra(TAG, mCurrentPhotoPath);
+                startActivity(textIntent);
                 break;
             case R.id.bt_send:
                 //sendPhoto();
@@ -76,37 +85,10 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     private void drawFreehand(){
 
 
+
     }
 
-    private Bitmap setPic() {
-		/* Get the size of the ImageView */
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
-        Log.d("current path",mCurrentPhotoPath);
-		/* Get the size of the image */
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
 
-        /* Figure out which way needs to be reduced less */
-        int scaleFactor = 1;
-        if ((targetW > 0) || (targetH > 0)) {
-            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-        }
-
-		/* Set bitmap options to scale the image decode target */
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inMutable = true;
-
-		/* Decode the JPEG file into a Bitmap */
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        mImageView.setImageBitmap(bitmap);
-
-        return bitmap;
-    }
 
 
 }

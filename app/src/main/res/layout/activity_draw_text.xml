@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_edit_photo"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        android:id="@+id/tv_tip"
+        android:text="@string/text_draw_text_tip"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,12 +25,16 @@
         </ImageView>
     </LinearLayout>
 
-    <Button
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bt_send"
-        android:text="@string/action_send_photo"
-        android:theme="@style/ThemeOverlay.MyDarkButton"/>
+        android:id="@+id/et_text"
+        android:maxLength="50"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:text="@string/action_draw_text"
+        android:theme="@style/ThemeOverlay.MyDarkButton"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,27 +46,18 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bt_freehand"
+            android:id="@+id/bt_clear"
             android:layout_weight="1"
-            android:text="@string/action_draw_free_hand"
+            android:text="@string/action_clear"
             android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/bt_emoji"
+            android:id="@+id/bt_set"
             android:layout_weight="1"
-            android:text="@string/action_draw_emoji"
+            android:text="@string/action_set"
             android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/bt_text"
-            android:layout_weight="1"
-            android:text="@string/action_draw_text"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
     </LinearLayout>
-
-
 </LinearLayout>
