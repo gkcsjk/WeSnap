@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="@dimen/size_edges_small">
+
+    <ImageView
+        android:id="@+id/image_memory"
+        tools:src="@drawable/a"
+        android:background="@color/colorGreyDark"
+        android:contentDescription="@string/desc_image_memory"
+        android:layout_width="@dimen/size_photo_message"
+        android:layout_height="@dimen/size_photo_message"
+        android:scaleType="centerCrop"/>
+</RelativeLayout>
+

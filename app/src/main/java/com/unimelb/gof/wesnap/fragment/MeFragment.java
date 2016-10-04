@@ -20,6 +20,7 @@ import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.friend.ViewFriendsActivity;
 import com.unimelb.gof.wesnap.friend.ViewRequestsActivity;
+import com.unimelb.gof.wesnap.memories.MemoriesActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -42,6 +43,7 @@ public class MeFragment extends Fragment {
     private Button mAddFriendButton;
     private Button mViewRequestButton;
     private Button mViewFriendsButton;
+    private Button mViewMemoriesButton;
 
     /* Firebase Database variables */
     private DatabaseReference refCurrentUser;
@@ -84,6 +86,15 @@ public class MeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ViewFriendsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mViewMemoriesButton = (Button) rootView.findViewById(R.id.button_my_memories);
+        mViewMemoriesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MemoriesActivity.class);
                 startActivity(intent);
             }
         });

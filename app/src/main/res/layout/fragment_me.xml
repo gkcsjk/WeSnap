@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -12,18 +11,23 @@
     android:orientation="vertical"
     tools:context=".fragment.MeFragment">
 
-    <ImageView
-        android:id="@+id/my_avatar"
-        android:src="@drawable/ic_default_avatar"
-        android:contentDescription="@string/desc_image_avatar"
-        android:layout_width="@dimen/size_photo_message"
-        android:layout_height="@dimen/size_photo_message"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/size_avatar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/my_avatar"
+            android:src="@drawable/ic_default_avatar"
+            android:contentDescription="@string/desc_image_avatar"
+            android:layout_width="@dimen/size_photo_message"
+            android:layout_height="@dimen/size_photo_message"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/my_name"
-        android:hint="MyName"
+        android:hint="@string/hint_display_name"
         android:layout_gravity="center"
         android:textAlignment="center"
         android:layout_width="wrap_content"
@@ -33,7 +37,7 @@
 
     <TextView
         android:id="@+id/my_username"
-        android:hint="MyName"
+        android:hint="@string/hint_username"
         android:layout_gravity="center"
         android:textAlignment="center"
         android:layout_width="wrap_content"
@@ -68,6 +72,7 @@
         android:drawablePadding="@dimen/size_edges_small"
         style="@style/Widget.AppCompat.Button.Borderless"/>
 
+    <!-- View Friends Button -->
     <Button
         android:id="@+id/button_view_friends"
         android:text="@string/action_view_friends"
@@ -80,4 +85,16 @@
         android:drawablePadding="@dimen/size_edges_small"
         style="@style/Widget.AppCompat.Button.Borderless" />
 
+    <!-- View Memories Button -->
+    <Button
+        android:id="@+id/button_my_memories"
+        android:text="@string/action_my_memories"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:drawableLeft="@drawable/ic_action_view_memories"
+        android:drawableStart="@drawable/ic_action_view_memories"
+        android:drawablePadding="@dimen/size_edges_small"
+        style="@style/Widget.AppCompat.Button.Borderless" />
 </LinearLayout>

@@ -97,7 +97,7 @@ public class ChatsFragment extends Fragment {
     }
 
     // ======================================================
-    /* ChatViewHolder */
+    /* MemoryViewHolder */
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         public TextView lastmsgView;
         public ImageView avatarView;
@@ -114,7 +114,7 @@ public class ChatsFragment extends Fragment {
     }
 
     // ======================================================
-    /* ChatsAdapter */
+    /* MemoriesAdapter */
     private class ChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         private Context mContext;
         private DatabaseReference mDatabaseReference;
