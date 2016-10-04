@@ -41,7 +41,7 @@ public class SearchUsernameActivity extends BaseActivity {
     private TextView mNotFoundText;
     private RecyclerView mResultsRecyclerView;
     private FirebaseRecyclerAdapter<
-            User, RequestViewHolder> mRecyclerAdapter;
+            User, FriendItemViewHolder> mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -125,14 +125,14 @@ public class SearchUsernameActivity extends BaseActivity {
         Log.d(TAG, "showSearchResults:username=" + mSearchKeyword);
 
         // create the recycler adapter for search result
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestViewHolder>(
+        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, FriendItemViewHolder>(
                 User.class,
-                R.layout.item_friend_request,
-                RequestViewHolder.class,
+                R.layout.item_friend,
+                FriendItemViewHolder.class,
                 queryUser) {
 
             @Override
-            protected void populateViewHolder(final RequestViewHolder viewHolder,
+            protected void populateViewHolder(final FriendItemViewHolder viewHolder,
                                               final User resultUser,
                                               final int position) {
                 Log.d(TAG, "populateViewHolder:" + position);
@@ -158,7 +158,7 @@ public class SearchUsernameActivity extends BaseActivity {
                                         (Map<String, Boolean>) dataSnapshot.getValue();
                                 if (myFriends != null && myFriends.containsKey(mResultUid)) {
                                     // isFriend = true;
-                                    viewHolder.useDoneButton();
+                                    viewHolder.useChatButton(SearchUsernameActivity.this, mResultUid, resultUser.getDisplayedName());
                                 } else {
                                     // otherwise, enable the button to send friend request
                                     viewHolder.useAddButton(mResultUid);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 /**
  * BaseActivity
@@ -16,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
  * Copyright (C) The University of Melbourne
  */
 public class BaseActivity extends AppCompatActivity {
+
+    private static final String TAG = "BaseActivity";
 
     @VisibleForTesting
     public ProgressDialog mProgressDialog = null;
@@ -88,7 +91,9 @@ public class BaseActivity extends AppCompatActivity {
     // ========================================================
     // TODO for network failure ???
     public void goToLogin(String message) {
-        Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+        Log.d(TAG, "goToLogin:"+ message);
+
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

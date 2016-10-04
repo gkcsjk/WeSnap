@@ -5,8 +5,10 @@
     <dimen name="size_edges_small">8dp</dimen>
     <dimen name="size_edges">16dp</dimen>
     <dimen name="size_spaces">48dp</dimen>
+    <dimen name="size_spaces_fab">64dp</dimen>
     <dimen name="size_icon_tab">24dp</dimen>
     <dimen name="size_image_button">32dp</dimen>
     <dimen name="size_avatar">40dp</dimen>
     <dimen name="size_photo_message">160dp</dimen>
+    <dimen name="size_card_height">240dp</dimen>
 </resources>

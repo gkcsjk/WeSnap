@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         app:layout_anchor="@id/viewpager"
         app:layout_anchorGravity="bottom|end"
-        android:layout_marginBottom="@dimen/size_edges"
+        android:layout_marginBottom="@dimen/size_spaces_fab"
         android:layout_marginRight="@dimen/size_edges"
         android:layout_marginEnd="@dimen/size_edges"
         android:baselineAlignBottom="true"
@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:gravity="center"
         android:paddingTop="@dimen/size_edges_small"
         android:background="@color/colorPrimary"/>
 

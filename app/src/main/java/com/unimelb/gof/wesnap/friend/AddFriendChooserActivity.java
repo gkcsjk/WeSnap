@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.R;
 
@@ -84,6 +85,7 @@ public class AddFriendChooserActivity extends BaseActivity
     // ========================================================
     /* Search for other users by usernames */
     private void doSearch() {
+        Log.d(TAG, "search:username");
         Intent intent = new Intent(AddFriendChooserActivity.this, SearchUsernameActivity.class);
         startActivity(intent);
     }
@@ -92,6 +94,12 @@ public class AddFriendChooserActivity extends BaseActivity
     /* Share username (plain text) by invoking the system share action */
     // TODO share link that trigger the app?
     private void doShare() {
+        Log.d(TAG, "share:username");
+        if (AppParams.currentUser != null && AppParams.getMyUsername() != null) {
+            // share the username via system action
+            shareMyUsername(AppParams.getMyUsername());
+            return;
+        }
         FirebaseUtil.getCurrentUserRef().child("username")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -107,14 +115,7 @@ public class AddFriendChooserActivity extends BaseActivity
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // share the username via system action
-                            Intent sendIntent = new Intent();
-                            sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT,
-                                    SHARE_MESSAGE + username);
-                            sendIntent.setType("text/plain");
-                            startActivity(Intent.createChooser(
-                                    sendIntent,
-                                    getResources().getText(R.string.action_share_username_to)));
+                            shareMyUsername(username);
                         }
                     }
 
@@ -125,9 +126,24 @@ public class AddFriendChooserActivity extends BaseActivity
                 });
     }
 
+    private void shareMyUsername(String username) {
+        // share the username via system action
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                SHARE_MESSAGE + username);
+        sendIntent.setType("text/plain");
+        startActivity(
+                Intent.createChooser(
+                        sendIntent,
+                        getResources().getText(R.string.action_share_username_to))
+        );
+    }
+
     // ========================================================
     private void doOther() {
         // TODO doOther()
+        Log.d(TAG, "other???");
     }
 
     // ========================================================

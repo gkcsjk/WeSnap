@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
 import java.util.Map;
@@ -18,7 +19,6 @@ import java.util.Map;
  * FriendRequest
  * This class contains methods for sending/accepting friend requests.
  *
- * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
@@ -32,7 +32,7 @@ public class FriendRequest {
     /* sendFriendRequest()
      * send request to Firebase Database and update UI accordingly */
     public static void sendFriendRequest(final String toUserId,
-                                         final RequestViewHolder viewHolder,
+                                         final FriendItemViewHolder viewHolder,
                                          final View v) {
         Log.d(TAG, "sendFriendRequest");
 
@@ -44,35 +44,47 @@ public class FriendRequest {
             return;
         }
 
-        // update Firebase Database
-        FirebaseUtil.getCurrentUserRef()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.w(TAG, "getCurrentUser:onDataChange");
-                        // fetch current user info
-                        User currentUser = dataSnapshot.getValue(User.class);
-                        Map<String, Object> requestValues = currentUser.toFriendRequest();
-                        // add request to destination user
-                        FirebaseUtil.getRequestsRef()
-                                .child(toUserId).child(fromUserId).setValue(requestValues);
-                        // update UI
-                        Snackbar.make(v, SENT, Snackbar.LENGTH_LONG).show();
-                        viewHolder.useDoneButton();
-                    }
+        if (AppParams.currentUser != null) {
+            // get current user info
+            Map<String, Object> requestValues = AppParams.currentUser.toFriendRequest();
+            // add request to destination user
+            FirebaseUtil.getRequestsRef()
+                    .child(toUserId).child(fromUserId).setValue(requestValues);
+            // update UI
+            Snackbar.make(v, SENT, Snackbar.LENGTH_LONG).show();
+            viewHolder.useDoneButton();
+        } else {
+            // go to Firebase Database
+            FirebaseUtil.getCurrentUserRef()
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.w(TAG, "getCurrentUser:onDataChange");
+                            // fetch current user info
+                            User currentUser = dataSnapshot.getValue(User.class);
+                            AppParams.currentUser = currentUser;
+                            Map<String, Object> requestValues = currentUser.toFriendRequest();
+                            // add request to destination user
+                            FirebaseUtil.getRequestsRef()
+                                    .child(toUserId).child(fromUserId).setValue(requestValues);
+                            // update UI
+                            Snackbar.make(v, SENT, Snackbar.LENGTH_LONG).show();
+                            viewHolder.useDoneButton();
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
-                        // update UI
-                        Snackbar.make(v, NOT_SENT, Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
+                            // update UI
+                            Snackbar.make(v, NOT_SENT, Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     // ========================================================
     public static void acceptFriendRequest(final DatabaseReference refRequest,
-                                           final RequestViewHolder viewHolder,
+                                           final FriendItemViewHolder viewHolder,
                                            final View v) {
         Log.w(TAG, "acceptFriendRequest");
 

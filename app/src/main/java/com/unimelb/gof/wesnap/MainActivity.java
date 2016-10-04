@@ -25,12 +25,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.fragment.*;
-import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
+import com.unimelb.gof.wesnap.friend.SearchUsernameActivity;
+import com.unimelb.gof.wesnap.memories.MemoriesActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
-import com.unimelb.gof.wesnap.util.GlideUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,17 +65,19 @@ public class MainActivity extends BaseActivity {
         Log.d(TAG, "onCreate");
 
         /* Get User */
-        // Check if user already logged in; if not, direct to Login activity
+        // Check if user already logged in
         mFirebaseAuth = FirebaseAuth.getInstance();
         if (mFirebaseAuth.getCurrentUser() == null) {
+            // if not, direct to Login activity
             Log.d(TAG, "goToLogin");
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            goToLogin("user logged out"); // TODO confirm usage
+//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            finish();
             return;
         } else {
-            // store a local copy of current user
+            // if yes, get current user info and store a local copy
             profileListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -85,7 +87,6 @@ public class MainActivity extends BaseActivity {
                         AppParams.currentUser = currentUser;
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
@@ -109,7 +110,6 @@ public class MainActivity extends BaseActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Snackbar.make(v,"WHAT",Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ChooseFriendActivity.class);
                 startActivity(intent);
             }
@@ -143,17 +143,17 @@ public class MainActivity extends BaseActivity {
             mTab.setCustomView(myTabAdapter.getTabView(i));
         }
 
-        // Set diff FAB actions
+        // Set diff FAB / AppBar actions
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-
                 mFab.clearAnimation();
-                if (mTabLayout.getSelectedTabPosition() != 0) {
-                    mFab.hide();
-                } else { // only show FAB for chat screen
+                if (mTabLayout.getSelectedTabPosition() == 0) {
+                    // for chats screen
                     mFab.show();
+                } else {
+                    mFab.hide();
                 }
             }
 
@@ -167,6 +167,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    // ========================================================
     /* MyTabAdapter */
     private class MyTabAdapter extends FragmentPagerAdapter {//FragmentStatePagerAdapter
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -228,9 +229,8 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.add_friend:
-                Intent intent = new Intent(MainActivity.this, AddFriendChooserActivity.class);
-                startActivity(intent);
+            case R.id.app_bar_search:
+                search();
                 break;
             case R.id.logout:
                 logout();
@@ -243,23 +243,31 @@ public class MainActivity extends BaseActivity {
     }
 
     // ========================================================
+    /* Search button on app bar */
+    private void search() {
+        Log.d(TAG, "search:username");
+        Intent intent = new Intent(MainActivity.this, SearchUsernameActivity.class);
+        startActivity(intent);
+    }
+
+    // ========================================================
     /* Logout from Firebase */
     private void logout() {
         Log.d(TAG, "logout");
 
         // Logout
-        if(mFirebaseAuth != null) {
+        if (mFirebaseAuth != null) {
             mFirebaseAuth.signOut();
         }
 
         // Reset local copy of user info
         AppParams.currentUser = null;
+        if (profileListener != null) {
+            FirebaseUtil.getCurrentUserRef().removeEventListener(profileListener);
+        }
 
         // Restart from LoginActivity
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        goToLogin("user logged out");
     }
 
     // ========================================================
@@ -276,4 +284,5 @@ public class MainActivity extends BaseActivity {
         }
         return false;
     }
+    // ========================================================
 }

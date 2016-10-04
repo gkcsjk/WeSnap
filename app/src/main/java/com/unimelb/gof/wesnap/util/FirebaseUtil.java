@@ -11,6 +11,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.unimelb.gof.wesnap.BaseActivity;
 
 /**
@@ -25,6 +27,10 @@ public class FirebaseUtil {
 
     public static DatabaseReference getBaseRef() {
         return FirebaseDatabase.getInstance().getReference();
+    }
+
+    public static StorageReference getBaseStorage() {
+        return FirebaseStorage.getInstance().getReferenceFromUrl("gs://gof-wesnap.appspot.com/");
     }
 
     // =============================================
@@ -83,35 +89,20 @@ public class FirebaseUtil {
 
     // =============================================
     /* Users */
-
     public static DatabaseReference getUsersRef() {
         return getBaseRef().child("users");
     }
 
-    public static String getUsersPath() {
-        return "users/";
-    }
-
     // =============================================
     /* Usernames */
-
     public static DatabaseReference getUsernamesRef() {
         return getBaseRef().child("usernames");
     }
 
-    public static String getUsernamesPath() {
-        return "usernames/";
-    }
-
     // =============================================
     /* Friend Requests */
-
     public static DatabaseReference getRequestsRef() {
         return getBaseRef().child("friendRequests");
-    }
-
-    public static String getRequestsPath() {
-        return "friendRequests/";
     }
 
     // =============================================
@@ -121,19 +112,14 @@ public class FirebaseUtil {
         return getBaseRef().child("chats");
     }
 
-    public static String getChatsPath() {
-        return "chats/";
+    public static StorageReference getChatsStorage() {
+        return getBaseStorage().child("chats");
     }
 
     // =============================================
     /* Messages */
-
     public static DatabaseReference getMessagesRef() {
         return getBaseRef().child("messages");
-    }
-
-    public static String getMessagesPath() {
-        return "messages/";
     }
 
     // =============================================
@@ -145,10 +131,36 @@ public class FirebaseUtil {
     }
 
     // =============================================
-//        Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put(FirebaseUtil.getChatsPath() + newChatId, newChatId);
-//        childUpdates.put(FirebaseUtil.getMessagesPath() + newChatId + "/" + newMessageId, newMessage);
-//        childUpdates.put(FirebaseUtil.getUsersPath() + newUserId, newUser);
-//        childUpdates.put(FirebaseUtil.getUsernamesPath() + mRegUsernameField.getText().toString(), newUserId);
-//        FirebaseUtil.getBaseRef().updateChildren(childUpdates);
+    /* Memories */
+    public static DatabaseReference getCurrentMemoriesDatabase() {
+        String uid = getCurrentUserId();
+        if (uid != null) {
+            return getBaseRef().child("memories").child(uid);
+        } else {
+            // null value, error out
+            handleNullValue("getCurrentUserId");
+            return null;
+        }
+    }
+
+    public static StorageReference getCurrentMemoriesStorage() {
+        String uid = getCurrentUserId();
+        if (uid != null) {
+            return getBaseStorage().child("memories").child(uid);
+        } else {
+            // null value, error out
+            handleNullValue("getCurrentUserId");
+            return null;
+        }
+    }
+
+    public static DatabaseReference getMemoriesDatabase() {
+        return getBaseRef().child("memories");
+    }
+
+    public static StorageReference getMemoriesStorage() {
+        return getBaseStorage().child("memories");
+    }
+
+    // =============================================
 }

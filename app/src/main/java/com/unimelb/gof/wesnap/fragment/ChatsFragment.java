@@ -1,9 +1,11 @@
 package com.unimelb.gof.wesnap.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.chat.MessagesActivity;
+import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Chat;
@@ -35,6 +38,7 @@ import java.util.Map;
  * ChatsFragment
  * This fragment provides UI for current user's active chats, and
  * directs user to the messages when selecting one of the chat.
+ * TODO search ??? https://developer.android.com/guide/topics/search/search-dialog.html
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -93,7 +97,7 @@ public class ChatsFragment extends Fragment {
     }
 
     // ======================================================
-    /* ChatViewHolder */
+    /* MemoryViewHolder */
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         public TextView lastmsgView;
         public ImageView avatarView;
@@ -104,11 +108,13 @@ public class ChatsFragment extends Fragment {
             lastmsgView = (TextView) itemView.findViewById(R.id.text_last_msg_chat);
             avatarView = (ImageView) itemView.findViewById(R.id.avatar_chat);
             titleView = (TextView) itemView.findViewById(R.id.text_title_chat);
+
+            itemView.setLongClickable(true);
         }
     }
 
     // ======================================================
-    /* ChatsAdapter */
+    /* MemoriesAdapter */
     private class ChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         private Context mContext;
         private DatabaseReference mDatabaseReference;
@@ -217,16 +223,18 @@ public class ChatsFragment extends Fragment {
             viewHolder.lastmsgView.setText(chat.getLastMessageBody());
 
             Map<String, String> participants = chat.getParticipants();
+            String uid = null;
+            for (String id : participants.keySet()) {
+                if (!id.equals(idCurrentUser)) {
+                    uid = id;
+                    break;
+                }
+            }
+
             String chatTitle = chat.getChatTitle();
             if (chatTitle == null || participants.size() <= 2) {
                 // use participants names
-                chatTitle = "";
-                for (String uid : participants.keySet()) {
-                    if (!uid.equals(idCurrentUser)) {
-                        chatTitle += participants.get(uid);
-                        chatTitle += " ";
-                    }
-                }
+                chatTitle = participants.get(uid);
             } // else: group chat with title
             viewHolder.titleView.setText(chatTitle);
 
@@ -249,6 +257,45 @@ public class ChatsFragment extends Fragment {
                                     MessagesActivity.EXTRA_CHAT_TITLE,
                                     viewHolder.titleView.getText().toString());
                             context.startActivity(intent);
+                        }
+                    }
+            );
+
+            // on click: directs to message list
+            final String receiverUid = uid;
+            viewHolder.itemView.setOnLongClickListener(
+                    new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            FirebaseUtil.getUsersRef().child(receiverUid)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Log.w(TAG, "getFriendUser:onDataChange");
+                                            if(!dataSnapshot.exists()) {
+                                                // null value; remove node
+                                                FirebaseUtil.getChatsRef().child(mChatIds.get(position)).removeValue();
+                                                return;
+                                            }
+
+                                            // get metadata
+                                            User myFriend = dataSnapshot.getValue(User.class);
+                                            String name = myFriend.getDisplayedName();
+                                            String username = myFriend.getUsername();
+                                            String email = myFriend.getEmail();
+
+                                            // update UI
+                                            AlertDialog myFriendMetadataDialog = new AlertDialog.Builder(getActivity()).create();
+                                            myFriendMetadataDialog.setTitle(name);
+                                            myFriendMetadataDialog.setMessage(" USERNAME: " + username + "\n EMAIL: " + email);
+                                            myFriendMetadataDialog.show();
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.w(TAG, "getFriendUser:onCancelled", databaseError.toException());
+                                        }
+                                    });
+                            return true;
                         }
                     }
             );

@@ -9,11 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 import com.unimelb.gof.wesnap.R;
@@ -37,7 +36,7 @@ public class ViewRequestsActivity extends BaseActivity {
     private TextView mNotFoundText;
     private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter<
-            User, RequestViewHolder> mRecyclerAdapter;
+            User, FriendItemViewHolder> mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -57,21 +56,22 @@ public class ViewRequestsActivity extends BaseActivity {
         refCurrentRequests = FirebaseUtil.getCurrentRequestsRef();
 
         /* Listen for my current friend list */
-        refCurrentFriends = FirebaseUtil.getCurrentFriendsRef();
-        mFriendIds = new HashMap<>();
-        mListenerCurrentFriends = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "getMyFriends:onDataChange");
-                mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
-            }
-        };
-        refCurrentFriends.addValueEventListener(mListenerCurrentFriends);
+        mFriendIds = (HashMap) AppParams.currentUser.getFriends();
+//        refCurrentFriends = FirebaseUtil.getCurrentFriendsRef();
+//        mFriendIds = new HashMap<>();
+//        mListenerCurrentFriends = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.d(TAG, "getMyFriends:onDataChange");
+//                mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
+//            }
+//        };
+//        refCurrentFriends.addValueEventListener(mListenerCurrentFriends);
 
         /* UI components */
         // toolbar with title
@@ -90,14 +90,14 @@ public class ViewRequestsActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // create the recycler adapter
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestViewHolder>(
+        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, FriendItemViewHolder>(
                 User.class,
-                R.layout.item_friend_request,
-                RequestViewHolder.class,
+                R.layout.item_friend,
+                FriendItemViewHolder.class,
                 refCurrentRequests) {
 
             @Override
-            protected void populateViewHolder(final RequestViewHolder viewHolder,
+            protected void populateViewHolder(final FriendItemViewHolder viewHolder,
                                               final User requestSender,
                                               final int position) {
                 Log.d(TAG, "populateViewHolder:" + position);

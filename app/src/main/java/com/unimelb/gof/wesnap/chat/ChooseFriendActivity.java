@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -21,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.friend.FriendItemViewHolder;
 import com.unimelb.gof.wesnap.friend.FriendRequest;
 import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.models.User;
@@ -44,7 +43,7 @@ public class ChooseFriendActivity extends BaseActivity {
 
     /* UI Variables */
     public RecyclerView mFriendsRecyclerView;
-    public RecyclerView.Adapter<FriendViewHolder> mRecyclerAdapter;
+    public RecyclerView.Adapter<FriendItemViewHolder> mRecyclerAdapter;
     public LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -88,21 +87,8 @@ public class ChooseFriendActivity extends BaseActivity {
     }
 
     // ======================================================
-    /* FriendViewHolder */
-    public class FriendViewHolder extends RecyclerView.ViewHolder {
-        public ImageView avatarView;
-        public TextView nameView;
-
-        public FriendViewHolder(View itemView) {
-            super(itemView);
-            avatarView = (ImageView) itemView.findViewById(R.id.avatar_friend);
-            nameView = (TextView) itemView.findViewById(R.id.text_name_friend);
-        }
-    }
-
-    // ======================================================
     /* FriendsAdapter */
-    public class FriendChooserAdapter extends RecyclerView.Adapter<FriendViewHolder> {
+    public class FriendChooserAdapter extends RecyclerView.Adapter<FriendItemViewHolder> {
 
         public Context mContext;
         public DatabaseReference mDatabaseReference;
@@ -195,14 +181,14 @@ public class ChooseFriendActivity extends BaseActivity {
         }
 
         @Override
-        public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public FriendItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.item_friend, parent, false);
-            return new FriendViewHolder(view);
+            return new FriendItemViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final FriendViewHolder viewHolder, int position) {
+        public void onBindViewHolder(final FriendItemViewHolder viewHolder, int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             // Load the item view with friend user info
@@ -216,6 +202,8 @@ public class ChooseFriendActivity extends BaseActivity {
             } else {
                 viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
             }
+            viewHolder.emailView.setText(friend.getEmail());
+            viewHolder.doButton.setVisibility(View.GONE);
 
             // Set up item click listener
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

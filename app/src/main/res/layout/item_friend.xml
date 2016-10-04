@@ -1,32 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:padding="@dimen/size_edges">
 
     <ImageView
-        android:id="@+id/avatar_friend"
+        android:id="@+id/avatar_request"
         android:contentDescription="@string/desc_image_avatar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_width="@dimen/size_avatar"
         android:layout_height="@dimen/size_avatar"
         android:scaleType="centerCrop"
-        tools:src="@drawable/ic_default_avatar" />
+        android:src="@drawable/ic_default_avatar" />
 
-    <TextView
-        android:id="@+id/text_name_friend"
-        android:hint="@string/hint_chat_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_avatar"
-        android:gravity="center_vertical"
-        android:layout_toRightOf="@+id/avatar_friend"
-        android:layout_toEndOf="@+id/avatar_friend"
+        android:layout_toRightOf="@+id/avatar_request"
+        android:layout_toEndOf="@+id/avatar_request"
+        android:layout_toLeftOf="@+id/button_request"
+        android:layout_toStartOf="@+id/button_request"
         android:layout_marginLeft="@dimen/size_edges"
         android:layout_marginStart="@dimen/size_edges"
-        android:textAppearance="?android:textAppearanceListItem"
-        android:textStyle="bold" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_name_request"
+            android:hint="@string/hint_display_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_email_request"
+            android:hint="@string/hint_email"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:textAppearanceListItemSmall" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/button_request"
+        android:contentDescription="@string/action_search_username"
+        android:layout_width="@dimen/size_avatar"
+        android:layout_height="@dimen/size_avatar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        style="@style/Widget.AppCompat.Button.Borderless" />
 </RelativeLayout>

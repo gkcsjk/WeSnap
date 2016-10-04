@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -41,7 +39,7 @@ public class ViewFriendsActivity extends BaseActivity {
 
     /* UI Variables */
     public RecyclerView mFriendsRecyclerView;
-    public RecyclerView.Adapter<FriendViewHolder> mRecyclerAdapter;
+    public RecyclerView.Adapter<FriendItemViewHolder> mRecyclerAdapter;
     public LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -83,21 +81,8 @@ public class ViewFriendsActivity extends BaseActivity {
     }
 
     // ======================================================
-    /* FriendViewHolder */
-    public class FriendViewHolder extends RecyclerView.ViewHolder {
-        public ImageView avatarView;
-        public TextView nameView;
-
-        public FriendViewHolder(View itemView) {
-            super(itemView);
-            avatarView = (ImageView) itemView.findViewById(R.id.avatar_friend);
-            nameView = (TextView) itemView.findViewById(R.id.text_name_friend);
-        }
-    }
-
-    // ======================================================
     /* FriendsAdapter */
-    public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
+    public class FriendsAdapter extends RecyclerView.Adapter<FriendItemViewHolder> {
         public Context mContext;
         public DatabaseReference mDatabaseReference;
         public ChildEventListener mChildEventListener;
@@ -164,7 +149,6 @@ public class ViewFriendsActivity extends BaseActivity {
                     } else {
                         Log.w(TAG, "getFriendIds:onChildRemoved:unknown_child:" + removedFriendId);
                     }
-                    // TODO how does the active "Chat" knows when a friendship ends?
                 }
 
                 @Override
@@ -190,14 +174,14 @@ public class ViewFriendsActivity extends BaseActivity {
         }
 
         @Override
-        public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public FriendItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.item_friend, parent, false);
-            return new FriendViewHolder(view);
+            return new FriendItemViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final FriendViewHolder viewHolder, int position) {
+        public void onBindViewHolder(final FriendItemViewHolder viewHolder, int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             // Load the item view with friend user info
@@ -209,6 +193,8 @@ public class ViewFriendsActivity extends BaseActivity {
             } else {
                 viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
             }
+            viewHolder.emailView.setText(friend.getEmail());
+            viewHolder.doButton.setVisibility(View.GONE);
         }
 
         @Override

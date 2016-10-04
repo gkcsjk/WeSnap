@@ -20,6 +20,7 @@ import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.friend.ViewFriendsActivity;
 import com.unimelb.gof.wesnap.friend.ViewRequestsActivity;
+import com.unimelb.gof.wesnap.memories.MemoriesActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -42,6 +43,7 @@ public class MeFragment extends Fragment {
     private Button mAddFriendButton;
     private Button mViewRequestButton;
     private Button mViewFriendsButton;
+    private Button mViewMemoriesButton;
 
     /* Firebase Database variables */
     private DatabaseReference refCurrentUser;
@@ -59,6 +61,7 @@ public class MeFragment extends Fragment {
         mAvatar = (ImageView) rootView.findViewById(R.id.my_avatar);
         mDisplayedName = (TextView) rootView.findViewById(R.id.my_name);
         mUsername = (TextView) rootView.findViewById(R.id.my_username);
+        setCurrentUserInfo();
 
         mAddFriendButton = (Button) rootView.findViewById(R.id.button_add_friends);
         mAddFriendButton.setOnClickListener(new View.OnClickListener() {
@@ -87,15 +90,32 @@ public class MeFragment extends Fragment {
             }
         });
 
+        mViewMemoriesButton = (Button) rootView.findViewById(R.id.button_my_memories);
+        mViewMemoriesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MemoriesActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
-    // ========================================================
-    /* onActivityCreated() */
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
+    // ======================================================
+    private void setCurrentUserInfo() {
+        /* Check AppParams */
+        if (AppParams.currentUser != null) {
+            String avatarUrl = AppParams.getMyAvatarUrl();
+            if (avatarUrl != null) {
+                GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
+            } else {
+                mAvatar.setImageResource(R.drawable.ic_default_avatar);
+            }
+            mDisplayedName.setText(AppParams.getMyDisplayedName());
+            mUsername.setText(AppParams.getMyUsername());
+            return;
+        }
 
         /* Confirm Current User */
         refCurrentUser = FirebaseUtil.getCurrentUserRef();
@@ -107,8 +127,7 @@ public class MeFragment extends Fragment {
         }
 
         /* ValueEventListener for Current User */
-        // [START person_value_event_listener]
-        ValueEventListener profileListener = new ValueEventListener() {
+        refCurrentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.w(TAG, "getCurrentUser:onDataChange");
@@ -120,9 +139,7 @@ public class MeFragment extends Fragment {
                 } else {
                     mAvatar.setImageResource(R.drawable.ic_default_avatar);
                 }
-                String name = currentUser.getDisplayedName();
                 mDisplayedName.setText(currentUser.getDisplayedName());
-                AppParams.setMyDisplayedName(name);
                 mUsername.setText(currentUser.getUsername());
             }
 
@@ -130,11 +147,6 @@ public class MeFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
             }
-        };
-        refCurrentUser.addValueEventListener(profileListener);
-        // [END person_value_event_listener]
-
-        // Keep copy of post listener so we can remove it when app stops
-        mListenerCurrentUser = profileListener;
+        });
     }
 }
