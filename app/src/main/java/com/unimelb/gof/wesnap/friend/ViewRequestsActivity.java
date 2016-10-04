@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
@@ -38,7 +36,7 @@ public class ViewRequestsActivity extends BaseActivity {
     private TextView mNotFoundText;
     private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter<
-            User, RequestViewHolder> mRecyclerAdapter;
+            User, FriendItemViewHolder> mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -92,14 +90,14 @@ public class ViewRequestsActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // create the recycler adapter
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, RequestViewHolder>(
+        mRecyclerAdapter = new FirebaseRecyclerAdapter<User, FriendItemViewHolder>(
                 User.class,
-                R.layout.item_friend_request,
-                RequestViewHolder.class,
+                R.layout.item_friend,
+                FriendItemViewHolder.class,
                 refCurrentRequests) {
 
             @Override
-            protected void populateViewHolder(final RequestViewHolder viewHolder,
+            protected void populateViewHolder(final FriendItemViewHolder viewHolder,
                                               final User requestSender,
                                               final int position) {
                 Log.d(TAG, "populateViewHolder:" + position);

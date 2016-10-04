@@ -33,6 +33,7 @@
     <string name="action_other_options">Other ?? Search Nearby ??</string>
 
     <!--Messages-->
+    <string name="action_search_my_friends">Search My Friends</string>
     <string name="action_chat_with">Chat with ...</string>
     <string name="hint_chat_name">Your Friend Alice from Wonderland</string>
     <string name="hint_chat">Tap to read messages!</string>
@@ -55,6 +56,13 @@
     <string name="action_set">Set</string>
     <string name="text_draw_text_tip">Please touch the Image to set position.</string>
 
+    <!--Stories-->
+    <string name="text_title_friends_stories">--- Friends\' Stories ---</string>
+    <string name="text_title_official_stories">--- Official Stories ---</string>
+    <string name="text_title_live_stories">Live Stories</string>
+    <string name="text_story_title">Tomorrow is tomorrow</string>
+    <string name="action_read_story">Read More</string>
+
     <!--Dummy-->
     <string name="text_dummy">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
@@ -68,4 +76,5 @@
     <string name="desc_tab_icon">Icon of Tab</string>
     <string name="desc_image_avatar">Avatar of User</string>
     <string name="desc_message_sender">Color Bar for Message Sender</string>
+    <string name="desc_image_story">Image for Story</string>
 </resources>

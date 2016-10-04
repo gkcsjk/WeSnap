@@ -85,6 +85,7 @@ public class AddFriendChooserActivity extends BaseActivity
     // ========================================================
     /* Search for other users by usernames */
     private void doSearch() {
+        Log.d(TAG, "search:username");
         Intent intent = new Intent(AddFriendChooserActivity.this, SearchUsernameActivity.class);
         startActivity(intent);
     }
@@ -93,57 +94,54 @@ public class AddFriendChooserActivity extends BaseActivity
     /* Share username (plain text) by invoking the system share action */
     // TODO share link that trigger the app?
     private void doShare() {
-        if (AppParams.getMyUsername() == null) {
-            // null value, error out
-            Log.e(TAG, "Username unexpectedly null");
-            Toast.makeText(AddFriendChooserActivity.this,
-                    "Error: could not fetch username.",
-                    Toast.LENGTH_SHORT).show();
-        } else {
+        Log.d(TAG, "share:username");
+        if (AppParams.currentUser != null && AppParams.getMyUsername() != null) {
             // share the username via system action
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, SHARE_MESSAGE + AppParams.getMyUsername());
-            sendIntent.setType("text/plain");
-            startActivity(Intent.createChooser(sendIntent,
-                    getResources().getText(R.string.action_share_username_to)));
+            shareMyUsername(AppParams.getMyUsername());
+            return;
         }
-//        FirebaseUtil.getCurrentUserRef().child("username")
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        Log.d(TAG, "getUsername:onDataChange");
-//                        String username = (String) dataSnapshot.getValue();
-//
-//                        if (username == null) {
-//                            // null value, error out
-//                            Log.e(TAG, "Username unexpectedly null");
-//                            Toast.makeText(AddFriendChooserActivity.this,
-//                                    "Error: could not fetch username.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            // share the username via system action
-//                            Intent sendIntent = new Intent();
-//                            sendIntent.setAction(Intent.ACTION_SEND);
-//                            sendIntent.putExtra(Intent.EXTRA_TEXT,
-//                                    SHARE_MESSAGE + username);
-//                            sendIntent.setType("text/plain");
-//                            startActivity(Intent.createChooser(
-//                                    sendIntent,
-//                                    getResources().getText(R.string.action_share_username_to)));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
-//                    }
-//                });
+        FirebaseUtil.getCurrentUserRef().child("username")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "getUsername:onDataChange");
+                        String username = (String) dataSnapshot.getValue();
+
+                        if (username == null) {
+                            // null value, error out
+                            Log.e(TAG, "Username unexpectedly null");
+                            Toast.makeText(AddFriendChooserActivity.this,
+                                    "Error: could not fetch username.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // share the username via system action
+                            shareMyUsername(username);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
+                    }
+                });
+    }
+
+    private void shareMyUsername(String username) {
+        // share the username via system action
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                SHARE_MESSAGE + username);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(
+                sendIntent,
+                getResources().getText(R.string.action_share_username_to)));
     }
 
     // ========================================================
     private void doOther() {
         // TODO doOther()
+        Log.d(TAG, "other???");
     }
 
     // ========================================================

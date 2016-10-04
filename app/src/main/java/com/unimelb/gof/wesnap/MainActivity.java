@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.fragment.*;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
+import com.unimelb.gof.wesnap.friend.SearchUsernameActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -143,17 +146,17 @@ public class MainActivity extends BaseActivity {
             mTab.setCustomView(myTabAdapter.getTabView(i));
         }
 
-        // Set diff FAB actions
+        // Set diff FAB / AppBar actions
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-
                 mFab.clearAnimation();
-                if (mTabLayout.getSelectedTabPosition() != 0) {
-                    mFab.hide();
-                } else { // only show FAB for chat screen
+                if (mTabLayout.getSelectedTabPosition() == 0) {
+                    // for chats screen
                     mFab.show();
+                } else {
+                    mFab.hide();
                 }
             }
 
@@ -167,6 +170,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    // ========================================================
     /* MyTabAdapter */
     private class MyTabAdapter extends FragmentPagerAdapter {//FragmentStatePagerAdapter
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -228,9 +232,8 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.add_friend:
-                Intent intent = new Intent(MainActivity.this, AddFriendChooserActivity.class);
-                startActivity(intent);
+            case R.id.app_bar_search:
+                search();
                 break;
             case R.id.logout:
                 logout();
@@ -243,12 +246,20 @@ public class MainActivity extends BaseActivity {
     }
 
     // ========================================================
+    /* Search button on app bar */
+    private void search() {
+        Log.d(TAG, "search:username");
+        Intent intent = new Intent(MainActivity.this, SearchUsernameActivity.class);
+        startActivity(intent);
+    }
+
+    // ========================================================
     /* Logout from Firebase */
     private void logout() {
         Log.d(TAG, "logout");
 
         // Logout
-        if(mFirebaseAuth != null) {
+        if (mFirebaseAuth != null) {
             mFirebaseAuth.signOut();
         }
 
