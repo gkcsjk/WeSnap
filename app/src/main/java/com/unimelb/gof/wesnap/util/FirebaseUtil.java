@@ -112,6 +112,10 @@ public class FirebaseUtil {
         return getBaseRef().child("chats");
     }
 
+    public static StorageReference getChatsStorage() {
+        return getBaseStorage().child("chats");
+    }
+
     // =============================================
     /* Messages */
     public static DatabaseReference getMessagesRef() {

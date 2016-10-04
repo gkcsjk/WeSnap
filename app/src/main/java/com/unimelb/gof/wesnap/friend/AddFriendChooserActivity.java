@@ -133,9 +133,11 @@ public class AddFriendChooserActivity extends BaseActivity
         sendIntent.putExtra(Intent.EXTRA_TEXT,
                 SHARE_MESSAGE + username);
         sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(
-                sendIntent,
-                getResources().getText(R.string.action_share_username_to)));
+        startActivity(
+                Intent.createChooser(
+                        sendIntent,
+                        getResources().getText(R.string.action_share_username_to))
+        );
     }
 
     // ========================================================

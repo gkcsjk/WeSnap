@@ -1,6 +1,10 @@
 package com.unimelb.gof.wesnap.chat;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,9 +13,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Message;
@@ -29,19 +38,23 @@ import com.unimelb.gof.wesnap.util.GlideUtil;
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class MessagesActivity extends BaseActivity {
+public class MessagesActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MessagesActivity";
 
-    private static final int COLOR_SELF = R.color.colorSenderRed;
-    private static final int COLOR_OTHER = R.color.colorSenderGreen;
     public static final String EXTRA_CHAT_ID = "chat_id";
     public static final String EXTRA_CHAT_TITLE = "chat_title";
+    private static final int COLOR_SELF = R.color.colorSenderRed;
+    private static final int COLOR_OTHER = R.color.colorSenderGreen;
+    private static int RESULT_LOAD_IMAGE = 1;
 
     /* Firebase Database */
     private String idChat;
     private DatabaseReference refChatMessages;
     private String idCurrentUser;
     private DatabaseReference refCurrentUser;
+
+    /* Firebase Storage */
+    private StorageReference refChatStorage;
 
     /* UI components */
     private RecyclerView mMessageRecyclerView;
@@ -82,6 +95,9 @@ public class MessagesActivity extends BaseActivity {
         // get current chat ref
         refChatMessages = FirebaseUtil.getMessagesRef().child(idChat);
 
+        /* Firebase Storage */
+        refChatStorage = FirebaseUtil.getChatsStorage().child(idChat);
+
         /* UI */
         // top: title text
         mChatTitle = (TextView) findViewById(R.id.text_title_messages);
@@ -89,8 +105,10 @@ public class MessagesActivity extends BaseActivity {
 
         // bottom: input field & buttons
         mMessageUploadPhoto = (ImageButton) findViewById(R.id.button_upload_photo);
+        mMessageUploadPhoto.setOnClickListener(this);
         mMessageEditText = (EditText) findViewById(R.id.field_text_message);
         mMessageSendButton = (ImageButton) findViewById(R.id.button_send_message);
+        mMessageUploadPhoto.setOnClickListener(this);
 
         // middle: RecyclerView
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.recycler_messages);
@@ -99,8 +117,6 @@ public class MessagesActivity extends BaseActivity {
         setupRecyclerAdapter();
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
-
-        setupButtonListener();
     }
 
     // ======================================================
@@ -129,11 +145,13 @@ public class MessagesActivity extends BaseActivity {
                 viewHolder.messageSenderNameView.setText(message.getSenderDisplayedName());
 
                 if (!message.isPhoto()) {
+                    Log.e(TAG, "msgType=text");
                     /* message in text */
                     viewHolder.messengeImageButtonView.setVisibility(View.GONE);
                     viewHolder.messengeTextView.setVisibility(View.VISIBLE);
                     viewHolder.messengeTextView.setText(message.getMessageBody());
                 } else {
+                    Log.e(TAG, "msgType=photo");
                     /* photo message */
                     viewHolder.messengeImageButtonView.setVisibility(View.VISIBLE);
                     viewHolder.messengeTextView.setVisibility(View.GONE);
@@ -211,38 +229,109 @@ public class MessagesActivity extends BaseActivity {
         // [END setting up mFirebaseAdapter]
     }
 
+    // ========================================================
+    /* onClick(): perform the requested actions by the clicked buttons */
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        switch(i) {
+            case R.id.button_upload_photo:
+                pickLocalPhoto();
+                break;
+            case R.id.button_send_message:
+                sendMessage();
+                break;
+        }
+    }
+
     // ======================================================
-    private void setupButtonListener() {
-        /* upload photo */
-        mMessageUploadPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO choose photo from local memory
-            }
-        });
+    /* Choose a photo from local */
+    private void pickLocalPhoto() {
+        Log.d(TAG, "pickLocalPhoto");
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, RESULT_LOAD_IMAGE);
+    }
 
-        /* send message */
-        mMessageSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO check for message data
-                String text = mMessageEditText.getText().toString();
-                Message m;
-                if (text.length() > 0) { /* text message */
-                    // send out a text message
-                    m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), text, false);
-                    FirebaseUtil.getChatsRef().child(idChat).child("lastMessageBody").setValue(text);
-                    // clear the text input field
-                    mMessageEditText.setText("");
-                } else { /* photo message */
-                    // TODO save photo to firebase storage & get url
-                    m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), "dummy", false);
-                }
+    // ======================================================
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult:code:" + requestCode);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            // Get the local uri of the photo
+            Uri selectedImageUri = data.getData();
+            uploadFromUri(selectedImageUri);
+        }
+    }
 
-                // TODO create & send new message instance
-                refChatMessages.push().setValue(m);
-            }
-        });
+    // ======================================================
+    /* Upload local photo to Firebase Storage */
+    private void uploadFromUri(Uri fileUri) {
+        Log.d(TAG, "uploadFromUri:src:" + fileUri.toString());
+        final String filename = fileUri.getLastPathSegment();
+
+        // Upload file to Firebase Storage
+        showProgressDialog();
+        final StorageReference photoRef = refChatStorage.child(filename);
+        Log.d(TAG, "uploadFromUri:dst:" + photoRef.getPath());
+        photoRef.putFile(fileUri)
+                .addOnSuccessListener(MessagesActivity.this,
+                        new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // Upload succeeded
+                                Log.d(TAG, "uploadFromUri:onSuccess");
+                                // Get the public download URL (not used!!!)
+                                Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                                // Create new message instance with the photo
+                                Message message = new Message(idCurrentUser, AppParams.getMyDisplayedName(), downloadUrl.toString(), true);
+                                // Save to Firebase Database
+                                FirebaseUtil.getChatsRef().child(idChat).child("lastMessageBody").setValue("Tap to view new photo!");
+                                refChatMessages.push().setValue(message);
+                                // update UI
+                                hideProgressDialog();
+                                Toast.makeText(MessagesActivity.this, "Photo sent",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                .addOnFailureListener(MessagesActivity.this,
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Upload failed
+                                Log.w(TAG, "uploadFromUri:onFailure", exception);
+                                // Get the public download URL (not used!!!)
+                                Uri downloadUrl = null;
+                                // update UI
+                                hideProgressDialog();
+                                Toast.makeText(MessagesActivity.this, "Error: upload failed",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+    }
+
+
+    // ======================================================
+    /* Send message */
+    private void sendMessage() {
+        Log.d(TAG, "sendMessage");
+        // TODO check for message data
+        String text = mMessageEditText.getText().toString();
+        Message m;
+        if (text.length() > 0) { /* text message */
+            // send out a text message
+            m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), text, false);
+            FirebaseUtil.getChatsRef().child(idChat).child("lastMessageBody").setValue(text);
+            // clear the text input field
+            mMessageEditText.setText("");
+        } else { /* photo message */
+            // TODO save photo to firebase storage & get url
+            m = new Message(idCurrentUser, AppParams.getMyDisplayedName(), "dummy", false);
+        }
+
+        // TODO create & send new message instance
+        refChatMessages.push().setValue(m);
     }
 
     // ======================================================

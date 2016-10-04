@@ -21,8 +21,8 @@ public class Message {
     // messageBody: message text or photoUrl
     private String messageBody;
 
-    // isPhoto: false for text messages
-    private boolean isPhoto;
+    // photo: false for text messages
+    private boolean photo;
 
     // timeToLive:
     // positive int for photo taken in app (timeout rule);
@@ -37,18 +37,18 @@ public class Message {
 
     // without timeToLive
     public Message(String senderUid, String senderDisplayedName,
-                   String messageBody, boolean isPhoto) {
-        this(senderUid, senderDisplayedName, messageBody, isPhoto, -1);
+                   String messageBody, boolean photo) {
+        this(senderUid, senderDisplayedName, messageBody, photo, -1);
     }
 
     // with timeToLive
     public Message(String senderUid, String senderDisplayedName,
-                   String messageBody, boolean isPhoto, int timeToLive) {
+                   String messageBody, boolean photo, int timeToLive) {
         this.senderUid = senderUid;
         this.senderDisplayedName = senderDisplayedName;
 
         this.messageBody = messageBody;
-        this.isPhoto = isPhoto;
+        this.photo = photo;
         this.timeToLive = timeToLive;
 
         this.isViewed = false;
@@ -69,7 +69,7 @@ public class Message {
     }
 
     public boolean isPhoto() {
-        return isPhoto;
+        return photo;
     }
 
     public boolean isViewed() {
@@ -88,7 +88,7 @@ public class Message {
         result.put("senderUid", this.senderUid);
         result.put("senderDisplayedName", this.senderDisplayedName);
         result.put("messageBody", this.messageBody);
-        result.put("isPhoto", this.isPhoto);
+        result.put("photo", this.photo);
         result.put("isViewed", this.isViewed);
         result.put("timeToLive", this.timeToLive);
         return result;
