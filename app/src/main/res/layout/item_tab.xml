@@ -8,6 +8,7 @@
 
     <ImageView
         android:id="@+id/icon_tab"
+        android:paddingTop="@dimen/size_edges_small"
         android:contentDescription="@string/desc_tab_icon"
         android:layout_width="@dimen/size_icon_tab"
         android:layout_height="@dimen/size_icon_tab" />

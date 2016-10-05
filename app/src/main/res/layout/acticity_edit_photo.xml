@@ -1,70 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/main_edit_photo">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_edit_photo"
+    <ImageView
+        android:id="@+id/iv_show"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        android:layout_height="match_parent"
+        android:background="@color/colorGreyLight"
+        android:contentDescription="@string/text_current_photo_path"
+        android:visibility="visible" >
+    </ImageView>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignTop="@+id/iv_show"
+        android:layout_alignEnd="@+id/iv_show" >
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/iv_show"
-            android:contentDescription="@string/text_current_photo_path"
-            android:visibility="visible">
-        </ImageView>
+        <ImageButton
+            android:id="@+id/bt_set_timer"
+            android:src="@drawable/ic_action_set_timer"
+            android:contentDescription="@string/action_set_timer"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <ImageButton
+            android:id="@+id/bt_freehand"
+            android:src="@drawable/ic_action_photo_freehand"
+            android:contentDescription="@string/action_draw_free_hand"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
+        <ImageButton
+            android:id="@+id/bt_text"
+            android:src="@drawable/ic_action_photo_text"
+            android:contentDescription="@string/action_draw_text"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
+        <ImageButton
+            android:id="@+id/bt_emoji"
+            android:src="@drawable/ic_action_photo_emoji"
+            android:contentDescription="@string/action_draw_emoji"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@+id/iv_show"
+        android:layout_alignStart="@+id/iv_show" >
+
+        <ImageButton
+            android:id="@+id/bt_save_to_memory"
+            android:src="@drawable/ic_action_to_memory"
+            android:contentDescription="@string/action_save_to_memory"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <ImageButton
+            android:id="@+id/bt_save_to_story"
+            android:src="@drawable/ic_action_to_story"
+            android:contentDescription="@string/action_save_to_story"
+            android:elevation="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
     </LinearLayout>
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/bt_send"
         android:text="@string/action_send_photo"
-        android:theme="@style/ThemeOverlay.MyDarkButton"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:drawableStart="@drawable/ic_action_send"
+        android:drawablePadding="@dimen/size_edges_small"
+        android:layout_alignBottom="@+id/iv_show"
+        android:layout_alignEnd="@+id/iv_show"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ll_buttons"
-        android:orientation="horizontal"
-        >
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bt_freehand"
-            android:layout_weight="1"
-            android:text="@string/action_draw_free_hand"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/bt_emoji"
-            android:layout_weight="1"
-            android:text="@string/action_draw_emoji"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/bt_text"
-            android:layout_weight="1"
-            android:text="@string/action_draw_text"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
-    </LinearLayout>
-
-
-</LinearLayout>
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+</RelativeLayout>

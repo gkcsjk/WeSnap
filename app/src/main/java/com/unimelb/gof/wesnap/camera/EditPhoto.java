@@ -6,8 +6,6 @@ import android.graphics.Matrix;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.unimelb.gof.wesnap.BaseActivity;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -15,11 +13,11 @@ import java.io.IOException;
  * Created by Karl on 3/10/2016.
  */
 
-public class BaseEditPhotoActivity extends BaseActivity {
+public class EditPhoto {
 
     public static final String PATH_RECEIVER = "path_receiver";
 
-    public Bitmap setPic( String mCurrentPath ) {
+    public static Bitmap setPic( String mCurrentPath ) {
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = false;
@@ -31,7 +29,7 @@ public class BaseEditPhotoActivity extends BaseActivity {
         return bitmap;
     }
 
-    public void savePic( String mCurrentPath, Bitmap mBitmap ) {
+    public static void savePic( String mCurrentPath, Bitmap mBitmap ) {
 
         FileOutputStream out = null;
         try {
@@ -50,7 +48,7 @@ public class BaseEditPhotoActivity extends BaseActivity {
         }
     }
 
-    public Bitmap setPic(String mCurrentPath, ImageView mImageView) {
+    public static Bitmap setPic(String mCurrentPath, ImageView mImageView) {
 		/* Get the size of the ImageView */
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
@@ -79,7 +77,7 @@ public class BaseEditPhotoActivity extends BaseActivity {
         return bitmap;
     }
 
-    public Bitmap setPic(String mCurrentPath, int w, int h) {
+    public static Bitmap setPic(String mCurrentPath, int w, int h) {
         Log.d("current path",mCurrentPath);
 		/* Get the size of the image */
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -104,7 +102,7 @@ public class BaseEditPhotoActivity extends BaseActivity {
         return bitmap;
     }
 
-    public Bitmap resizeBitmap( Bitmap mBitmap, int w, int h){
+    public static Bitmap resizeBitmap( Bitmap mBitmap, int w, int h){
         int photoHeight = mBitmap.getHeight();
         int photoWidth = mBitmap.getWidth();
         float scaleWidth = ((float) w) / photoWidth;

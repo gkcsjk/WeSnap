@@ -16,13 +16,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 
 /**
  * Created by Karl on 3/10/2016.
  */
 
-public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnClickListener{
+public class TextDrawActivity extends BaseActivity implements View.OnClickListener{
 
     private ImageView mImageview;
     private TextView mTextView;
@@ -41,7 +42,7 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
         setContentView(R.layout.activity_draw_text);
 
         Intent intent = getIntent();
-        mCurrentPath = intent.getStringExtra(PATH_RECEIVER);
+        mCurrentPath = intent.getStringExtra(EditPhoto.PATH_RECEIVER);
         mImageview = (ImageView) findViewById(R.id.iv_show);
         mTextView = (TextView) findViewById(R.id.tv_tip);
         mEditText = (EditText) findViewById(R.id.et_text);
@@ -49,7 +50,7 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
         mButton1.setOnClickListener(this);
         mButton2 = (Button) findViewById(R.id.bt_set);
         mButton2.setOnClickListener(this);
-        mBitmap = setPic(mCurrentPath, mImageview);
+        mBitmap = EditPhoto.setPic(mCurrentPath, mImageview);
         mCanvas = new Canvas(mBitmap);
         y = mImageview.getY();
         x = mImageview.getX();
@@ -102,7 +103,7 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isFinishing()) {
-                savePic(mCurrentPath, mBitmap);
+                EditPhoto.savePic(mCurrentPath, mBitmap);
                 finish();
             }
             return true;

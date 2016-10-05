@@ -16,6 +16,9 @@ import java.util.Map;
 public class AppParams {
     private static final String TAG = "AppParams";
 
+    public static int DEFAULT_TTL = 3;
+    public static int NO_TTL = -1;
+
     // ======================================================
     /* WeSnap Dev Team */
     public static final String ID_DEV_TEAM = "ZqiNmgsuE1hJlHOFZNnTSot8l882";

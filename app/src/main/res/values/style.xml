@@ -5,6 +5,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:typeface">monospace</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 

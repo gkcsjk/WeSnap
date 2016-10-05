@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,6 +29,8 @@ import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
+import java.io.File;
+
 
 /**
  * MessagesActivity
@@ -46,6 +49,9 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
     private static final int COLOR_SELF = R.color.colorSenderRed;
     private static final int COLOR_OTHER = R.color.colorSenderGreen;
     private static int RESULT_LOAD_IMAGE = 1;
+
+    public static final String EXTRA_PHOTO_PATH = "photo_path";
+    public static final String EXTRA_TIME_TO_LIVE = "time_to_live";
 
     /* Firebase Database */
     private String idChat;
@@ -97,6 +103,20 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
 
         /* Firebase Storage */
         refChatStorage = FirebaseUtil.getChatsStorage().child(idChat);
+
+        /* Send out photo if passed */
+        String photoPath = getIntent().getStringExtra(EXTRA_PHOTO_PATH);
+        int timeToLive = getIntent().getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.NO_TTL);
+        if (photoPath != null && timeToLive > 0) {
+            Log.e(TAG, "EXTRA_PHOTO_PATH = " + photoPath);
+            Log.e(TAG, "EXTRA_TIME_TO_LIVE = " + timeToLive);
+
+            File photoFile = new File(photoPath);
+            Uri photoUri = FileProvider.getUriForFile(MessagesActivity.this,
+                    "com.unimelb.gof.wesnap.fileprovider",
+                    photoFile);
+            photoUploadAndSend(photoUri);
+        }
 
         /* UI */
         // top: title text
@@ -261,32 +281,37 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             // Get the local uri of the photo
             Uri selectedImageUri = data.getData();
-            uploadFromUri(selectedImageUri);
+            photoUploadAndSend(selectedImageUri);
         }
     }
 
     // ======================================================
-    /* Upload local photo to Firebase Storage */
-    private void uploadFromUri(Uri fileUri) {
-        Log.d(TAG, "uploadFromUri:src:" + fileUri.toString());
+    /** photoUploadAndSend()
+     * @params Uri fileUri
+     *
+     * Upload local photo to Firebase Storage, and then send photo message
+     * by creating a new message instance and saving it to Firebase Database
+     * */
+    private void photoUploadAndSend(Uri fileUri) {
+        Log.d(TAG, "photoUploadAndSend:src:" + fileUri.toString());
         final String filename = fileUri.getLastPathSegment();
 
         // Upload file to Firebase Storage
         showProgressDialog();
         final StorageReference photoRef = refChatStorage.child(filename);
-        Log.d(TAG, "uploadFromUri:dst:" + photoRef.getPath());
+        Log.d(TAG, "photoUploadAndSend:dst:" + photoRef.getPath());
         photoRef.putFile(fileUri)
                 .addOnSuccessListener(MessagesActivity.this,
                         new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 // Upload succeeded
-                                Log.d(TAG, "uploadFromUri:onSuccess");
+                                Log.d(TAG, "photoUploadAndSend:onSuccess");
                                 // Get the public download URL (not used!!!)
                                 Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
                                 // Create new message instance with the photo
                                 Message message = new Message(idCurrentUser, AppParams.getMyDisplayedName(), downloadUrl.toString(), true);
-                                // Save to Firebase Database
+                                // Save to Firebase Database (i.e. send photo message)
                                 FirebaseUtil.getChatsRef().child(idChat).child("lastMessageBody").setValue("Tap to view new photo!");
                                 refChatMessages.push().setValue(message);
                                 // update UI
@@ -300,7 +325,7 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Upload failed
-                                Log.w(TAG, "uploadFromUri:onFailure", exception);
+                                Log.w(TAG, "photoUploadAndSend:onFailure", exception);
                                 // Get the public download URL (not used!!!)
                                 Uri downloadUrl = null;
                                 // update UI
@@ -310,7 +335,6 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
                             }
                         });
     }
-
 
     // ======================================================
     /* Send message */

@@ -23,6 +23,7 @@ import com.unimelb.gof.wesnap.friend.FriendItemViewHolder;
 import com.unimelb.gof.wesnap.friend.FriendRequest;
 import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
@@ -40,7 +41,9 @@ import java.util.List;
  */
 public class ChooseFriendActivity extends BaseActivity {
     private static final String TAG = "ChooseFriendActivity";
-    public static final String EXTRA_PHTOT_PATH = "extra_photo_path";
+
+    public static final String EXTRA_TIME_TO_LIVE = "time_to_live";
+    public static final String EXTRA_PHOTO_PATH = "photo_path";
 
     /* UI Variables */
     public RecyclerView mFriendsRecyclerView;
@@ -290,10 +293,13 @@ public class ChooseFriendActivity extends BaseActivity {
     /* Direct User to an existing chat */
     private void goToChat(String chatId, String chatTitle) {
         Log.d(TAG, "goToChat:id=" + chatId);
+
         Intent intent = new Intent(ChooseFriendActivity.this, MessagesActivity.class);
         intent.putExtra(MessagesActivity.EXTRA_CHAT_ID, chatId);
         intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, chatTitle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // TODO proper flag?
+        intent.putExtra(MessagesActivity.EXTRA_PHOTO_PATH, getIntent().getStringExtra(EXTRA_PHOTO_PATH));
+        intent.putExtra(MessagesActivity.EXTRA_TIME_TO_LIVE, getIntent().getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.NO_TTL));
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
