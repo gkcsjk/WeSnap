@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".EditPhotoActivity">
+
+    <item
+        android:id="@+id/bt_freehand"
+        android:title="@string/action_draw_free_hand"
+        android:icon="@drawable/ic_action_photo_draw"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/bt_text"
+        android:title="@string/action_draw_text"
+        android:icon="@drawable/ic_action_photo_text"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/bt_emoji"
+        android:title="@string/action_draw_emoji"
+        android:icon="@drawable/ic_action_photo_emoji"
+        app:showAsAction="ifRoom" />
+</menu>
