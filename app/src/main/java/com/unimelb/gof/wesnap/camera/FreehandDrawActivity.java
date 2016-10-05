@@ -13,12 +13,14 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.unimelb.gof.wesnap.BaseActivity;
+
 
 /**
  * Created by Karl on 2/10/2016.
  */
 
-public class FreehandDrawActivity extends BaseEditPhotoActivity {
+public class FreehandDrawActivity extends BaseActivity {
     DrawingView dv;
     private Paint mPaint;
     private Bitmap mBitmap;
@@ -28,8 +30,8 @@ public class FreehandDrawActivity extends BaseEditPhotoActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        mCurrentPath = intent.getStringExtra(PATH_RECEIVER);
-        mBitmap = setPic(mCurrentPath);
+        mCurrentPath = intent.getStringExtra(EditPhoto.PATH_RECEIVER);
+        mBitmap = EditPhoto.setPic(mCurrentPath);
         dv = new DrawingView(this);
         setContentView(dv);
         mPaint = new Paint();
@@ -70,7 +72,7 @@ public class FreehandDrawActivity extends BaseEditPhotoActivity {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            mBitmap = resizeBitmap(mBitmap, w, h);
+            mBitmap = EditPhoto.resizeBitmap(mBitmap, w, h);
             mCanvas = new Canvas(mBitmap);
         }
 
@@ -143,7 +145,7 @@ public class FreehandDrawActivity extends BaseEditPhotoActivity {
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isFinishing()) {
-                savePic(mCurrentPath, mBitmap);
+                EditPhoto.savePic(mCurrentPath, mBitmap);
                 finish();
             }
             return true;

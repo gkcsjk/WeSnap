@@ -50,6 +50,9 @@
     <string name="action_draw_free_hand">Free Draw</string>
     <string name="action_draw_emoji">Emoji</string>
     <string name="action_draw_text">Text</string>
+    <string name="action_save_to_memory">Save to memory</string>
+    <string name="action_save_to_story">Save to story</string>
+    <string name="action_set_timer">Set timer</string>
     <string name="action_send_photo">Send</string>
     <string name="action_clear">Clear</string>
     <string name="action_set">Set</string>

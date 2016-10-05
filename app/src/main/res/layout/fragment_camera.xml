@@ -4,54 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".fragment.CameraFragment">
+    tools:context=".fragment.CameraFragment" >
 
-    <TextView
-        android:id="@+id/text_title_camera"
-        android:text="@string/text_title_camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:textAlignment="center"
-        android:layout_gravity="center_vertical"/>
+    <!--<TextView-->
+        <!--android:id="@+id/text_title_camera"-->
+        <!--android:text="@string/text_title_camera"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Title"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:textAlignment="center"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_above="@+id/button_start_camera"-->
+        <!--android:paddingBottom="@dimen/size_edges"/>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/button_start_camera"
+        android:text="@string/action_camera"
+        android:drawableTop="@drawable/ic_action_camera"
+        android:drawablePadding="@dimen/size_edges_small"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_start_camera"
-            android:text="@string/action_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="visible"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/action_edit_photo"
-            android:visibility="gone"
-            android:id="@+id/button_edit_photo"
-            android:theme="@style/ThemeOverlay.MyDarkButton"/>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/image_preview_camera"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="30dp"
-        android:contentDescription="@string/action_camera"
-        android:visibility="gone" />
+        android:theme="@style/ThemeOverlay.MyDarkButton"
+        android:layout_marginTop="@dimen/size_spaces"/>
 </LinearLayout>
