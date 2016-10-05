@@ -4,20 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
 
 import com.unimelb.gof.wesnap.R;
 
-public class EditPhotoActivity extends BaseEditPhotoActivity
-{
-
+public class EditPhotoActivity extends BaseEditPhotoActivity {
     private static final String TAG = "EditPhotoActivity";
     private String mCurrentPhotoPath;
 //    private Button mButtonSend;
@@ -42,8 +40,8 @@ public class EditPhotoActivity extends BaseEditPhotoActivity
 //        mButton3.setOnClickListener(this);
 //        mButtonSend = (Button) findViewById(R.id.bt_send);
 //        mButtonSend.setOnClickListener(this);
-
         mImageView = (ImageView) findViewById(R.id.iv_show);
+
     }
 
     // ========================================================
@@ -56,17 +54,10 @@ public class EditPhotoActivity extends BaseEditPhotoActivity
     // ========================================================
     /* onCreateOptionsMenu()
      * Inflate the menu: add items to the action bar if it is present */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit_photo, menu);
-        return true;
-    }
 
-    /* onOptionsItemSelected()
-     * Handle action bar item clicks */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.bt_freehand:
                 Intent freehandIntent = new Intent(this, FreehandDrawActivity.class);
                 freehandIntent.putExtra(PATH_RECEIVER, mCurrentPhotoPath);
@@ -83,15 +74,14 @@ public class EditPhotoActivity extends BaseEditPhotoActivity
                 startActivity(textIntent);
                 break;
             case R.id.bt_send:
-                sendPhoto();
+                //sendPhoto();
                 break;
             default:
                 break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    private void sendPhoto(){
+    private void sendPhoto() {
         Toast.makeText(EditPhotoActivity.this,
                 R.string.action_send_photo,
                 Toast.LENGTH_SHORT).show();
@@ -101,5 +91,4 @@ public class EditPhotoActivity extends BaseEditPhotoActivity
 //        startActivity(sendPhotoIntent);
 //        finish();
     }
-
 }
