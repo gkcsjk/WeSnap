@@ -28,7 +28,7 @@ public class FreehandDrawActivity extends BaseEditPhotoActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        mCurrentPath = intent.getStringExtra("EditPhoto Activity");
+        mCurrentPath = intent.getStringExtra(PATH_RECEIVER);
         mBitmap = setPic(mCurrentPath);
         dv = new DrawingView(this);
         setContentView(dv);
@@ -70,8 +70,7 @@ public class FreehandDrawActivity extends BaseEditPhotoActivity {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            mBitmap = Bitmap.createScaledBitmap(
-                    mBitmap, w, h, true);
+            mBitmap = resizeBitmap(mBitmap, w, h);
             mCanvas = new Canvas(mBitmap);
         }
 

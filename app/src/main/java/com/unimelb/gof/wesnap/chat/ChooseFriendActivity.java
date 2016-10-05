@@ -40,6 +40,7 @@ import java.util.List;
  */
 public class ChooseFriendActivity extends BaseActivity {
     private static final String TAG = "ChooseFriendActivity";
+    public static final String EXTRA_PHTOT_PATH = "extra_photo_path";
 
     /* UI Variables */
     public RecyclerView mFriendsRecyclerView;
