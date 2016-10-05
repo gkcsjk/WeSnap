@@ -34,7 +34,6 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
     private Paint mPaint;
     private String mText;
     private float x,y;
-    private float density;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
         setContentView(R.layout.activity_draw_text);
 
         Intent intent = getIntent();
-        mCurrentPath = intent.getStringExtra("EditPhoto Activity");
+        mCurrentPath = intent.getStringExtra(PATH_RECEIVER);
         mImageview = (ImageView) findViewById(R.id.iv_show);
         mTextView = (TextView) findViewById(R.id.tv_tip);
         mEditText = (EditText) findViewById(R.id.et_text);
@@ -51,9 +50,7 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
         mButton2 = (Button) findViewById(R.id.bt_set);
         mButton2.setOnClickListener(this);
         mBitmap = setPic(mCurrentPath, mImageview);
-        mImageview.setImageBitmap(mBitmap);
         mCanvas = new Canvas(mBitmap);
-        density = (float) mCanvas.getDensity()/100;
         y = mImageview.getY();
         x = mImageview.getX();
 
@@ -70,8 +67,6 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
                 return true;
             }
         });
-
-
     }
 
     @Override
@@ -97,10 +92,9 @@ public class TextDrawActivity extends BaseEditPhotoActivity implements View.OnCl
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.GREEN);
         mPaint.setTextSize(150);
-        mCanvas.drawText(mText ,density*x, density*y, mPaint);
-        Log.d("123", String.valueOf(x)+"  " +String.valueOf(y) + "  " + String.valueOf(density));
+        mCanvas.drawText(mText ,x, y, mPaint);
+        Log.d("123", String.valueOf(x)+"  " +String.valueOf(y));
         mImageview.setImageBitmap(mBitmap);
-
     }
 
     @Override

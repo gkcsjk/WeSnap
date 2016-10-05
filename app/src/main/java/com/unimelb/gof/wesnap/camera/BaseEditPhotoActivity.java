@@ -2,8 +2,8 @@ package com.unimelb.gof.wesnap.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.ImageView;
 
 import com.unimelb.gof.wesnap.BaseActivity;
@@ -17,6 +17,7 @@ import java.io.IOException;
 
 public class BaseEditPhotoActivity extends BaseActivity {
 
+    public static final String PATH_RECEIVER = "path_receiver";
 
     public Bitmap setPic( String mCurrentPath ) {
 
@@ -75,7 +76,52 @@ public class BaseEditPhotoActivity extends BaseActivity {
 		/* Decode the JPEG file into a Bitmap */
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
-
         return bitmap;
+    }
+
+    public Bitmap setPic(String mCurrentPath, int w, int h) {
+        Log.d("current path",mCurrentPath);
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        /* Figure out which way needs to be reduced less */
+        int scaleFactor = 1;
+        if ((w > 0) || (h > 0)) {
+            scaleFactor = Math.min(photoW/w, photoH/h);
+        }
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inMutable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPath, bmOptions);
+        return bitmap;
+    }
+
+    public Bitmap resizeBitmap( Bitmap mBitmap, int w, int h){
+        int photoHeight = mBitmap.getHeight();
+        int photoWidth = mBitmap.getWidth();
+        float scaleWidth = ((float) w) / photoWidth;
+        float scaleHeight = ((float) h) / photoHeight;
+        float scaleFactor = 1;
+        if ((w > 0) || (h > 0)) {
+            scaleFactor = Math.min(scaleWidth, scaleHeight);
+        }
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleFactor, scaleFactor);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                mBitmap, 0, 0, photoWidth, photoHeight, matrix, false);
+        mBitmap.recycle();
+        return resizedBitmap;
     }
 }
