@@ -19,8 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.friend.FriendHandler;
 import com.unimelb.gof.wesnap.friend.FriendItemViewHolder;
-import com.unimelb.gof.wesnap.friend.FriendRequest;
 import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
@@ -121,7 +121,7 @@ public class ChooseFriendActivity extends BaseActivity {
                                     Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
                                     if (!dataSnapshot.exists()) {
                                         Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
-                                        FriendRequest.removeFriendAfromB(
+                                        FriendHandler.removeFriendAfromB(
                                                 newFriendId, FirebaseUtil.getCurrentUserId());
                                         return;
                                     }

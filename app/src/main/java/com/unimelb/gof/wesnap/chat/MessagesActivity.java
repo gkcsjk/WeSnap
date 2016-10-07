@@ -104,7 +104,7 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
         /* Firebase Storage */
         refChatStorage = FirebaseUtil.getChatsStorage().child(idChat);
 
-        /* Send out photo if passed */
+        /* Send out initial photo if passed */
         String photoPath = getIntent().getStringExtra(EXTRA_PHOTO_PATH);
         int timeToLive = getIntent().getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.NO_TTL);
         if (photoPath != null && timeToLive > 0) {
@@ -286,7 +286,7 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
     }
 
     // ======================================================
-    /** photoUploadAndSend()
+    /** photoUploadAndSend() TODO move this method to "PhotoUploader"
      * @params Uri fileUri
      *
      * Upload local photo to Firebase Storage, and then send photo message
