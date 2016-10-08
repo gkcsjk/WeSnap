@@ -15,6 +15,8 @@
     <string name="hint_password">Password</string>
     <string name="hint_username">Username</string>
     <string name="hint_display_name">Your Name</string>
+    <string name="hint_device_name">Device Name</string>
+    <string name="hint_mac_address">MAC Address</string>
     <string name="action_login">Login</string>
     <string name="action_register">Register</string>
     <string name="status_empty"> </string>
@@ -29,7 +31,9 @@
     <string name="action_search_username">Add by Username</string>
     <string name="action_share_username">Share My Username</string>
     <string name="action_share_username_to">Share my username to ...</string>
-    <string name="action_other_options">Other ?? Search Nearby ??</string>
+    <string name="action_other_options">Search Nearby</string>
+    <string name="text_paired_title">Paired Devices</string>
+    <string name="text_discover_title">Discovered Devices</string>
 
     <!--Messages-->
     <string name="action_search_my_friends">Search My Friends</string>
