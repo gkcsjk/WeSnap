@@ -1,11 +1,16 @@
 package com.unimelb.gof.wesnap.camera;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.unimelb.gof.wesnap.BaseActivity;
@@ -13,8 +18,12 @@ import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
 
 import com.unimelb.gof.wesnap.util.AppParams;
+import com.unimelb.gof.wesnap.util.PhotoUploader;
+
+import java.io.File;
 
 public class EditPhotoActivity extends BaseActivity implements View.OnClickListener {
+
     private static final String TAG = "EditPhotoActivity";
     public static final String EXTRA_PHOTO_PATH = "photo_path";
 
@@ -26,6 +35,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     private ImageButton mButtonSaveMemory;
     private ImageButton mButtonSaveStory;
     private ImageButton mButtonSetTimer;
+    private Dialog mDialog;
     private ImageButton mButtonFreehand;
     private ImageButton mButtonText;
     private ImageButton mButtonEmoji;
@@ -51,6 +61,9 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
         mButtonSetTimer = (ImageButton) findViewById(R.id.bt_set_timer);
         mButtonSetTimer.setOnClickListener(this);
+        mDialog = new Dialog(EditPhotoActivity.this);
+        mDialog.setTitle("Photo Timer");
+        mDialog.setContentView(R.layout.number_picker_dialog);
 
         mButtonSend = (Button) findViewById(R.id.bt_send);
         mButtonSend.setOnClickListener(this);
@@ -65,7 +78,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        EditPhoto.setPic(mCurrentPhotoPath, mImageView);
+        PhotoEditor.setPic(mCurrentPhotoPath, mImageView);
     }
 
     // ========================================================
@@ -75,7 +88,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         switch(v.getId()) {
             case R.id.bt_freehand:
                 Intent freehandIntent = new Intent(this, FreehandDrawActivity.class);
-                freehandIntent.putExtra(EditPhoto.PATH_RECEIVER, mCurrentPhotoPath);
+                freehandIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
                 startActivity(freehandIntent);
                 break;
             case R.id.bt_emoji:
@@ -84,16 +97,16 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
                         R.string.action_draw_emoji,
                         Toast.LENGTH_SHORT).show();
 //                Intent emojiIntent = new Intent(this, EmojiDrawActivity.class);
-//                emojiIntent.putExtra(EditPhoto.PATH_RECEIVER, mCurrentPhotoPath);
+//                emojiIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
 //                startActivity(emojiIntent);
                 break;
             case R.id.bt_text:
                 Intent textIntent = new Intent(this, TextDrawActivity.class);
-                textIntent.putExtra(EditPhoto.PATH_RECEIVER, mCurrentPhotoPath);
+                textIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
                 startActivity(textIntent);
                 break;
             case R.id.bt_set_timer:
-                // TODO set timer alert dialog???
+                showNumberPicker();
                 break;
             case R.id.bt_send:
                 sendPhoto();
@@ -110,6 +123,44 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     }
 
     // ========================================================
+    /* Show the NumberPicker dialog for setting timer on photo */
+    private void showNumberPicker() {
+        Log.d(TAG, "showNumberPicker");
+
+        final NumberPicker numberPicker = (NumberPicker) mDialog.findViewById(R.id.number_picker);
+        numberPicker.setMinValue(AppParams.MIN_TTL);
+        numberPicker.setMaxValue(AppParams.MAX_TTL);
+        numberPicker.setWrapSelectorWheel(true);
+        numberPicker.setOnValueChangedListener(
+                new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        Log.d(TAG, "showNumberPicker:newValue=" + newVal);
+                    }
+                });
+
+        Button btConfirm = (Button) mDialog.findViewById(R.id.button_confirm_timer);
+        btConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTimeToLive = numberPicker.getValue();
+                mDialog.dismiss();
+            }
+        });
+
+        Button btCancel = (Button) mDialog.findViewById(R.id.button_cancel_timer);
+        btCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+
+        mDialog.show();
+    }
+
+    // ========================================================
+    /* Send the photo to friends */
     private void sendPhoto() {
         Intent sendPhotoIntent = new Intent(this, ChooseFriendActivity.class);
         sendPhotoIntent.putExtra(ChooseFriendActivity.EXTRA_PHOTO_PATH, mCurrentPhotoPath);
@@ -119,14 +170,16 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     }
 
     // ========================================================
+    /* Save as current user's "memory" */
     private void saveMemory() {
-        // TODO saveMemory
-        Toast.makeText(EditPhotoActivity.this,
-                R.string.action_save_to_memory,
-                Toast.LENGTH_SHORT).show();
+        File photoFile = new File(mCurrentPhotoPath);
+        Uri photoUri = FileProvider.getUriForFile(EditPhotoActivity.this,
+                AppParams.FILEPROVIDER, photoFile);
+        PhotoUploader.uploadToMemories(photoUri, EditPhotoActivity.this);
     }
 
     // ========================================================
+    /* Share as current user's "story" */
     private void saveStory() {
         // TODO saveStory
         Toast.makeText(EditPhotoActivity.this,

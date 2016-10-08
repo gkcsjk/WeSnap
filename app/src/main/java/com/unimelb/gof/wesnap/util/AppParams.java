@@ -16,8 +16,12 @@ import java.util.Map;
 public class AppParams {
     private static final String TAG = "AppParams";
 
-    public static int DEFAULT_TTL = 3;
     public static int NO_TTL = -1;
+    public static int DEFAULT_TTL = 3;
+    public static int MIN_TTL = 1;
+    public static int MAX_TTL = 10;
+
+    public static String FILEPROVIDER = "com.unimelb.gof.wesnap.fileprovider";
 
     // ======================================================
     /* WeSnap Dev Team */

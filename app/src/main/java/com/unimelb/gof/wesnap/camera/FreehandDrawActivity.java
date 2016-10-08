@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,8 +29,8 @@ public class FreehandDrawActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        mCurrentPath = intent.getStringExtra(EditPhoto.PATH_RECEIVER);
-        mBitmap = EditPhoto.setPic(mCurrentPath);
+        mCurrentPath = intent.getStringExtra(PhotoEditor.PATH_RECEIVER);
+        mBitmap = PhotoEditor.setPic(mCurrentPath);
         dv = new DrawingView(this);
         setContentView(dv);
         mPaint = new Paint();
@@ -72,7 +71,7 @@ public class FreehandDrawActivity extends BaseActivity {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            mBitmap = EditPhoto.resizeBitmap(mBitmap, w, h);
+            mBitmap = PhotoEditor.resizeBitmap(mBitmap, w, h);
             mCanvas = new Canvas(mBitmap);
         }
 
@@ -145,7 +144,7 @@ public class FreehandDrawActivity extends BaseActivity {
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isFinishing()) {
-                EditPhoto.savePic(mCurrentPath, mBitmap);
+                PhotoEditor.savePic(mCurrentPath, mBitmap);
                 finish();
             }
             return true;

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.unimelb.gof.wesnap.R;
-import com.unimelb.gof.wesnap.chat.StartChat;
+import com.unimelb.gof.wesnap.chat.ChatStarter;
 
 /**
  * FriendItemViewHolder
@@ -44,7 +44,7 @@ public class FriendItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 // send friend requests to "mResultUid"
-                FriendRequest.sendFriendRequest(uid, FriendItemViewHolder.this, v);
+                FriendHandler.sendFriendRequest(uid, FriendItemViewHolder.this, v);
             }
         });
     }
@@ -70,7 +70,7 @@ public class FriendItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 // accept friend requests
-                FriendRequest.acceptFriendRequest(refRequest, FriendItemViewHolder.this, v);
+                FriendHandler.acceptFriendRequest(refRequest, FriendItemViewHolder.this, v);
             }
         });
     }
@@ -82,7 +82,7 @@ public class FriendItemViewHolder extends RecyclerView.ViewHolder {
         doButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StartChat.checkExistingChats(context, uid, name);
+                ChatStarter.checkExistingChats(context, uid, name);
             }
         });
     }

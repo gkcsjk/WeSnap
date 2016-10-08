@@ -110,7 +110,7 @@ public class ViewFriendsActivity extends BaseActivity {
                                     Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
                                     if (!dataSnapshot.exists()) {
                                         Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
-                                        FriendRequest.removeFriendAfromB(
+                                        FriendHandler.removeFriendAfromB(
                                                 newFriendId, FirebaseUtil.getCurrentUserId());
                                         return;
                                     }
