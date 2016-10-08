@@ -16,14 +16,14 @@ import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import java.util.Map;
 
 /**
- * FriendRequest
+ * FriendHandler
  * This class contains methods for sending/accepting friend requests.
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class FriendRequest {
-    private static final String TAG = "FriendRequest";
+public class FriendHandler {
+    private static final String TAG = "FriendHandler";
     private static final String SENT = "Friend request sent";
     private static final String NOT_SENT = "Failed to send the request. Try again.";
     private static final String ACCEPTED = "Friend request accepted";

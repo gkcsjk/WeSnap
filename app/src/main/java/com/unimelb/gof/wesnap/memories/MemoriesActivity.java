@@ -30,6 +30,7 @@ import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
+import com.unimelb.gof.wesnap.util.PhotoUploader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,14 +156,15 @@ public class MemoriesActivity extends BaseActivity {
                                     mMemoryUris.add(uri);
                                     notifyItemInserted(mMemoryUris.size() - 1);
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle any errors
-                            Log.w(TAG, "getUri:onFailure", exception);
-                            // TODO getUri:onFailure
-                        }
-                    });
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    Log.w(TAG, "getUri:onFailure", exception);
+                                    // TODO getUri:onFailure
+                                }
+                            });
                 }
 
                 @Override
@@ -277,51 +279,8 @@ public class MemoriesActivity extends BaseActivity {
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImageUri = data.getData();
-            uploadFromUri(selectedImageUri);
+            PhotoUploader.uploadToMemories(selectedImageUri, MemoriesActivity.this);
         }
-    }
-
-    // ======================================================
-    /* Upload local file to Firebase Storage */
-    private void uploadFromUri(Uri fileUri) {
-        Log.d(TAG, "uploadFromUri:src:" + fileUri.toString());
-        final String filename = fileUri.getLastPathSegment();
-
-        // Upload file to Firebase Storage
-        showProgressDialog();
-        final StorageReference photoRef = mMemoriesStorage.child(filename);
-        Log.d(TAG, "uploadFromUri:dst:" + photoRef.getPath());
-        photoRef.putFile(fileUri)
-                .addOnSuccessListener(MemoriesActivity.this,
-                        new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Upload succeeded
-                        Log.d(TAG, "uploadFromUri:onSuccess");
-                        // Get the public download URL (not used!!!)
-                        Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
-                        // Save link to Firebase Database
-                        mMemoriesDatabase.child(filename).setValue(true);
-                        // update UI
-                        hideProgressDialog();
-                        Toast.makeText(MemoriesActivity.this, "Upload done",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(MemoriesActivity.this,
-                        new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Upload failed
-                        Log.w(TAG, "uploadFromUri:onFailure", exception);
-                        // Get the public download URL (not used!!!)
-                        Uri downloadUrl = null;
-                        // update UI
-                        hideProgressDialog();
-                        Toast.makeText(MemoriesActivity.this, "Error: upload failed",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     // ======================================================

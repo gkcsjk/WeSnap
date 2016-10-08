@@ -42,7 +42,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_draw_text);
 
         Intent intent = getIntent();
-        mCurrentPath = intent.getStringExtra(EditPhoto.PATH_RECEIVER);
+        mCurrentPath = intent.getStringExtra(PhotoEditor.PATH_RECEIVER);
         mImageview = (ImageView) findViewById(R.id.iv_show);
         mTextView = (TextView) findViewById(R.id.tv_tip);
         mEditText = (EditText) findViewById(R.id.et_text);
@@ -50,7 +50,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
         mButton1.setOnClickListener(this);
         mButton2 = (Button) findViewById(R.id.bt_set);
         mButton2.setOnClickListener(this);
-        mBitmap = EditPhoto.setPic(mCurrentPath, mImageview);
+        mBitmap = PhotoEditor.setPic(mCurrentPath, mImageview);
         mCanvas = new Canvas(mBitmap);
         y = mImageview.getY();
         x = mImageview.getX();
@@ -103,7 +103,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isFinishing()) {
-                EditPhoto.savePic(mCurrentPath, mBitmap);
+                PhotoEditor.savePic(mCurrentPath, mBitmap);
                 finish();
             }
             return true;

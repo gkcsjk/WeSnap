@@ -15,6 +15,7 @@
     </ImageView>
 
     <LinearLayout
+        android:id="@+id/ui_group_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -25,20 +26,19 @@
             android:id="@+id/bt_set_timer"
             android:src="@drawable/ic_action_set_timer"
             android:contentDescription="@string/action_set_timer"
+            android:textColor="@color/colorWhite"
             android:elevation="1dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
+            style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
             android:id="@+id/bt_freehand"
             android:src="@drawable/ic_action_photo_freehand"
-            android:contentDescription="@string/action_draw_free_hand"
+            android:contentDescription="@string/action_draw_freehand"
             android:elevation="1dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
@@ -48,7 +48,6 @@
             android:elevation="1dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
@@ -58,7 +57,6 @@
             android:elevation="1dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
     </LinearLayout>
 
@@ -90,7 +88,7 @@
 
     <Button
         android:id="@+id/bt_send"
-        android:text="@string/action_send_photo"
+        android:text="@string/action_send"
         android:drawableStart="@drawable/ic_action_send"
         android:drawablePadding="@dimen/size_edges_small"
         android:layout_alignBottom="@+id/iv_show"

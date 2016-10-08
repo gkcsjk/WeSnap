@@ -16,14 +16,14 @@ import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import java.util.HashMap;
 
 /**
- * StartChat
+ * ChatStarter
  * This class contains methods for starting an existing chat or a new chat.
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class StartChat {
-    private static final String TAG = "StartChat";
+public class ChatStarter {
+    private static final String TAG = "ChatStarter";
     private static DatabaseReference refMyChatIds = FirebaseUtil.getCurrentChatsRef();
 
     // ======================================================

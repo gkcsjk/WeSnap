@@ -13,8 +13,7 @@ import java.io.IOException;
  * Created by Karl on 3/10/2016.
  */
 
-public class EditPhoto {
-
+public class PhotoEditor {
     public static final String PATH_RECEIVER = "path_receiver";
 
     public static Bitmap setPic( String mCurrentPath ) {
