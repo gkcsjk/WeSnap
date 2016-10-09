@@ -55,7 +55,7 @@ public class AddFriendChooserActivity extends BaseActivity
         mSearchButton.setOnClickListener(this);
         mShareButton = (Button) findViewById(R.id.option_share_username);
         mShareButton.setOnClickListener(this);
-        mOtherButton = (Button) findViewById(R.id.option_other_options);
+        mOtherButton = (Button) findViewById(R.id.option_nearby_options);
         mOtherButton.setOnClickListener(this);
     }
 
