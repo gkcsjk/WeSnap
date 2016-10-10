@@ -8,6 +8,10 @@
         android:required="true"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 
 
@@ -80,6 +84,11 @@
         <activity
             android:name=".camera.TextDrawActivity"
             android:label="@string/text_draw_text_tip">
+        </activity>
+
+        <activity
+            android:name=".friend.SearchNearbyActivity"
+            android:label="@string/action_add_friends">
         </activity>
             
 

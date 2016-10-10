@@ -55,7 +55,7 @@ public class AddFriendChooserActivity extends BaseActivity
         mSearchButton.setOnClickListener(this);
         mShareButton = (Button) findViewById(R.id.option_share_username);
         mShareButton.setOnClickListener(this);
-        mOtherButton = (Button) findViewById(R.id.option_other_options);
+        mOtherButton = (Button) findViewById(R.id.option_nearby_options);
         mOtherButton.setOnClickListener(this);
     }
 
@@ -71,11 +71,11 @@ public class AddFriendChooserActivity extends BaseActivity
             case R.id.option_share_username:
                 doShare();
                 break;
-            case R.id.option_other_options:
-                Toast.makeText(AddFriendChooserActivity.this,
-                        R.string.action_other_options,
-                        Toast.LENGTH_SHORT).show();
-                doOther();
+            case R.id.option_nearby_options:
+//                Toast.makeText(AddFriendChooserActivity.this,
+//                        R.string.action_other_options,
+//                        Toast.LENGTH_SHORT).show();
+                doNearby();
                 break;
         }
     }
@@ -141,9 +141,45 @@ public class AddFriendChooserActivity extends BaseActivity
     }
 
     // ========================================================
-    private void doOther() {
-        // TODO doOther()
-        Log.d(TAG, "other???");
+    private void doNearby() {
+        Log.d(TAG, "nearby:username");
+        if (AppParams.currentUser != null && AppParams.getMyUsername() != null) {
+            // share the username via system action
+            searchNearby(AppParams.getMyUsername());
+            return;
+        }
+        FirebaseUtil.getCurrentUserRef().child("username")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "getUsername:onDataChange");
+                        String username = (String) dataSnapshot.getValue();
+
+                        if (username == null) {
+                            // null value, error out
+                            Log.e(TAG, "Username unexpectedly null");
+                            Toast.makeText(AddFriendChooserActivity.this,
+                                    "Error: could not fetch username.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // share the username via system action
+                            searchNearby(username);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
+                    }
+                });
+
+    }
+
+    private void searchNearby(String username){
+        Log.d(TAG, "nearby users");
+        Intent intent = new Intent(this, SearchNearbyActivity.class);
+        intent.putExtra(SearchNearbyActivity.EXTRA_USERNAME, username);
+        startActivity(intent);
     }
 
     // ========================================================

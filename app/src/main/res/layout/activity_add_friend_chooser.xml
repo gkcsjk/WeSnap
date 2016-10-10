@@ -42,7 +42,7 @@
         style="@style/Widget.AppCompat.Button.Borderless" />
 
     <Button
-        android:id="@+id/option_other_options"
+        android:id="@+id/option_nearby_options"
         android:text="@string/action_other_options"
         android:textColor="@color/colorPrimary"
         android:drawableLeft="@drawable/ic_action_nearby"

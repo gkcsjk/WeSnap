@@ -22,6 +22,8 @@ public class AppParams {
     public static int MAX_TTL = 10;
 
     public static String FILEPROVIDER = "com.unimelb.gof.wesnap.fileprovider";
+    public static final String MY_UUID = "7c3fdc44-33a7-463e-9a9b-b039844bd410";
+    public static final String APP_NAME = "WeSnap";
 
     // ======================================================
     /* WeSnap Dev Team */
