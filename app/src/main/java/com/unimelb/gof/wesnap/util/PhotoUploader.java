@@ -26,10 +26,13 @@ public class PhotoUploader {
     private static final String FAILED = "Failed to save photo";
 
     // ======================================================
-    /* Upload local file to Firebase Storage "/memories/"*/
-    public static void uploadToMemories(final Uri fileUri,
+    /** Upload local file to Firebase Storage "/memories/"
+     * @param localFileUri the local file uri of the photo to be uploaded
+     * @param activity the caller activity (for UI feedback)
+     * */
+    public static void uploadToMemories(final Uri localFileUri,
                                         final BaseActivity activity) {
-        Log.d(TAG, "uploadToMemories:src:" + fileUri.toString());
+        Log.d(TAG, "uploadToMemories:src:" + localFileUri.toString());
 
         /* Firebase Database / Storage variables */
         final DatabaseReference fMemoriesDatabase =
@@ -45,14 +48,15 @@ public class PhotoUploader {
             return;
         }
 
-        /* Photo filename */
-        final String filename = fileUri.getLastPathSegment().replaceAll("\\.jpg","");
+        /* Photo filename TODO */
+        // final String filename = localFileUri.getLastPathSegment().replaceAll("\\.jpg","");
+        final String filename = AppParams.getMyUsername() +"_"+ AppParams.getImageFilename();
 
         /* Upload file to Firebase Storage & Database */
         final StorageReference photoRef = fMemoriesStorage.child(filename);
         Log.d(TAG, "uploadToMemories:dst:" + photoRef.getPath());
         activity.showProgressDialog();
-        photoRef.putFile(fileUri)
+        photoRef.putFile(localFileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

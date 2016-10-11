@@ -4,6 +4,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.unimelb.gof.wesnap.models.*;
 import com.google.firebase.database.DatabaseReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +26,14 @@ public class AppParams {
     public static String FILEPROVIDER = "com.unimelb.gof.wesnap.fileprovider";
     public static final String MY_UUID = "7c3fdc44-33a7-463e-9a9b-b039844bd410";
     public static final String APP_NAME = "WeSnap";
+
+    // ======================================================
+    /* Naming of imgae files */
+    public static String getImageFilename() {
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String newImageFilename = "IMG_" + timestamp;
+        return newImageFilename;
+    }
 
     // ======================================================
     /* WeSnap Dev Team */

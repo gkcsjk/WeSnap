@@ -90,7 +90,11 @@
             android:name=".friend.SearchNearbyActivity"
             android:label="@string/action_add_friends">
         </activity>
-            
+
+        <activity
+            android:name=".PhotoFullscreenActivity"
+            android:label="@string/action_show_photo">
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
