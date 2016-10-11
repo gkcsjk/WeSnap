@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap;
+package com.unimelb.gof.wesnap.chat;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
+import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
@@ -58,24 +60,23 @@ public class PhotoFullscreenActivity extends BaseActivity {
             /* Firebase Storage */
             mStorageRef = FirebaseUtil.getChatsStorage().child(chatId).child(mFilename);
         }
-        // TODO memory id
 
         /* time to live */
         mTimeToLiveMillis = getIntent().getIntExtra(EXTRA_TIME_TO_LIVE,
                 AppParams.DEFAULT_TTL);
         mTimeToLiveMillis = mTimeToLiveMillis * MILLIS_IN_ONE_SECOND;
 
-        /* get UI elements */
-        mPhotoFullscreenView = (ImageView) findViewById(R.id.image_fullscreen);
-        mPhotoFullscreenView.setVisibility(View.GONE);
-        mCountDownTextView = (TextView) findViewById(R.id.text_countdown);
-        mCountDownTextView.setVisibility(View.GONE);
-
         /* hide action bar if any */
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
+
+        /* get UI elements */
+        mPhotoFullscreenView = (ImageView) findViewById(R.id.image_fullscreen_show_photo);
+        mPhotoFullscreenView.setVisibility(View.GONE);
+        mCountDownTextView = (TextView) findViewById(R.id.text_countdown);
+        mCountDownTextView.setVisibility(View.GONE);
 
         /* set up countdown */
         if (mTimeToLiveMillis > 0) {

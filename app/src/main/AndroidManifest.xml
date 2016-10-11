@@ -92,7 +92,7 @@
         </activity>
 
         <activity
-            android:name=".PhotoFullscreenActivity"
+            android:name=".chat.PhotoFullscreenActivity"
             android:label="@string/action_show_photo">
         </activity>
 

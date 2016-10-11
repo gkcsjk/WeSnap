@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+             is needed to present your content, e.g. VideoView, SurfaceView,
+             TextureView, etc. -->
+    <ImageView
+        android:id="@+id/image_fullscreen_memory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:background="@color/colorBlack"
+        android:contentDescription="@string/action_show_photo"/>
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:id="@+id/ui_group_memory_controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/colorTransparentBlack"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+
+            <ImageButton
+                android:id="@+id/bt_delete_memory"
+                android:src="@drawable/ic_action_delete"
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/action_delete_memory"
+                android:elevation="1dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+
+            <ImageButton
+                android:id="@+id/bt_share_memory"
+                android:src="@drawable/ic_action_share"
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/action_share_memory"
+                android:elevation="1dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+
+            <ImageButton
+                android:id="@+id/bt_lock_memory"
+                android:src="@drawable/ic_action_lock"
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/action_lock_memory"
+                android:elevation="1dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+
+            <ImageButton
+                android:id="@+id/bt_create_story"
+                android:src="@drawable/ic_action_to_story"
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/action_create_story"
+                android:elevation="1dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+
+            <ImageButton
+                android:id="@+id/bt_send_memory"
+                android:src="@drawable/ic_action_send"
+                android:contentDescription="@string/action_send"
+                android:elevation="1dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

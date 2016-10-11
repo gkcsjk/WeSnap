@@ -9,7 +9,7 @@
         android:id="@+id/iv_show"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorGreyLight"
+        android:background="@color/colorBlack"
         android:contentDescription="@string/text_current_photo_path"
         android:visibility="visible" >
     </ImageView>
@@ -89,6 +89,7 @@
     <Button
         android:id="@+id/bt_send"
         android:text="@string/action_send"
+        android:textColor="@color/colorPrimary"
         android:drawableStart="@drawable/ic_action_send"
         android:drawablePadding="@dimen/size_edges_small"
         android:layout_alignBottom="@+id/iv_show"
