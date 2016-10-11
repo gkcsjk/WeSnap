@@ -30,13 +30,55 @@ public class CameraFragment extends Fragment {
 
     /* UI Variables */
     private Button mButtonStartCamera;
-    private OnClickListener mListenerStartCamera;
-    private TextView textView;
+    // private TextView textView;
     private String mCurrentPhotoPath;
 
     public CameraFragment() {
     }
 
+    // ======================================================
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_camera, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // textView = (TextView) view.findViewById(R.id.text_title_camera);
+
+        mButtonStartCamera = (Button) view.findViewById(R.id.button_start_camera);
+        mButtonStartCamera.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentPhotoPath = null;
+                startCamera();
+            }
+        });
+    }
+
+    // ======================================================
+    private void startCamera() {
+        Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (startCameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e(TAG, "create file error");
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                        "com.unimelb.gof.wesnap.fileprovider",
+                        photoFile);
+                startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(startCameraIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    // ======================================================
     private File createImageFile() throws IOException{
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timestamp + "_";
@@ -50,43 +92,7 @@ public class CameraFragment extends Fragment {
         return image;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-//        textView = (TextView) view.findViewById(R.id.text_title_camera);
-
-        mButtonStartCamera = (Button) view.findViewById(R.id.button_start_camera);
-        mListenerStartCamera = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCurrentPhotoPath = null;
-                Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (startCameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        Log.d("Error", "Create file error");
-                    }
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                                "com.unimelb.gof.wesnap.fileprovider",
-                                photoFile);
-                        startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(startCameraIntent, REQUEST_IMAGE_CAPTURE);
-                    }
-                }
-            }
-        };
-        mButtonStartCamera.setOnClickListener(mListenerStartCamera);
-    }
-
+    // ======================================================
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK){

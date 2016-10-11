@@ -18,7 +18,7 @@ public class Message {
     private String senderUid;
     private String senderDisplayedName;
 
-    // messageBody: message text or photoUrl
+    // messageBody: message text or photoFilename
     private String messageBody;
 
     // photo: false for text messages
@@ -30,7 +30,7 @@ public class Message {
     private int timeToLive;
 
     // for photo viewing rules: view -> replay -> not accessible
-    private boolean isViewed;
+    private boolean viewed;
 
     public Message() {
     }
@@ -51,7 +51,7 @@ public class Message {
         this.photo = photo;
         this.timeToLive = timeToLive;
 
-        this.isViewed = false;
+        this.viewed = false;
     }
 
     // ======================================================
@@ -73,7 +73,7 @@ public class Message {
     }
 
     public boolean isViewed() {
-        return isViewed;
+        return viewed;
     }
 
     public int getTimeToLive() {
@@ -89,7 +89,7 @@ public class Message {
         result.put("senderDisplayedName", this.senderDisplayedName);
         result.put("messageBody", this.messageBody);
         result.put("photo", this.photo);
-        result.put("isViewed", this.isViewed);
+        result.put("isViewed", this.viewed);
         result.put("timeToLive", this.timeToLive);
         return result;
     }

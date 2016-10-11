@@ -17,6 +17,7 @@ import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
 
+import com.unimelb.gof.wesnap.chat.MessagesActivity;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.PhotoUploader;
 
@@ -26,9 +27,11 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
     private static final String TAG = "EditPhotoActivity";
     public static final String EXTRA_PHOTO_PATH = "photo_path";
+    public static final String EXTRA_CHAT_ID = "chat_id";
 
     private String mCurrentPhotoPath;
     private int mTimeToLive = AppParams.DEFAULT_TTL;
+    private String mChatId = null;
 
     private ImageView mImageView;
     private Button mButtonSend;
@@ -46,6 +49,11 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
         /* Get the local path of the photo taken */
         mCurrentPhotoPath = getIntent().getStringExtra(EXTRA_PHOTO_PATH);
+        if (mCurrentPhotoPath == null) {
+            throw new IllegalArgumentException("Must pass EXTRA_PHOTO_PATH");
+        }
+        /* Get chat id if passed */
+        mChatId = getIntent().getStringExtra(EXTRA_CHAT_ID);
 
         /* UI */
         setContentView(R.layout.acticity_edit_photo);
@@ -162,10 +170,20 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     // ========================================================
     /* Send the photo to friends */
     private void sendPhoto() {
-        Intent sendPhotoIntent = new Intent(this, ChooseFriendActivity.class);
-        sendPhotoIntent.putExtra(ChooseFriendActivity.EXTRA_PHOTO_PATH, mCurrentPhotoPath);
-        sendPhotoIntent.putExtra(ChooseFriendActivity.EXTRA_TIME_TO_LIVE, mTimeToLive);
-        startActivity(sendPhotoIntent);
+        if (mChatId != null) {
+            // if given chat id, send to the specified chat
+            Intent data = new Intent();
+            data.putExtra(MessagesActivity.EXTRA_PHOTO_PATH, mCurrentPhotoPath);
+            data.putExtra(MessagesActivity.EXTRA_TIME_TO_LIVE, mTimeToLive);
+            // data.putExtra(MessagesActivity.EXTRA_CHAT_ID, mChatId); TODO need the chat id?
+            setResult(RESULT_OK, data);
+        } else {
+            // choose a friend as receiver
+            Intent sendPhotoIntent = new Intent(this, ChooseFriendActivity.class);
+            sendPhotoIntent.putExtra(ChooseFriendActivity.EXTRA_PHOTO_PATH, mCurrentPhotoPath);
+            sendPhotoIntent.putExtra(ChooseFriendActivity.EXTRA_TIME_TO_LIVE, mTimeToLive);
+            startActivity(sendPhotoIntent);
+        }
         finish();
     }
 
