@@ -35,7 +35,6 @@ import java.util.List;
  * ChooseFriendActivity
  * This activity allows user to choose from his/her friend list.
  *
- * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
@@ -47,7 +46,7 @@ public class ChooseFriendActivity extends BaseActivity {
 
     /* UI Variables */
     public RecyclerView mFriendsRecyclerView;
-    public RecyclerView.Adapter<FriendItemViewHolder> mRecyclerAdapter;
+    public FriendChooserAdapter mRecyclerAdapter;
     public LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */
@@ -90,18 +89,27 @@ public class ChooseFriendActivity extends BaseActivity {
         mFriendsRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
+    // ========================================================
+    /* onStop(): remove listener */
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+        mRecyclerAdapter.cleanupListener();
+    }
+
     // ======================================================
-    /* FriendsAdapter */
-    public class FriendChooserAdapter extends RecyclerView.Adapter<FriendItemViewHolder> {
+    /* FriendChooserAdapter */
+    private class FriendChooserAdapter extends RecyclerView.Adapter<FriendItemViewHolder> {
 
-        public Context mContext;
-        public DatabaseReference mDatabaseReference;
-        public ChildEventListener mChildEventListener;
+        Context mContext;
+        DatabaseReference mDatabaseReference;
+        ChildEventListener mChildEventListener;
 
-        public List<String> mFriendIds = new ArrayList<>();
-        public List<User> mFriends = new ArrayList<>();
+        List<String> mFriendIds = new ArrayList<>();
+        List<User> mFriends = new ArrayList<>();
 
-        public FriendChooserAdapter(final Context context, DatabaseReference ref) {
+        FriendChooserAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
             mDatabaseReference = ref;
 

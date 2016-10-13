@@ -30,7 +30,6 @@ import java.util.List;
  * This activity shows monitors the list of friends of the current user
  * from Firebase Database, and displays the friend info.
  *
- * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
@@ -39,7 +38,7 @@ public class ViewFriendsActivity extends BaseActivity {
 
     /* UI Variables */
     public RecyclerView mFriendsRecyclerView;
-    public RecyclerView.Adapter<FriendItemViewHolder> mRecyclerAdapter;
+    public FriendsAdapter mRecyclerAdapter;
     public LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database variables */

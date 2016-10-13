@@ -13,6 +13,11 @@
     <color name="colorGreyLight">#CFD8DC</color>    <!-- Blue Grey 100 -->
     <color name="colorGreyButton">#90A4AE</color>   <!-- Blue Grey 300 -->
 
+    <!-- For Messaging -->
     <color name="colorSenderGreen">#4CAF50</color>   <!-- Green 500 -->
     <color name="colorSenderRed">#F44336</color>   <!-- Red 500 -->
+
+    <!-- Transparent !!!!!! -->
+    <color name="colorTransparentWhite">#80FFFFFF</color>   <!-- White 50% -->
+    <color name="colorTransparentBlack">#80000000</color>   <!-- Black 50% -->
 </resources>

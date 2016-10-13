@@ -70,11 +70,7 @@ public class MainActivity extends BaseActivity {
         if (mFirebaseAuth.getCurrentUser() == null) {
             // if not, direct to Login activity
             Log.d(TAG, "goToLogin");
-            goToLogin("user logged out"); // TODO confirm usage
-//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//            finish();
+            goToLogin("User logged out");
             return;
         } else {
             // if yes, get current user info and store a local copy
@@ -114,9 +110,6 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-
-        // Firebase
-        // TODO
     }
 
     // ========================================================
@@ -284,5 +277,6 @@ public class MainActivity extends BaseActivity {
         }
         return false;
     }
+
     // ========================================================
 }

@@ -63,6 +63,11 @@
         </activity>
 
         <activity
+            android:name=".memories.MemoryDetailsActivity"
+            android:label="@string/action_my_memories">
+        </activity>
+
+        <activity
             android:name=".chat.ChooseFriendActivity"
             android:label="@string/action_chat_with">
         </activity>
@@ -92,7 +97,7 @@
         </activity>
 
         <activity
-            android:name=".PhotoFullscreenActivity"
+            android:name=".chat.PhotoFullscreenActivity"
             android:label="@string/action_show_photo">
         </activity>
 

@@ -73,6 +73,11 @@
     <!--Memories-->
     <string name="action_my_memories">My Memories</string>
     <string name="action_import_local">Import from Camera Roll</string>
+    <string name="action_delete_memory">Delete Memory</string>
+    <string name="action_share_memory">Share Memory</string>
+    <string name="action_share_memory_to">Share photo to ...</string>
+    <string name="action_lock_memory">Lock Memory (For My Eye Only)</string>
+    <string name="action_create_story">Create Story</string>
 
     <!--Photos-->
     <string name="action_show_photo">Show Photo</string>

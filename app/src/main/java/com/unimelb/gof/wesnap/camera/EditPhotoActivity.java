@@ -42,6 +42,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     private ImageButton mButtonFreehand;
     private ImageButton mButtonText;
     private ImageButton mButtonEmoji;
+    private boolean mIsVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.acticity_edit_photo);
 
         mImageView = (ImageView) findViewById(R.id.iv_show);
+        mImageView.setOnClickListener(this);
 
         mButtonFreehand = (ImageButton) findViewById(R.id.bt_freehand);
         mButtonFreehand.setOnClickListener(this);
@@ -94,6 +96,9 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
+            case R.id.iv_show:
+                updateControls();
+                break;
             case R.id.bt_freehand:
                 Intent freehandIntent = new Intent(this, FreehandDrawActivity.class);
                 freehandIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
@@ -127,6 +132,22 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
                 break;
             default:
                 break;
+        }
+    }
+
+    // ========================================================
+    /* Show/Hide the control buttons */
+    private void updateControls() {
+        if (mIsVisible) {
+            findViewById(R.id.ui_group_edit_buttons).setVisibility(View.GONE);
+            findViewById(R.id.ui_group_share_buttons).setVisibility(View.GONE);
+            findViewById(R.id.bt_send).setVisibility(View.GONE);
+            mIsVisible = false;
+        } else {
+            findViewById(R.id.ui_group_edit_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.ui_group_share_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.bt_send).setVisibility(View.VISIBLE);
+            mIsVisible = true;
         }
     }
 

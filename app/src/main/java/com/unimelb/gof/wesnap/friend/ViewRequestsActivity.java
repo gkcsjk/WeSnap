@@ -55,23 +55,12 @@ public class ViewRequestsActivity extends BaseActivity {
         /* Firebase Database variables */
         refCurrentRequests = FirebaseUtil.getCurrentRequestsRef();
 
-        /* Listen for my current friend list */
-        mFriendIds = (HashMap) AppParams.currentUser.getFriends();
-//        refCurrentFriends = FirebaseUtil.getCurrentFriendsRef();
-//        mFriendIds = new HashMap<>();
-//        mListenerCurrentFriends = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "getMyFriends:onDataChange");
-//                mFriendIds = (HashMap<String, Boolean>) dataSnapshot.getValue();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
-//            }
-//        };
-//        refCurrentFriends.addValueEventListener(mListenerCurrentFriends);
+        /* Get friend list */
+        if (AppParams.currentUser != null) {
+            mFriendIds = (HashMap) AppParams.currentUser.getFriends();
+        } else {
+            mFriendIds = null;
+        }
 
         /* UI components */
         // toolbar with title
@@ -114,12 +103,13 @@ public class ViewRequestsActivity extends BaseActivity {
                     viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
                 }
 
-                // Check if is friend already, and set up button action and UI accordingly
+                // Use friend list from AppParam to check if is friend already
+                // Set up button action and UI accordingly
                 final String fromUid = refRequest.getKey();
                 if (mFriendIds != null && mFriendIds.containsKey(fromUid)) {
-                    // isFriend = true;
+                    // isFriend == true
                     viewHolder.useDoneButton();
-                    // remove request node from database TODO confirm deletion???
+                    // remove request node from database
                     refRequest.removeValue();
                 } else {
                     // otherwise, enable the button to accept friend request

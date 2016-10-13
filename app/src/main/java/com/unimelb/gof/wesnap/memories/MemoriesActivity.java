@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -36,11 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * MemoriesActivity TODO
- * Delete
- * Social Share
- * Lock and Create Story
- * Import from Local
+ * MemoriesActivity
+ * Provides thumbnails of photo uploaded to My Memories;
+ * Provides function of "import from local camera roll"
+ * Directs to MemoryDetailsActivity when item selected
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -51,14 +50,13 @@ public class MemoriesActivity extends BaseActivity {
 
     /* UI Variables */
     private RecyclerView mMemoriesRecyclerView;
-    private Button importButtonView;
+    private Button mImportButton;
     private MemoriesAdapter mRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database / Storage variables */
     private DatabaseReference mMemoriesDatabase;
     private StorageReference mMemoriesStorage;
-    private String idCurrentUser;
 
     public MemoriesActivity() {
     }
@@ -76,7 +74,7 @@ public class MemoriesActivity extends BaseActivity {
         // Firebase Refs
         mMemoriesDatabase = FirebaseUtil.getCurrentMemoriesDatabase();
         mMemoriesStorage = FirebaseUtil.getCurrentMemoriesStorage();
-        idCurrentUser = FirebaseUtil.getCurrentUserId();
+        String idCurrentUser = FirebaseUtil.getCurrentUserId();
         if (mMemoriesDatabase == null || mMemoriesStorage == null || idCurrentUser == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
@@ -89,8 +87,8 @@ public class MemoriesActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
 
         // Add button
-        importButtonView = (Button) findViewById(R.id.button_import_local);
-        importButtonView.setOnClickListener(new View.OnClickListener() {
+        mImportButton = (Button) findViewById(R.id.button_import_local);
+        mImportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // connect to local photo storage
@@ -114,6 +112,23 @@ public class MemoriesActivity extends BaseActivity {
         mMemoriesRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
+    // ========================================================
+    /* Remove listener */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // Exit the app after confirming via dialog;
+            // only show the Dialog when the activity is not finished
+            Log.d(TAG, "onKeyDown");
+            if (!isFinishing()) {
+                mRecyclerAdapter.cleanupListener();
+                finish();
+            }
+            return true;
+        }
+        return false;
+    }
+
     // ======================================================
     /* MemoryViewHolder */
     private static class MemoryViewHolder extends RecyclerView.ViewHolder {
@@ -132,11 +147,12 @@ public class MemoriesActivity extends BaseActivity {
         private DatabaseReference mDatabaseReference;
         private ChildEventListener mChildEventListener;
 
+        private List<String> mMemoryFilenames = new ArrayList<>();
         private List<Uri> mMemoryUris = new ArrayList<>();
 
         public MemoriesAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
-            mDatabaseReference = ref; // Filename
+            mDatabaseReference = ref;
 
             // Create child event listener
             // [START child_event_listener_recycler]
@@ -153,6 +169,7 @@ public class MemoriesActivity extends BaseActivity {
                                 public void onSuccess(Uri uri) {
                                     // Got the download URL for 'memories/myUid/newMemoryFilename'
                                     Log.d(TAG, "getUri:onSuccess:" + uri);
+                                    mMemoryFilenames.add(newMemoryFilename);
                                     mMemoryUris.add(uri);
                                     notifyItemInserted(mMemoryUris.size() - 1);
                                 }
@@ -177,35 +194,18 @@ public class MemoriesActivity extends BaseActivity {
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     Log.d(TAG, "getMemoryFilename:onChildRemoved:" + dataSnapshot.getKey());
-                    // get chat id and index
+                    // get filename and index
                     final String removedMemoryFilename = dataSnapshot.getKey();
-                    // get MemoryUrl from current user storage
-                    mMemoriesStorage.child(removedMemoryFilename).getDownloadUrl()
-                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    // Got the download URL for 'memories/myUid/removedMemoryFilename'
-                                    Log.d(TAG, "getUri:onSuccess:" + uri);
-                                    int index = mMemoryUris.indexOf(uri);
-                                    if (index > -1) {
-                                        // Remove data from the list
-                                        mMemoryUris.remove(index);
-                                        // Update the RecyclerView
-                                        notifyItemRemoved(index);
-                                    } else {
-                                        Log.w(TAG, "getMemoryFilename:onChildRemoved:unknown_child:" + removedMemoryFilename);
-                                    }
-                                    mMemoryUris.remove(uri);
-                                    notifyItemInserted(mMemoryUris.size() - 1);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle any errors
-                            Log.w(TAG, "getUri:onFailure", exception);
-                            // TODO getUri:onFailure
-                        }
-                    });
+                    int index = mMemoryFilenames.indexOf(removedMemoryFilename);
+                    if (index > -1) {
+                        // Remove data from the list
+                        mMemoryUris.remove(index);
+                        mMemoryFilenames.remove(index);
+                        // Update the RecyclerView
+                        notifyItemRemoved(index);
+                    } else {
+                        Log.w(TAG, "getMemoryFilename:onChildRemoved:unknown_child:" + removedMemoryFilename);
+                    }
                 }
 
                 @Override
@@ -240,21 +240,30 @@ public class MemoriesActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(final MemoryViewHolder viewHolder, final int position) {
             Log.d(TAG, "populateViewHolder:" + position);
+
             final Uri uri = mMemoryUris.get(position);
+            final String filename = mMemoryFilenames.get(position);
+
             // Load the item view
             String imageUrl = uri.toString();
             if (imageUrl != null && imageUrl.length() != 0) {
                 GlideUtil.loadImage(imageUrl, viewHolder.imageView);
             }
 
-            // on click: directs to image actions
+            // on click: directs to image actions (delete/share/lock/create_story)
             viewHolder.itemView.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(mContext, "Photo clicked (TBD)",
-                                    Toast.LENGTH_SHORT).show();
-                            // TODO actions on the photos (delete/share/create_story)
+                            Intent showMemoryIntent = new Intent(
+                                    MemoriesActivity.this, MemoryDetailsActivity.class);
+                            showMemoryIntent.putExtra(
+                                    MemoryDetailsActivity.EXTRA_PHOTO_FILENAME,
+                                    filename);
+                            showMemoryIntent.putExtra(
+                                    MemoryDetailsActivity.EXTRA_PHOTO_URI,
+                                    uri.toString());
+                            startActivity(showMemoryIntent);
                         }
                     }
             );
