@@ -28,7 +28,7 @@
             android:id="@+id/ui_group_memory_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="top|center_horizontal"
             android:background="@color/colorTransparentBlack"
             android:orientation="horizontal"
             tools:ignore="UselessParent" >
@@ -76,6 +76,27 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ui_group_memory_send_controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/colorTransparentBlack"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+
+            <ImageButton
+                android:id="@+id/bt_edit_memory"
+                android:src="@drawable/ic_action_edit"
+                android:tint="@color/colorPrimary"
+                android:contentDescription="@string/action_edit_photo"
+                android:elevation="1dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
 
             <ImageButton
                 android:id="@+id/bt_send_memory"
@@ -87,5 +108,6 @@
                 android:layout_weight="1"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
         </LinearLayout>
+
     </FrameLayout>
 </FrameLayout>
