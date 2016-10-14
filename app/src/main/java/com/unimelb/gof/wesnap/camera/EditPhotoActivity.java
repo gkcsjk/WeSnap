@@ -225,8 +225,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     /* Share as current user's "story" */
     private void saveStory() {
         File photoFile = new File(mCurrentPhotoPath);
-        Uri photoUri = FileProvider.getUriForFile(
-                EditPhotoActivity.this,
+        Uri photoUri = FileProvider.getUriForFile(EditPhotoActivity.this,
                 AppParams.FILEPROVIDER, photoFile);
         PhotoUploader.uploadToStories(photoUri, EditPhotoActivity.this);
     }

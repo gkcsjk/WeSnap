@@ -256,7 +256,8 @@ public class MemoryDetailsActivity extends BaseActivity
         // Get uri
         Uri photoUri = FileProvider.getUriForFile(
                 MemoryDetailsActivity.this,
-                AppParams.FILEPROVIDER, localFile);
+                AppParams.FILEPROVIDER,
+                localFile);
         // Send as new Story
         PhotoUploader.uploadToStories(photoUri, MemoryDetailsActivity.this);
     }

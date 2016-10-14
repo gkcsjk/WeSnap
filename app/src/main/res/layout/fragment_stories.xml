@@ -8,61 +8,73 @@
     tools:context=".fragment.StoriesFragment" >
 
     <LinearLayout
-        android:id="@+id/ui_group_my"
+        android:id="@+id/ui_group_stories_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/text_title_my_stories"
-            tools:text="@string/text_title_my_stories"
+        <!-- My Stories Button -->
+        <Button
+            android:id="@+id/button_my_stories"
+            android:text="@string/text_title_my_stories"
             android:textAlignment="center"
-            android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceListItem"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorWhite"
+            android:drawableStart="@drawable/ic_action_to_story"
+            android:drawablePadding="@dimen/size_edges_small"
+            android:background="@color/colorTransparentBlack"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_stories_my"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_story_my"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <!-- Official Stories Button -->
+        <Button
+            android:id="@+id/button_official_stories"
+            android:text="@string/text_title_official_stories"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:drawableStart="@drawable/ic_action_discover"
+            android:drawablePadding="@dimen/size_edges_small"
+            android:background="@color/colorTransparentBlack"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ui_group_official"
-        android:layout_below="@+id/ui_group_my"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ui_group_official"-->
+        <!--android:layout_below="@+id/ui_group_my"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical" >-->
 
-        <TextView
-            android:id="@+id/text_title_official_stories"
-            tools:text="@string/text_title_official_stories"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceListItem"
-            android:textColor="@color/colorPrimary" />
+        <!--<TextView-->
+            <!--android:id="@+id/text_title_official_stories"-->
+            <!--tools:text="@string/text_title_official_stories"-->
+            <!--android:textAlignment="center"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textAppearance="?android:textAppearanceListItem"-->
+            <!--android:textColor="@color/colorPrimary" />-->
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_stories_official"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_story_official"
-            android:clipToPadding="false"
-            android:scrollbars="horizontal"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/recycler_stories_official"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/size_story_official"-->
+            <!--android:clipToPadding="false"-->
+            <!--android:scrollbars="horizontal"-->
+            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/ui_group_friends"
-        android:layout_below="@+id/ui_group_official"
+        android:layout_below="@+id/ui_group_stories_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >

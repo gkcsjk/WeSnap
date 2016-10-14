@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.camera.EditPhotoActivity;
+import com.unimelb.gof.wesnap.memories.MemoriesActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class CameraFragment extends Fragment {
 
     /* UI Variables */
     private Button mButtonStartCamera;
-    // private TextView textView;
+    private Button mViewMemoriesButton;
     private String mCurrentPhotoPath;
 
     public CameraFragment() {
@@ -38,17 +39,11 @@ public class CameraFragment extends Fragment {
 
     // ======================================================
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera, container, false);
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // textView = (TextView) view.findViewById(R.id.text_title_camera);
-
-        mButtonStartCamera = (Button) view.findViewById(R.id.button_start_camera);
+        mButtonStartCamera = (Button) rootView.findViewById(R.id.button_start_camera);
         mButtonStartCamera.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +51,17 @@ public class CameraFragment extends Fragment {
                 startCamera();
             }
         });
+
+        mViewMemoriesButton = (Button) rootView.findViewById(R.id.button_my_memories);
+        mViewMemoriesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MemoriesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        return rootView;
     }
 
     // ======================================================
