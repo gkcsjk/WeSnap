@@ -37,7 +37,7 @@
     <string name="action_other_options">Search Nearby</string>
     <string name="text_paired_title">Paired Devices</string>
     <string name="text_discover_title">Discovered Devices</string>
-    <string name="text_connected_title">Connecting...</string>
+    <string name="text_connected_title">Friend Request has been sent.</string>
 
     <!--Messages-->
     <string name="action_search_my_friends">Search My Friends</string>
