@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.PhotoFullscreenActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.camera.EditPhotoActivity;
 import com.unimelb.gof.wesnap.models.Message;

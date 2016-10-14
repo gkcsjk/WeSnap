@@ -1,6 +1,7 @@
 package com.unimelb.gof.wesnap.stories;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.PhotoFullscreenActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Story;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
@@ -111,8 +114,8 @@ public class MyStoriesActivity extends BaseActivity {
     // ======================================================
     // ======================================================
     // ======================================================
-    /* MyStoryViewHolder */
-    public static class MyStoryViewHolder extends RecyclerView.ViewHolder {
+    /* FriendStoryViewHolder */
+    private static class MyStoryViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView timeView;
 
@@ -125,7 +128,7 @@ public class MyStoriesActivity extends BaseActivity {
 
     // ======================================================
     /* MyStoriesAdapter */
-    public class MyStoriesAdapter
+    private class MyStoriesAdapter
             extends RecyclerView.Adapter<MyStoryViewHolder> {
 
         private Context mContext; // from the calling activity
@@ -147,15 +150,7 @@ public class MyStoriesActivity extends BaseActivity {
                     // get storyId:storyTimestamp
                     final String newStoryId = dataSnapshot.getKey();
                     Log.d(TAG, "getStoryIds:onChildAdded:" + newStoryId);
-                    // check if expired
-//                    long newStoryTimestamp = (long) dataSnapshot.getValue();
-//                    long diffHours = (System.currentTimeMillis() - newStoryTimestamp) / Story.MILLISECONDS_IN_ONE_HOUR;
-//                    if (diffHours >= Story.HOURS_TO_LIVE) {
-//                        // TODO
-//                        // expired: the story was published 24 hours ago
-//                        dataSnapshot.getRef().removeValue();
-//                        return;
-//                    }
+
                     // get "stories/storyId/"
                     mAllStoriesDatabase.child(newStoryId)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -245,8 +240,8 @@ public class MyStoriesActivity extends BaseActivity {
         public void onBindViewHolder(final MyStoryViewHolder viewHolder,
                                      final int position) {
             Log.d(TAG, "onBindViewHolder:" + position);
-
             final Story story = mStories.get(position);
+
             if (story.getDiffHours() >= 2) {
                 viewHolder.timeView.setText(mContext.getString(
                         R.string.text_hours_ago, story.getDiffHours()));
@@ -254,8 +249,8 @@ public class MyStoriesActivity extends BaseActivity {
                 viewHolder.timeView.setText(mContext.getString(
                         R.string.text_just_now));
             }
-            String photoUrl = story.getPhotoUrl();
-            Log.d(TAG, "onBindViewHolder:photoUrl=" + photoUrl);
+
+            final String photoUrl = story.getPhotoUrl();
             if (photoUrl != null && photoUrl.length() != 0) {
                 GlideUtil.loadImage(photoUrl, viewHolder.imageView);
             }
@@ -265,10 +260,11 @@ public class MyStoriesActivity extends BaseActivity {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // TODO show story photo fullscreen?
-                            Toast.makeText(MyStoriesActivity.this,
-                                    "item clicked",
-                                    Toast.LENGTH_SHORT).show();
+                            // show story photo fullscreen
+                            Intent showPhotoIntent = new Intent(MyStoriesActivity.this, PhotoFullscreenActivity.class);
+                            showPhotoIntent.putExtra(PhotoFullscreenActivity.EXTRA_PHOTO_URI_STRING, photoUrl);
+                            showPhotoIntent.putExtra(PhotoFullscreenActivity.EXTRA_TIME_TO_LIVE, AppParams.NO_TTL);
+                            startActivity(showPhotoIntent);
                         }
                     }
             );
