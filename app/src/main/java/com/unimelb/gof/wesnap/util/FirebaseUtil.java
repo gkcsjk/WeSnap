@@ -123,14 +123,6 @@ public class FirebaseUtil {
     }
 
     // =============================================
-
-    private static void handleNullValue(String field) {
-        Log.e(TAG, field + " unexpectedly null; goToLogin()");
-        BaseActivity a = new BaseActivity();
-        a.goToLogin("null value");
-    }
-
-    // =============================================
     /* Memories */
     public static DatabaseReference getCurrentMemoriesDatabase() {
         String uid = getCurrentUserId();
@@ -154,12 +146,39 @@ public class FirebaseUtil {
         }
     }
 
-    public static DatabaseReference getMemoriesDatabase() {
-        return getBaseRef().child("memories");
+    // =============================================
+    /* Personal Stories */
+    public static DatabaseReference getStoriesDatabase() {
+        return getBaseRef().child("stories");
     }
 
-    public static StorageReference getMemoriesStorage() {
-        return getBaseStorage().child("memories");
+    public static StorageReference getStoriesStorage() {
+        return getBaseStorage().child("stories");
+    }
+
+    public static DatabaseReference getMyStoriesDatabase() {
+        return getBaseRef().child("storiesByMe");
+    }
+
+    public static DatabaseReference getFriendsStoriesDatabase() {
+        return getBaseRef().child("storiesByFriends");
+    }
+
+    // =============================================
+    /* Official Stories */
+    public static DatabaseReference getOfficialStoriesDatabase() {
+        return getBaseRef().child("officialStories");
+    }
+
+    // TODO discover / recommendations
+
+    // =============================================
+    // =============================================
+
+    private static void handleNullValue(String field) {
+        Log.e(TAG, field + " unexpectedly null; goToLogin()");
+        BaseActivity a = new BaseActivity();
+        a.goToLogin("null value");
     }
 
     // =============================================

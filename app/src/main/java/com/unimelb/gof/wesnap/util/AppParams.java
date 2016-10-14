@@ -1,38 +1,47 @@
 package com.unimelb.gof.wesnap.util;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.unimelb.gof.wesnap.models.*;
-import com.google.firebase.database.DatabaseReference;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 
 /**
- * WeSnap Dev Team info
+ * WeSnap App shared settings
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
 public class AppParams {
     private static final String TAG = "AppParams";
-
-    public static int NO_TTL = -1;
-    public static int DEFAULT_TTL = 3;
-    public static int MIN_TTL = 1;
-    public static int MAX_TTL = 10;
-
-    public static String FILEPROVIDER = "com.unimelb.gof.wesnap.fileprovider";
-    public static final String MY_UUID = "7c3fdc44-33a7-463e-9a9b-b039844bd410";
     public static final String APP_NAME = "WeSnap";
+
+    public static final int NO_TTL = -1;
+    public static final int DEFAULT_TTL = 3;
+    public static final int MIN_TTL = 1;
+    public static final int MAX_TTL = 10;
+
+    public static final String FILEPROVIDER = "com.unimelb.gof.wesnap.fileprovider";
+    public static final String MY_UUID = "7c3fdc44-33a7-463e-9a9b-b039844bd410";
+
+
+    // ======================================================
+    /* Timestamp in certain format */
+
+    public static DateFormat getDateFormatter() {
+        return (new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH));
+    }
+
+    public static String getCurrentTimeString() {
+        return (getDateFormatter().format(new Date()));
+    }
 
     // ======================================================
     /* Naming of imgae files */
     public static String getImageFilename() {
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String newImageFilename = "IMG_" + timestamp;
-        return newImageFilename;
+        return ("IMG_" + getCurrentTimeString());
     }
 
     // ======================================================

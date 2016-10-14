@@ -25,6 +25,7 @@ import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
+import com.unimelb.gof.wesnap.util.PhotoUploader;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +114,7 @@ public class MemoryDetailsActivity extends BaseActivity
         mButtonLock = (ImageButton) findViewById(R.id.bt_lock_memory);
         mButtonLock.setOnClickListener(this); // TODO
         mButtonStory = (ImageButton) findViewById(R.id.bt_create_story);
-        mButtonStory.setOnClickListener(this); // TODO
+        mButtonStory.setOnClickListener(this);
 
         mButtonEdit = (ImageButton) findViewById(R.id.bt_edit_memory);
         mButtonEdit.setOnClickListener(this);
@@ -243,10 +244,21 @@ public class MemoryDetailsActivity extends BaseActivity
     // ========================================================
     /* createStory() */
     private void createStory() {
-        // TODO createStory....
-        Toast.makeText(MemoryDetailsActivity.this,
-                "createStory() TBD",
-                Toast.LENGTH_SHORT).show();
+        // create a local file
+        File localFile = getLocalFileInstance();
+        if (localFile == null) {
+            Log.e(TAG, "editMemory:local file error");
+            Toast.makeText(MemoryDetailsActivity.this,
+                    "Unable to send due to local file error",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Get uri
+        Uri photoUri = FileProvider.getUriForFile(
+                MemoryDetailsActivity.this,
+                AppParams.FILEPROVIDER, localFile);
+        // Send as new Story
+        PhotoUploader.uploadToStories(photoUri, MemoryDetailsActivity.this);
     }
 
     // ========================================================

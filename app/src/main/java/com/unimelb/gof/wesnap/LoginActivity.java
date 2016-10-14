@@ -221,7 +221,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // show loading
         mLoginButton.setVisibility(View.GONE);
         mRegisterButton.setVisibility(View.GONE);
-        disableInput(fields);
         showProgressDialog();
 
         // [START sign_in_with_email]
@@ -238,7 +237,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             Toast.makeText(LoginActivity.this,
                                     R.string.status_auth_failed,
                                     Toast.LENGTH_SHORT).show();
-                            enableInput(fields);
+                            mLoginButton.setVisibility(View.VISIBLE);
+                            mRegisterButton.setVisibility(View.VISIBLE);
                             hideProgressDialog();
                         }
 
@@ -288,7 +288,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         // update UI
         mRegSubmitButton.setVisibility(View.GONE);
-        disableInput(fields);
         showProgressDialog();
 
         // [START check_username_unique]
@@ -301,7 +300,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if (dataSnapshot.exists()) { // isUnique = false;
                             mRegUsernameField.setError(USERNAME_EXIST);
                             mRegSubmitButton.setVisibility(View.VISIBLE);
-                            enableInput(fields);
                             hideProgressDialog();
                         } else {
                             // isUnique = true;
@@ -335,7 +333,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                     Toast.LENGTH_SHORT).show();
                             isNewUser = false;
                             mRegSubmitButton.setVisibility(View.VISIBLE);
-                            enableInput(fields);
                             hideProgressDialog();
                         }
 
@@ -344,24 +341,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     }
                 });
         // [END create_new_acccount]
-    }
-
-    // ========================================================
-    private void disableInput(EditText[] fields) {
-//        EditText[] fields = new EditText[]{
-//                mRegUsernameField, mRegDisplayedNameField,
-//                mRegEmailField, mRegPasswordField,
-//                mEmailField, mPasswordField
-//        };
-        for(EditText f : fields) {
-            f.setInputType(InputType.TYPE_NULL);
-        }
-    }
-
-    private void enableInput(EditText[] fields) {
-        for(EditText f : fields) {
-            f.setInputType(InputType.TYPE_CLASS_TEXT);
-        }
     }
 
     // ========================================================

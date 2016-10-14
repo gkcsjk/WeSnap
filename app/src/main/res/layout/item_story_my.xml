@@ -2,9 +2,8 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
-    android:layout_width="@dimen/size_story_official"
-    android:layout_height="@dimen/size_story_official"
+    android:layout_width="@dimen/size_story_my"
+    android:layout_height="@dimen/size_story_my"
     android:layout_gravity="center"
     android:layout_margin="@dimen/size_edges_small" >
 
@@ -13,18 +12,18 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/story_image"
+            android:id="@+id/story_image_my"
             tools:src="@drawable/a"
-            android:background="@color/colorGreyDark"
+            android:background="@color/colorTransparentBlack"
             android:contentDescription="@string/desc_image_story"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/story_title"
-            android:layout_alignBottom="@+id/story_image"
-            tools:text="@string/text_story_title"
+            android:id="@+id/story_time_my"
+            android:text="@string/hint_time_ago"
+            android:layout_alignBottom="@+id/story_image_my"
             android:textAlignment="gravity"
             android:gravity="bottom|start"
             android:layout_width="match_parent"
@@ -32,7 +31,8 @@
             android:padding="@dimen/size_edges_small"
             android:textAppearance="?android:textAppearanceListItem"
             android:textColor="@color/colorWhite"
-            android:background="@color/colorTransparentBlack"/>
+            android:background="@color/colorTransparentWhite"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

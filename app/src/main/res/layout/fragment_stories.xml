@@ -5,14 +5,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".fragment.StoriesFragment">
+    tools:context=".fragment.StoriesFragment" >
+
+    <LinearLayout
+        android:id="@+id/ui_group_my"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/text_title_my_stories"
+            tools:text="@string/text_title_my_stories"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textColor="@color/colorPrimary" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_stories_my"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_story_my"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ui_group_official"
+        android:layout_below="@+id/ui_group_my"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -30,7 +53,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_stories_official"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_card_height"
+            android:layout_height="@dimen/size_story_official"
             android:clipToPadding="false"
             android:scrollbars="horizontal"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />

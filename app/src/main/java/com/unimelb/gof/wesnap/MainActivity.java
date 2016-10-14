@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity {
         MyTabAdapter myTabAdapter = new MyTabAdapter(getSupportFragmentManager());
         myTabAdapter.addFragment(new ChatsFragment(), "Chats", R.drawable.ic_action_chat);
         myTabAdapter.addFragment(new CameraFragment(), "Snap", R.drawable.ic_action_camera);
-        myTabAdapter.addFragment(new CameraFragment(), "Stories", R.drawable.ic_action_stories);
+        myTabAdapter.addFragment(new StoriesFragment(), "Stories", R.drawable.ic_action_stories);
         myTabAdapter.addFragment(new MeFragment(), "Me", R.drawable.ic_action_me);
 
         // Set ViewPager for each Tabs
@@ -255,9 +255,6 @@ public class MainActivity extends BaseActivity {
 
         // Reset local copy of user info
         AppParams.currentUser = null;
-        if (profileListener != null) {
-            FirebaseUtil.getCurrentUserRef().removeEventListener(profileListener);
-        }
 
         // Restart from LoginActivity
         goToLogin("user logged out");

@@ -137,22 +137,20 @@ public class PhotoFullscreenActivity extends BaseActivity {
 
     // ======================================================
     private void quitOk() {
+        Log.d(TAG, "showPhoto:quitOk");
         Intent data = new Intent();
-
         data.putExtra(EXTRA_PHOTO_FILENAME, mFilename);
-
         String msgId = getIntent().getStringExtra(EXTRA_MESSAGE_ID);
-        if (msgId != null) {
-            /* Firebase Storage */
+        if (msgId != null) { /* for use of Firebase Storage */
             data.putExtra(EXTRA_MESSAGE_ID, msgId);
         }
-
         setResult(RESULT_OK, data);
         finish();
     }
 
     // ======================================================
     private void quitError() {
+        Log.d(TAG, "showPhoto:quitError");
         Intent data = new Intent();
         setResult(RESULT_CANCELED, data);
         finish();

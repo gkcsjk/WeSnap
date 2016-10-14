@@ -38,7 +38,6 @@ import java.util.Map;
  * ChatsFragment
  * This fragment provides UI for current user's active chats, and
  * directs user to the messages when selecting one of the chat.
- * TODO search ??? https://developer.android.com/guide/topics/search/search-dialog.html
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -261,7 +260,7 @@ public class ChatsFragment extends Fragment {
                     }
             );
 
-            // on click: directs to message list
+            // on long click: show friend data
             final String receiverUid = uid;
             viewHolder.itemView.setOnLongClickListener(
                     new View.OnLongClickListener() {

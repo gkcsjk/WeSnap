@@ -62,6 +62,9 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         mImageView = (ImageView) findViewById(R.id.iv_show);
         mImageView.setOnClickListener(this);
 
+        ImageButton buttonCancel = (ImageButton) findViewById(R.id.bt_cancel_edit);
+        buttonCancel.setOnClickListener(this);
+
         mButtonFreehand = (ImageButton) findViewById(R.id.bt_freehand);
         mButtonFreehand.setOnClickListener(this);
         mButtonText = (ImageButton) findViewById(R.id.bt_text);
@@ -99,13 +102,15 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
             case R.id.iv_show:
                 updateControls();
                 break;
+            case R.id.bt_cancel_edit:
+                finish();
+                break;
             case R.id.bt_freehand:
                 Intent freehandIntent = new Intent(this, FreehandDrawActivity.class);
                 freehandIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
                 startActivity(freehandIntent);
                 break;
-            case R.id.bt_emoji:
-                // TODO EmojiDrawActivity
+            case R.id.bt_emoji: // TODO EmojiDrawActivity
                 Toast.makeText(EditPhotoActivity.this,
                         R.string.action_draw_emoji,
                         Toast.LENGTH_SHORT).show();
@@ -196,7 +201,6 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
             Intent data = new Intent();
             data.putExtra(MessagesActivity.EXTRA_PHOTO_PATH, mCurrentPhotoPath);
             data.putExtra(MessagesActivity.EXTRA_TIME_TO_LIVE, mTimeToLive);
-            // data.putExtra(MessagesActivity.EXTRA_CHAT_ID, mChatId); TODO need the chat id?
             setResult(RESULT_OK, data);
         } else {
             // choose a friend as receiver
@@ -220,10 +224,11 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     // ========================================================
     /* Share as current user's "story" */
     private void saveStory() {
-        // TODO saveStory
-        Toast.makeText(EditPhotoActivity.this,
-                R.string.action_save_to_story,
-                Toast.LENGTH_SHORT).show();
+        File photoFile = new File(mCurrentPhotoPath);
+        Uri photoUri = FileProvider.getUriForFile(
+                EditPhotoActivity.this,
+                AppParams.FILEPROVIDER, photoFile);
+        PhotoUploader.uploadToStories(photoUri, EditPhotoActivity.this);
     }
 
     // ========================================================

@@ -8,7 +8,10 @@
     <dimen name="size_spaces_fab">64dp</dimen>
     <dimen name="size_icon_tab">32dp</dimen>
     <dimen name="size_image_button">32dp</dimen>
+    <dimen name="size_edit_button">40dp</dimen>
     <dimen name="size_avatar">40dp</dimen>
     <dimen name="size_photo_message">160dp</dimen>
-    <dimen name="size_card_height">240dp</dimen>
+    <dimen name="size_story_my">160dp</dimen>
+    <dimen name="size_story_official">160dp</dimen>
+    <dimen name="size_story_friend">56dp</dimen>
 </resources>
