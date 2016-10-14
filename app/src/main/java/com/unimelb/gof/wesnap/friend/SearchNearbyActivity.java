@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,9 +23,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.util.AppParams;
+import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -267,7 +270,7 @@ public class SearchNearbyActivity extends BaseActivity {
                     Log.d("friend username:", "main thread recieve");
                     byte[] readBuf = (byte[])msg.obj;
                     friendUsername = new String (readBuf, 0, msg.arg1);
-                    AddFriend();
+                    addFriend();
                     break;
                 default:
                     break;
@@ -275,16 +278,28 @@ public class SearchNearbyActivity extends BaseActivity {
         }
     };
 
-    private void AddFriend(){
+    private void addFriend(){
         Log.d(TAG, "adding friends");
         Log.d("my username", mUsername);
         Log.d("friend username", friendUsername);
-        FriendHandler.insertFriendAtoB(friendUsername, mUsername);
-        FriendHandler.insertFriendAtoB(mUsername, friendUsername);
-        ll1.setVisibility(View.GONE);
-        ll2.setVisibility(View.GONE);
-        tv1.setVisibility(View.VISIBLE);
-        tv1.setText(FRIEND_ADDING_MESSAGE);
+        FirebaseUtil.getUsernamesRef().child(friendUsername)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String uid = (String) dataSnapshot.getValue();
+                FriendHandler.insertFriendAtoB(uid, FirebaseUtil.getCurrentUserId());
+                FriendHandler.insertFriendAtoB(mUsername, friendUsername);
+                ll1.setVisibility(View.GONE);
+                ll2.setVisibility(View.GONE);
+                tv1.setVisibility(View.VISIBLE);
+                tv1.setText(FRIEND_ADDING_MESSAGE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
