@@ -30,5 +30,12 @@ public class GlideUtil {
                 .fitCenter()
                 .into(imageView);
     }
+
+    public static void loadPhoto(String url, ImageView imageView) {
+        Context context = imageView.getContext();
+        Glide.with(context)
+                .load(url)
+                .into(imageView);
+    }
 }
 

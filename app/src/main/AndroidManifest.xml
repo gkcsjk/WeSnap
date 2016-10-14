@@ -97,7 +97,7 @@
         </activity>
 
         <activity
-            android:name=".chat.PhotoFullscreenActivity"
+            android:name=".PhotoFullscreenActivity"
             android:label="@string/action_show_photo">
         </activity>
 
