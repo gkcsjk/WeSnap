@@ -52,7 +52,6 @@ public class MemoriesActivity extends BaseActivity {
     private RecyclerView mMemoriesRecyclerView;
     private Button mImportButton;
     private MemoriesAdapter mRecyclerAdapter;
-    private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database / Storage variables */
     private DatabaseReference mMemoriesDatabase;

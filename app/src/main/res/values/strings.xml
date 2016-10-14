@@ -31,7 +31,7 @@
     <string name="action_view_friends">My Friends</string>
     <string name="action_view_requests">Added Me</string>
     <string name="action_add_friends">Add Friends</string>
-    <string name="action_search_username">Add by Username</string>
+    <string name="action_search_username">Search Friends</string>
     <string name="action_share_username">Share My Username</string>
     <string name="action_share_username_to">Share my username to ...</string>
     <string name="action_other_options">Search Nearby</string>
@@ -64,9 +64,9 @@
     <string name="text_draw_text_tip">Please touch the Image to set position.</string>
 
     <!--Stories-->
-    <string name="text_title_my_stories">--- My Stories ---</string>
-    <string name="text_title_official_stories">--- Official Stories ---</string>
-    <string name="text_title_friends_stories">--- Friends\' Stories ---</string>
+    <string name="text_title_my_stories">My Stories</string>
+    <string name="text_title_official_stories">Official Stories</string>
+    <string name="text_title_friends_stories">Stories by My Friends</string>
     <string name="text_title_live_stories">Live Stories</string>
     <string name="text_story_title">Tomorrow is tomorrow</string>
     <string name="action_read_story">Read More</string>

@@ -43,7 +43,7 @@ public class MeFragment extends Fragment {
     private Button mAddFriendButton;
     private Button mViewRequestButton;
     private Button mViewFriendsButton;
-    private Button mViewMemoriesButton;
+//    private Button mViewMemoriesButton;
 
     /* Firebase Database variables */
     private DatabaseReference refCurrentUser;
@@ -90,14 +90,14 @@ public class MeFragment extends Fragment {
             }
         });
 
-        mViewMemoriesButton = (Button) rootView.findViewById(R.id.button_my_memories);
-        mViewMemoriesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MemoriesActivity.class);
-                startActivity(intent);
-            }
-        });
+//        mViewMemoriesButton = (Button) rootView.findViewById(R.id.button_my_memories);
+//        mViewMemoriesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), MemoriesActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         return rootView;
     }

@@ -54,7 +54,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimary"
-        android:drawableLeft="@drawable/ic_action_add_friend_blue"
         android:drawableStart="@drawable/ic_action_add_friend_blue"
         android:drawablePadding="@dimen/size_edges_small"
         style="@style/Widget.AppCompat.Button.Borderless"/>
@@ -67,7 +66,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimary"
-        android:drawableLeft="@drawable/ic_action_view_requests"
         android:drawableStart="@drawable/ic_action_view_requests"
         android:drawablePadding="@dimen/size_edges_small"
         style="@style/Widget.AppCompat.Button.Borderless"/>
@@ -80,21 +78,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimary"
-        android:drawableLeft="@drawable/ic_action_view_friends"
         android:drawableStart="@drawable/ic_action_view_friends"
         android:drawablePadding="@dimen/size_edges_small"
         style="@style/Widget.AppCompat.Button.Borderless" />
 
-    <!-- View Memories Button -->
-    <Button
-        android:id="@+id/button_my_memories"
-        android:text="@string/action_my_memories"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:drawableLeft="@drawable/ic_action_view_memories"
-        android:drawableStart="@drawable/ic_action_view_memories"
-        android:drawablePadding="@dimen/size_edges_small"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+    <!--&lt;!&ndash; View Memories Button &ndash;&gt;-->
+    <!--<Button-->
+        <!--android:id="@+id/button_my_memories"-->
+        <!--android:text="@string/action_my_memories"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:drawableStart="@drawable/ic_action_view_memories"-->
+        <!--android:drawablePadding="@dimen/size_edges_small"-->
+        <!--style="@style/Widget.AppCompat.Button.Borderless" />-->
 </LinearLayout>

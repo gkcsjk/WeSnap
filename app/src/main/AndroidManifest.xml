@@ -101,6 +101,11 @@
             android:label="@string/action_show_photo">
         </activity>
 
+        <activity
+            android:name=".stories.MyStoriesActivity"
+            android:label="@string/text_title_my_stories">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.unimelb.gof.wesnap.fileprovider"
