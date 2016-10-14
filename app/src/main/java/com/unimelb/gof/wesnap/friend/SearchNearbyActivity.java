@@ -44,6 +44,7 @@ public class SearchNearbyActivity extends BaseActivity {
 
     public final static String EXTRA_USERNAME = "text_username";
     private final static String TAG = "SearchNearby";
+    private final static String FRIEND_ADDING_MESSAGE = "Friend Added";
     private final static int REQUEST_DISCOVERABLE_DURATION = 1000;
     private final static int MESSAGE_READ = 1;
 
@@ -197,7 +198,7 @@ public class SearchNearbyActivity extends BaseActivity {
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onrecieve");
+            Log.d(TAG, "on recieve");
             String action = intent.getAction();
             if(BluetoothDevice.ACTION_FOUND.equals(action)){
 
@@ -258,20 +259,34 @@ public class SearchNearbyActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    private final Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case MESSAGE_READ:
-                    Log.d("friend username:", friendUsername);
+                    Log.d("friend username:", "main thread recieve");
                     byte[] readBuf = (byte[])msg.obj;
                     friendUsername = new String (readBuf, 0, msg.arg1);
+                    AddFriend();
                     break;
                 default:
                     break;
             }
         }
     };
+
+    private void AddFriend(){
+        Log.d(TAG, "adding friends");
+        Log.d("my username", mUsername);
+        Log.d("friend username", friendUsername);
+        FriendHandler.insertFriendAtoB(friendUsername, mUsername);
+        FriendHandler.insertFriendAtoB(mUsername, friendUsername);
+        ll1.setVisibility(View.GONE);
+        ll2.setVisibility(View.GONE);
+        tv1.setVisibility(View.VISIBLE);
+        tv1.setText(FRIEND_ADDING_MESSAGE);
+
+    }
 
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
@@ -403,19 +418,11 @@ public class SearchNearbyActivity extends BaseActivity {
                     Log.d(TAG, "listening and reading");
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-                    if (buffer[bytes] == '\n' || buffer[bytes] == '\r'){
-                        // Send the obtained bytes to the UI activity
                         mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                                 .sendToTarget();
-                        bytes = 0;
+                    } catch (IOException e) {
+                        break;
                     }
-                    else {
-                        bytes += 1;
-                    }
-
-                } catch (IOException e) {
-                    break;
-                }
             }
         }
 
