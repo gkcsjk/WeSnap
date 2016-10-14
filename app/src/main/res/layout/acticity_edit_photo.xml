@@ -21,16 +21,28 @@
         android:orientation="horizontal"
         android:layout_alignTop="@+id/iv_show"
         android:layout_alignEnd="@+id/iv_show"
+        android:padding="@dimen/size_edges_small"
+        android:gravity="start"
         android:background="@color/colorTransparentBlack" >
+
+        <ImageButton
+            android:id="@+id/bt_cancel_edit"
+            android:src="@drawable/ic_action_cancel"
+            android:contentDescription="@string/action_cancel"
+            android:elevation="1dp"
+            android:layout_height="@dimen/size_edit_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
             android:id="@+id/bt_set_timer"
             android:src="@drawable/ic_action_set_timer"
             android:contentDescription="@string/action_set_timer"
-            android:textColor="@color/colorWhite"
             android:elevation="1dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_edit_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
@@ -38,8 +50,9 @@
             android:src="@drawable/ic_action_photo_freehand"
             android:contentDescription="@string/action_draw_freehand"
             android:elevation="1dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_edit_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
@@ -47,8 +60,9 @@
             android:src="@drawable/ic_action_photo_text"
             android:contentDescription="@string/action_draw_text"
             android:elevation="1dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_edit_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
 
         <ImageButton
@@ -56,8 +70,9 @@
             android:src="@drawable/ic_action_photo_emoji"
             android:contentDescription="@string/action_draw_emoji"
             android:elevation="1dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_edit_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless" />
     </LinearLayout>
 

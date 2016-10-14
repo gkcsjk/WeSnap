@@ -64,11 +64,16 @@
     <string name="text_draw_text_tip">Please touch the Image to set position.</string>
 
     <!--Stories-->
-    <string name="text_title_friends_stories">--- Friends\' Stories ---</string>
+    <string name="text_title_my_stories">--- My Stories ---</string>
     <string name="text_title_official_stories">--- Official Stories ---</string>
+    <string name="text_title_friends_stories">--- Friends\' Stories ---</string>
     <string name="text_title_live_stories">Live Stories</string>
     <string name="text_story_title">Tomorrow is tomorrow</string>
     <string name="action_read_story">Read More</string>
+    <string name="hint_time_ago">xx hours ago</string>
+    <string name="text_just_now">just now</string>
+    <string name="text_hour_ago">%1$d hour ago</string>
+    <string name="text_hours_ago">%1$d hours ago</string>
 
     <!--Memories-->
     <string name="action_my_memories">My Memories</string>

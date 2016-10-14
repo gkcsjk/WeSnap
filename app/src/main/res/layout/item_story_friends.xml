@@ -2,38 +2,52 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_photo_message"
+    android:layout_height="@dimen/size_story_friend"
     android:layout_gravity="center"
-    android:layout_marginBottom="@dimen/size_edges_small"
-    android:layout_marginLeft="@dimen/size_edges_small"
-    android:layout_marginRight="@dimen/size_edges_small"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_margin="@dimen/size_edges_small" >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparentWhite" >
 
         <ImageView
             android:id="@+id/story_image_fd"
             tools:src="@drawable/a"
-            android:background="@color/colorGreyDark"
             android:contentDescription="@string/desc_image_story"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_photo_message"
-            android:scaleType="centerCrop"/>
+            android:layout_alignParentStart="true"
+            android:layout_width="@dimen/size_story_friend"
+            android:layout_height="@dimen/size_story_friend"
+            android:scaleType="centerCrop"
+            android:background="@color/colorGreyDark" />
 
-        <TextView
-            android:id="@+id/story_title_fd"
-            android:layout_alignBottom="@+id/story_image"
-            tools:text="@string/text_story_title"
-            android:textAlignment="gravity"
-            android:gravity="bottom|start"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_photo_message"
-            android:layout_margin="@dimen/size_edges_small"
-            android:textAppearance="?android:textAppearanceLargeInverse"/>
+            android:layout_height="@dimen/size_avatar"
+            android:layout_toEndOf="@+id/story_image_fd"
+            android:layout_marginStart="@dimen/size_edges"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/story_name_fd"
+                android:hint="@string/hint_display_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:textAppearanceListItem"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/story_time_fd"
+                android:hint="@string/hint_time_ago"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:textAppearanceListItemSmall" />
+        </LinearLayout>
     </RelativeLayout>
-
 </android.support.v7.widget.CardView>
