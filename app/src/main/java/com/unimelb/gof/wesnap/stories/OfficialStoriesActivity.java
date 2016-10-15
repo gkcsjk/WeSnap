@@ -26,6 +26,8 @@ import com.unimelb.gof.wesnap.models.OfficialStory;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
+import java.util.Random;
+
 /**
  * OfficialStoriesActivity
  * Provides UI to show the list of Official Stories
@@ -120,36 +122,77 @@ public class OfficialStoriesActivity extends BaseActivity {
     // ======================================================
     private void discover() {
         Log.d(TAG, "discover");
-        Toast.makeText(OfficialStoriesActivity.this,
-                "discover: show recommendation", Toast.LENGTH_SHORT).show();
-
-        // TODO discover
         // get user's top interests
         mTopInterestsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "loadTopInterests:onDataChange");
+
                 if (!dataSnapshot.exists()) {
-                    // empty interest list
-                    // TODO show the latest official stories
-                    return;
-                }
-                for (DataSnapshot interestSnapshot: dataSnapshot.getChildren()) {
-                    String keyword = interestSnapshot.getKey();
+                    Toast.makeText(OfficialStoriesActivity.this,
+                            "Discover: random", Toast.LENGTH_SHORT).show();
+
+                    // get all existing keywords from Database
+                    FirebaseUtil.getKeywordsDatabase()
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "loadAllKeywords:onDataChange");
+                            if (!dataSnapshot.exists()) {
+                                (new GuardianImporter(null)).execute("");
+                            } else {
+                                Intent showDiscoverIntent = new Intent(OfficialStoriesActivity.this, DiscoverActivity.class);
+                                // randomly choose one to present to user
+                                int index = (new Random()).nextInt((int) dataSnapshot.getChildrenCount());
+                                int i = 0;
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                    if (i == index) {
+                                        showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, child.getKey());
+                                        startActivity(showDiscoverIntent);
+                                        return;
+                                    }
+                                    i++;
+                                }
+                            }
+                            Toast.makeText(OfficialStoriesActivity.this,
+                                    "Discover: nothing to show", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w(TAG, "loadAllKeywords:onCancelled", databaseError.toException());
+                        }
+                    });
+                } else {
+                    Toast.makeText(OfficialStoriesActivity.this,
+                            "Discover: for you", Toast.LENGTH_SHORT).show();
+
+                    // get the top NUM_INTERESTS interests
+                    for (DataSnapshot interestSnapshot : dataSnapshot.getChildren()) {
+                        String keyword = interestSnapshot.getKey();
+                        Log.d(TAG, "loadKeyword:onDataChange:" + keyword);
+
+                        // go to DiscoverActivity
+                        if (NUM_INTERESTS == 1) {
+                            Intent showDiscoverIntent = new Intent(OfficialStoriesActivity.this, DiscoverActivity.class);
+                            showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, keyword);
+                            startActivity(showDiscoverIntent);
+                        } // else: TODO possible improvement: more than one interests
+                    }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // ...
+                Log.w(TAG, "loadTopInterests:onCancelled", databaseError.toException());
             }
         });
     }
 
     // ======================================================
     /* Obtain new official stories via Guardian API, and
-     * save to Firebase Database as OfficialStory items TODO */
+     * save to Firebase Database as OfficialStory items */
     private void importNewStories() {
         Log.d(TAG, "importNewStories");
         Toast.makeText(OfficialStoriesActivity.this,
@@ -163,7 +206,7 @@ public class OfficialStoriesActivity extends BaseActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.w(TAG, "getLastImport:onDataChange");
                         String lastImport = (String) dataSnapshot.getValue();
-                        new GuardianImporter(lastImport).execute("");
+                        (new GuardianImporter(lastImport)).execute("");
                     }
 
                     @Override

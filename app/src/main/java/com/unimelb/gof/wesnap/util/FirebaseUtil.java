@@ -170,6 +170,10 @@ public class FirebaseUtil {
         return getBaseRef().child("officialStories");
     }
 
+    public static DatabaseReference getKeywordsDatabase() {
+        return getBaseRef().child("keywords");
+    }
+
     public static DatabaseReference getLastImportTimeRef() {
         return getBaseRef().child("lastImportTime");
     }

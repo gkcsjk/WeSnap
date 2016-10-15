@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_story_friend"
-    android:layout_margin="@dimen/size_edges_small"
+    android:layout_marginBottom="@dimen/size_edges_small"
     android:background="@color/colorTransparentWhite" >
 
     <de.hdodenhof.circleimageview.CircleImageView
