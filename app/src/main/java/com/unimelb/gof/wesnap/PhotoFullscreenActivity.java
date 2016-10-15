@@ -40,8 +40,6 @@ public class PhotoFullscreenActivity extends BaseActivity {
     private int mTimeToLiveMillis;
     private CountDownTimer mTimer;
 
-
-
     /* UI */
     private ImageView mPhotoFullscreenView;
     private TextView mCountDownTextView;

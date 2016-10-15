@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
-    android:layout_width="@dimen/size_story_official"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/size_story_official"
     android:layout_gravity="center"
     android:layout_margin="@dimen/size_edges_small" >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/story_image"
-            tools:src="@drawable/a"
-            android:background="@color/colorGreyDark"
+            android:id="@+id/story_image_off"
+            android:background="@color/colorPrimaryDark"
             android:contentDescription="@string/desc_image_story"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/story_title"
-            android:layout_alignBottom="@+id/story_image"
-            tools:text="@string/text_story_title"
+            android:id="@+id/story_title_off"
+            android:layout_alignBottom="@+id/story_image_off"
+            android:text="@string/text_story_title"
             android:textAlignment="gravity"
             android:gravity="bottom|start"
             android:layout_width="match_parent"
@@ -33,6 +31,32 @@
             android:textAppearance="?android:textAppearanceListItem"
             android:textColor="@color/colorWhite"
             android:background="@color/colorTransparentBlack"/>
+
+        <TextView
+            android:id="@+id/story_source_off"
+            android:layout_alignTop="@+id/story_image_off"
+            android:text="@string/text_story_source"
+            android:maxLines="1"
+            android:textAlignment="gravity"
+            android:gravity="top|start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/size_edges_small"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView
+            android:id="@+id/story_keyword_off"
+            android:layout_below="@+id/story_source_off"
+            android:text="@string/text_story_keyword"
+            android:maxLines="1"
+            android:textAlignment="gravity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/size_edges_small"
+            android:paddingEnd="@dimen/size_edges_small"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textColor="@color/colorAccent"/>
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

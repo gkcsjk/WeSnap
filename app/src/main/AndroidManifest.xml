@@ -7,13 +7,12 @@
         android:name="android.hardware.camera2"
         android:required="true"/>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
-
 
     <application
         android:allowBackup="true"
@@ -109,6 +108,16 @@
         <activity
             android:name=".camera.EmojiDrawActivity"
             android:label="@string/action_edit_photo">
+        </activity>
+
+        <activity
+            android:name=".stories.OfficialStoriesActivity"
+            android:label="@string/text_title_official_stories">
+        </activity>
+
+        <activity
+            android:name=".stories.OfficialStoryDetailsActivity"
+            android:label="@string/text_title_official_stories">
         </activity>
 
         <provider

@@ -60,7 +60,7 @@ public class MyStoriesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        setContentView(R.layout.activity_my_stories);
+        setContentView(R.layout.activity_stories);
 
         // Firebase Refs
         mMyStoriesDatabase = FirebaseUtil.getMyStoriesDatabase();
@@ -77,11 +77,11 @@ public class MyStoriesActivity extends BaseActivity {
         mMyStoriesDatabase = mMyStoriesDatabase.child(idCurrentUser);
 
         // Add Toolbar to main screen
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_my_stories);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_stories);
         setSupportActionBar(mToolbar);
 
         // Add recycler
-        mMyStoriesRecyclerView = (RecyclerView) findViewById(R.id.recycler_my_stories);
+        mMyStoriesRecyclerView = (RecyclerView) findViewById(R.id.recycler_stories);
         mMyStoriesRecyclerView.setTag(TAG);
 
         // UI: GridLayoutManager

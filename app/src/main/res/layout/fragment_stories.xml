@@ -46,33 +46,6 @@
 
     </LinearLayout>
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/ui_group_official"-->
-        <!--android:layout_below="@+id/ui_group_my"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical" >-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/text_title_official_stories"-->
-            <!--tools:text="@string/text_title_official_stories"-->
-            <!--android:textAlignment="center"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textAppearance="?android:textAppearanceListItem"-->
-            <!--android:textColor="@color/colorPrimary" />-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/recycler_stories_official"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/size_story_official"-->
-            <!--android:clipToPadding="false"-->
-            <!--android:scrollbars="horizontal"-->
-            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
-
-    <!--</LinearLayout>-->
-
     <LinearLayout
         android:id="@+id/ui_group_friends"
         android:layout_width="match_parent"
