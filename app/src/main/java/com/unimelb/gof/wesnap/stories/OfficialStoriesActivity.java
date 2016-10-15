@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,16 +70,6 @@ public class OfficialStoriesActivity extends BaseActivity {
         }
         mTopInterestsQuery = mInterestsDatabase.orderByValue().limitToLast(NUM_INTERESTS);
 
-        // TODO import dummy official story
-        OfficialStory dummy = new OfficialStory(
-                "New York Times",
-                "Books",
-                "Bob Dylan the Writer: An Authentic American Voice",
-                "nytimes://reader/id/100000004707113",
-                "https://static01.nyt.com/images/2016/10/14/arts/14DYLANGARNER/14DYLANGARNER-facebookJumbo.jpg",
-                "2016-10-13T13:31:02-04:00");
-        mOfficialStoriesDatabase.push().setValue(dummy);
-
         // Add Toolbar to main screen
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_stories);
         setSupportActionBar(mToolbar);
@@ -125,6 +116,7 @@ public class OfficialStoriesActivity extends BaseActivity {
 
     // ======================================================
     private void discover() {
+        // TODO discover
         // get user's top interests
         mTopInterestsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -146,17 +138,17 @@ public class OfficialStoriesActivity extends BaseActivity {
                 // ...
             }
         });
-
-        // TODO
     }
 
     // ======================================================
     private void importNewStories() {
+        // TODO importNewStories
+        new GuardianImporter().execute("");
     }
 
     // ======================================================
     private void search() {
-        // TODO
+        // TODO search
     }
 
     // ======================================================
@@ -209,7 +201,8 @@ public class OfficialStoriesActivity extends BaseActivity {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "itemClicked:" + position);
+                        Log.d(TAG, "itemClicked:" + officialStory.webpageUrl);
+
                         // record the click event (register user interest)
                         mInterestsDatabase.child(officialStory.keyword)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -230,14 +223,14 @@ public class OfficialStoriesActivity extends BaseActivity {
                                     }
                                 });
 
-                        // TODO show content (webpage)
-                        Intent readStoryIntent = new Intent(
+                        // show content (webpage)
+                        Intent showContentIntent = new Intent(
                                 OfficialStoriesActivity.this,
                                 OfficialStoryDetailsActivity.class);
-                        readStoryIntent.putExtra(
-                                OfficialStoryDetailsActivity.EXTRA_WEBPAGE_URL,
-                                officialStory.webpageUrl);
-                        startActivity(readStoryIntent);
+                        showContentIntent.putExtra(
+                                OfficialStoryDetailsActivity.EXTRA_INFO_ARRAY,
+                                officialStory.toStringArray());
+                        startActivity(showContentIntent);
                     }
                 });
             }

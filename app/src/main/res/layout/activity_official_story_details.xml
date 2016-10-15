@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/ui_group_discover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/colorAccent"
+            android:elevation="2dp">
+
+            <Button
+                android:id="@+id/source"
+                android:text="@string/action_read_discover"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceListItem"
+                android:textAllCaps="true"
+                android:textColor="@color/colorWhite"
+                android:drawableStart="@drawable/ic_action_discover"
+                android:drawablePadding="@dimen/size_edges_small"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+
+            <Button
+                android:id="@+id/keyword"
+                android:text="@string/action_read_discover"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceListItem"
+                android:textAllCaps="true"
+                android:textColor="@color/colorWhite"
+                android:drawableStart="@drawable/ic_action_discover"
+                android:drawablePadding="@dimen/size_edges_small"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/thumnail"
+            android:background="@color/colorPrimaryDark"
+            android:contentDescription="@string/desc_image_story"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_story_official"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:text="@string/text_story_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/size_edges_small"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:clickable="true"
+            android:typeface="sans"/>
+
+        <TextView
+            android:id="@+id/sumary"
+            android:text="@string/text_dummy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_edges_small"
+            android:padding="@dimen/size_edges_small"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textColor="@color/colorGreyDark"
+            android:typeface="sans"/>
+
+        <Button
+            android:id="@+id/read_more"
+            android:text="@string/action_read_story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimaryDark"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <WebView
+            android:id="@+id/webpage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>

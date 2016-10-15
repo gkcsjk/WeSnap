@@ -81,6 +81,7 @@
     <string name="text_story_keyword">Keyword: Books</string>
     <string name="text_story_keyword_var">#%1$s</string>
     <string name="action_import_official_stories">Import New Stories</string>
+    <string name="action_read_story">Read More</string>
     <string name="action_read_discover">Read Similar</string>
 
     <!--Memories-->

@@ -22,19 +22,32 @@ public class OfficialStory {
     public String webpageUrl;
     public String photoUrl;
     public String publicationDate;
+    public String summary;
 
     public OfficialStory() {
         // Default constructor required for calls to DataSnapshot.getValue(OfficialStory.class)
     }
 
     public OfficialStory(String source, String keyword, String title,
-                         String webpageUrl, String photoUrl, String publicationDate) {
+                         String webpageUrl, String photoUrl, String publicationDate,
+                         String summary) {
         this.source = source;
         this.keyword = keyword;
         this.title = title;
         this.webpageUrl = webpageUrl;
         this.photoUrl = photoUrl;
         this.publicationDate = publicationDate;
+        this.summary = summary;
+    }
+
+    public OfficialStory(String[] stringArray) {
+        this.source = stringArray[0];
+        this.keyword = stringArray[1];
+        this.title = stringArray[2];
+        this.webpageUrl = stringArray[3];
+        this.photoUrl = stringArray[4];
+        this.publicationDate = stringArray[5];
+        this.summary = stringArray[6];
     }
 
     // ======================================================
@@ -47,7 +60,15 @@ public class OfficialStory {
         result.put("webpageUrl", webpageUrl);
         result.put("photoUrl", photoUrl);
         result.put("publicationDate", publicationDate);
+        result.put("summary", summary);
         return result;
+    }
+
+    @Exclude
+    public String[] toStringArray() {
+        return (new String[]{
+                source, keyword, title, webpageUrl, photoUrl, publicationDate, summary
+        });
     }
 
     // ======================================================
