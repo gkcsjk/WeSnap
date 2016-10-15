@@ -106,6 +106,16 @@
             android:label="@string/text_title_my_stories">
         </activity>
 
+        <activity
+            android:name=".stories.OfficialStoriesActivity"
+            android:label="@string/text_title_official_stories">
+        </activity>
+
+        <activity
+            android:name=".stories.OfficialStoryDetailsActivity"
+            android:label="@string/text_title_official_stories">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.unimelb.gof.wesnap.fileprovider"

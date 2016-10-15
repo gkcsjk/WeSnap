@@ -68,13 +68,19 @@
     <string name="text_title_official_stories">Official Stories</string>
     <string name="text_title_friends_stories">Stories by Friends</string>
     <string name="text_title_live_stories">Live Stories</string>
-    <string name="text_story_title">Tomorrow is tomorrow</string>
-    <string name="action_read_story">Read More</string>
     <string name="hint_time_ago">xx hours ago</string>
     <string name="text_just_now">just now</string>
     <string name="text_hour_ago">%1$d hour ago</string>
     <string name="text_hours_ago">%1$d hours ago</string>
     <string name="text_author_name">%1$s</string>
+    <string name="action_search_official_stories">Search</string>
+    <string name="action_discover_official_stories">Discover</string>
+    <string name="text_story_title">Title: Tomorrow is tomorrow</string>
+    <string name="text_story_source">Source: NYT</string>
+    <string name="text_story_keyword">Keyword: Books</string>
+    <string name="text_story_keyword_var">#%1$s</string>
+    <string name="action_import_official_stories">Import New Stories</string>
+    <string name="action_read_discover">Read Similar</string>
 
     <!--Memories-->
     <string name="action_my_memories">My Memories</string>

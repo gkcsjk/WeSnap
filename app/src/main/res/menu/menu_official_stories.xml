@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/official_stories_discover"
+        android:icon="@drawable/ic_action_discover"
+        android:title="@string/action_discover_official_stories"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/official_stories_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/action_import_official_stories"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/official_stories_search"
+        android:icon="@drawable/ic_action_search_white"
+        android:title="@string/action_search_official_stories"
+        app:showAsAction="ifRoom"/>
+</menu>

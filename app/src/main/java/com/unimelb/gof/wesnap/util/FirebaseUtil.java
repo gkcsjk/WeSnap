@@ -171,6 +171,14 @@ public class FirebaseUtil {
     }
 
     // TODO discover / recommendations
+    public static DatabaseReference getUserInterestsRef() {
+        DatabaseReference currentUserRef = getCurrentUserRef();
+        if (currentUserRef != null) {
+            return currentUserRef.child("interests");
+        } else {
+            return null;
+        }
+    }
 
     // =============================================
     // =============================================

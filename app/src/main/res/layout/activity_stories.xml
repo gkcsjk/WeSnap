@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_my_stories"
+        android:id="@+id/toolbar_stories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
@@ -15,7 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_my_stories"
+        android:id="@+id/recycler_stories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

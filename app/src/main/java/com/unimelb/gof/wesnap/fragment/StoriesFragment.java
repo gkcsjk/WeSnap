@@ -26,6 +26,7 @@ import com.unimelb.gof.wesnap.PhotoFullscreenActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.Story;
 import com.unimelb.gof.wesnap.stories.MyStoriesActivity;
+import com.unimelb.gof.wesnap.stories.OfficialStoriesActivity;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
@@ -68,7 +69,9 @@ public class StoriesFragment extends Fragment {
         mMyStoriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent viewMyStoriesIntent = new Intent(getActivity(), MyStoriesActivity.class);
+                // show my stories
+                Intent viewMyStoriesIntent = new Intent(
+                        getActivity(), MyStoriesActivity.class);
                 startActivity(viewMyStoriesIntent);
             }
         });
@@ -77,14 +80,16 @@ public class StoriesFragment extends Fragment {
         mOfficialStoriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO show official stories
-                Toast.makeText(getActivity(), "item clicked",
-                        Toast.LENGTH_SHORT).show();
+                // show official stories
+                Intent viewOfficialStoriesIntent = new Intent(
+                        getActivity(), OfficialStoriesActivity.class);
+                startActivity(viewOfficialStoriesIntent);
             }
         });
 
         mFriendsStoriesTitle = (TextView) rootView.findViewById(R.id.text_title_friends_stories);
-        mFriendsStoriesRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_friends_stories);
+        mFriendsStoriesRecyclerView = (RecyclerView) rootView.findViewById(
+                R.id.recycler_friends_stories);
         mFriendsStoriesRecyclerView.setTag(TAG);
 
         return rootView;
