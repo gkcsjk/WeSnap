@@ -12,6 +12,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
@@ -80,6 +81,8 @@ public class OfficialStoriesActivity extends BaseActivity {
 
         // UI: LinearLayoutManager
         mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setReverseLayout(false);
+        mLinearLayoutManager.setStackFromEnd(false);
         mOfficialStoriesRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // UI: RecyclerAdapter
@@ -116,6 +119,10 @@ public class OfficialStoriesActivity extends BaseActivity {
 
     // ======================================================
     private void discover() {
+        Log.d(TAG, "discover");
+        Toast.makeText(OfficialStoriesActivity.this,
+                "discover: show recommendation", Toast.LENGTH_SHORT).show();
+
         // TODO discover
         // get user's top interests
         mTopInterestsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -141,13 +148,37 @@ public class OfficialStoriesActivity extends BaseActivity {
     }
 
     // ======================================================
+    /* Obtain new official stories via Guardian API, and
+     * save to Firebase Database as OfficialStory items TODO */
     private void importNewStories() {
-        // TODO importNewStories
-        new GuardianImporter().execute("");
+        Log.d(TAG, "importNewStories");
+        Toast.makeText(OfficialStoriesActivity.this,
+                "import new stories!", Toast.LENGTH_SHORT).show();
+
+        // check last time we scrape to avoid duplicated items,
+        // and then run the importer(s)
+        FirebaseUtil.getLastImportTimeRef()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.w(TAG, "getLastImport:onDataChange");
+                        String lastImport = (String) dataSnapshot.getValue();
+                        new GuardianImporter(lastImport).execute("");
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getLastImport:onCancelled", databaseError.toException());
+                    }
+                });
     }
 
     // ======================================================
     private void search() {
+        Log.d(TAG, "searchOfficialStories");
+        Toast.makeText(OfficialStoriesActivity.this,
+                "search for official stories??", Toast.LENGTH_SHORT).show();
+
         // TODO search
     }
 
