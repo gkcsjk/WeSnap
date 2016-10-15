@@ -244,6 +244,7 @@ public class MemoryDetailsActivity extends BaseActivity
     // ========================================================
     /* createStory() */
     private void createStory() {
+        // TODO check why empty size uploaded to Storage
         // create a local file
         File localFile = getLocalFileInstance();
         if (localFile == null) {
