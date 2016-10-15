@@ -15,6 +15,7 @@ import java.io.IOException;
 
 public class PhotoEditor {
     public static final String PATH_RECEIVER = "path_receiver";
+    private static final int IMAGE_MAX_SIDE_LENGTH = 1280;
 
     public static Bitmap setPic( String mCurrentPath ) {
 
@@ -76,30 +77,46 @@ public class PhotoEditor {
         return bitmap;
     }
 
-    public static Bitmap setPic(String mCurrentPath, int w, int h) {
+
+    public static Bitmap setPicOnEmotion(String mCurrentPath) {
         Log.d("current path",mCurrentPath);
 		/* Get the size of the image */
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mCurrentPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
 
-        /* Figure out which way needs to be reduced less */
-        int scaleFactor = 1;
-        if ((w > 0) || (h > 0)) {
-            scaleFactor = Math.min(photoW/w, photoH/h);
-        }
-
-		/* Set bitmap options to scale the image decode target */
+        int maxSideLength =
+                bmOptions.outWidth > bmOptions.outHeight ? bmOptions.outWidth : bmOptions.outHeight;
+        bmOptions.inSampleSize = 1;
+        bmOptions.inSampleSize = calculateSampleSize(maxSideLength, IMAGE_MAX_SIDE_LENGTH);
         bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
         bmOptions.inMutable = true;
 
-		/* Decode the JPEG file into a Bitmap */
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPath, bmOptions);
+        maxSideLength = bitmap.getWidth() > bitmap.getHeight()
+                ? bitmap.getWidth(): bitmap.getHeight();
+        double ratio = IMAGE_MAX_SIDE_LENGTH / (double) maxSideLength;
+        if (ratio < 1) {
+            bitmap = Bitmap.createScaledBitmap(
+                    bitmap,
+                    (int)(bitmap.getWidth() * ratio),
+                    (int)(bitmap.getHeight() * ratio),
+                    false);
+        }
         return bitmap;
     }
+
+    private static int calculateSampleSize(int maxSideLength, int expectedMaxImageSideLength) {
+        int inSampleSize = 1;
+
+        while (maxSideLength > 2 * expectedMaxImageSideLength) {
+            maxSideLength /= 2;
+            inSampleSize *= 2;
+        }
+
+        return inSampleSize;
+    }
+
 
     public static Bitmap resizeBitmap( Bitmap mBitmap, int w, int h){
         int photoHeight = mBitmap.getHeight();

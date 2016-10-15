@@ -114,9 +114,9 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
                 Toast.makeText(EditPhotoActivity.this,
                         R.string.action_draw_emoji,
                         Toast.LENGTH_SHORT).show();
-//                Intent emojiIntent = new Intent(this, EmojiDrawActivity.class);
-//                emojiIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
-//                startActivity(emojiIntent);
+                Intent emojiIntent = new Intent(this, EmojiDrawActivity.class);
+                emojiIntent.putExtra(PhotoEditor.PATH_RECEIVER, mCurrentPhotoPath);
+                startActivity(emojiIntent);
                 break;
             case R.id.bt_text:
                 Intent textIntent = new Intent(this, TextDrawActivity.class);
