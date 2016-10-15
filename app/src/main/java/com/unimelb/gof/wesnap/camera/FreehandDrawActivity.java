@@ -144,8 +144,7 @@ public class FreehandDrawActivity extends BaseActivity {
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isFinishing()) {
-                PhotoEditor.savePic(mCurrentPath, mBitmap);
-                finish();
+                showSaveEditDialog(mCurrentPath, mBitmap);
             }
             return true;
         }

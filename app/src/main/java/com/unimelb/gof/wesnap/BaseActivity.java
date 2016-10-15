@@ -3,10 +3,13 @@ package com.unimelb.gof.wesnap;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.unimelb.gof.wesnap.camera.PhotoEditor;
 
 /**
  * BaseActivity
@@ -23,7 +26,8 @@ public class BaseActivity extends AppCompatActivity {
     @VisibleForTesting
     public ProgressDialog mProgressDialog = null;
     public AlertDialog mExitAppDialog = null;
-    public DialogInterface.OnClickListener mExitAppDialogListener;
+    public AlertDialog mSaveEditDialg = null;
+    public DialogInterface.OnClickListener mExitAppDialogListener, mSaveEditDialogListener;
 
     // ========================================================
     // ProgressDialog
@@ -86,6 +90,37 @@ public class BaseActivity extends AppCompatActivity {
         super.onStop();
         hideProgressDialog();
         hideExitAppDialog();
+    }
+
+    public void showSaveEditDialog(final String mPath, final Bitmap mBitmap){
+        if (mSaveEditDialg == null) {
+            mSaveEditDialg = new AlertDialog.Builder(this).create();
+
+            mSaveEditDialogListener = new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int button) {
+                    switch(button) {
+                        case AlertDialog.BUTTON_POSITIVE:
+                            PhotoEditor.savePic(mPath, mBitmap);
+                            finish();
+                            break;
+                        case AlertDialog.BUTTON_NEGATIVE:
+                            finish();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+
+            mSaveEditDialg.setTitle("Confirm Save");
+            mSaveEditDialg.setMessage("Do you want to save the changes?");
+            mSaveEditDialg.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
+                    mSaveEditDialogListener);
+            mSaveEditDialg.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                    mSaveEditDialogListener);
+        }
+
+        mSaveEditDialg.show();
     }
 
     // ========================================================

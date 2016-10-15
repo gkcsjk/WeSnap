@@ -92,7 +92,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.GREEN);
-        mPaint.setTextSize(150);
+        mPaint.setTextSize(50);
         mCanvas.drawText(mText ,x, y, mPaint);
         Log.d("123", String.valueOf(x)+"  " +String.valueOf(y));
         mImageview.setImageBitmap(mBitmap);
@@ -103,8 +103,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isFinishing()) {
-                PhotoEditor.savePic(mCurrentPath, mBitmap);
-                finish();
+                showSaveEditDialog(mCurrentPath, mBitmap);
             }
             return true;
         }
