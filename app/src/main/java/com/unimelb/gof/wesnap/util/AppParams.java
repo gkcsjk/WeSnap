@@ -38,6 +38,9 @@ public class AppParams {
         return (getDateFormatter().format(new Date()));
     }
 
+    public static final SimpleDateFormat PUBDATE_FORMATTER =
+            new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.ENGLISH);
+
     // ======================================================
     /* Naming of imgae files */
     public static String getImageFilename() {

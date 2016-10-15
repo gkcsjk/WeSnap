@@ -22,8 +22,6 @@ public class User {
     private Map<String, Boolean> friends; // "uid: true"
     private Map<String, Boolean> chats; // "chat-id: true"
 
-    // private Map<String, Object> stories; //TODO
-
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }

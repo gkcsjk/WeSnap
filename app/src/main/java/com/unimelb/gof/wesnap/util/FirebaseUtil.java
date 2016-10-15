@@ -170,7 +170,12 @@ public class FirebaseUtil {
         return getBaseRef().child("officialStories");
     }
 
+    public static DatabaseReference getLastImportTimeRef() {
+        return getBaseRef().child("lastImportTime");
+    }
+
     // TODO discover / recommendations
+
     public static DatabaseReference getUserInterestsRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef != null) {
