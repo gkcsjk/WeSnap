@@ -1,13 +1,19 @@
 package com.unimelb.gof.wesnap;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.unimelb.gof.wesnap.camera.PhotoEditor;
 
@@ -26,8 +32,38 @@ public class BaseActivity extends AppCompatActivity {
     @VisibleForTesting
     public ProgressDialog mProgressDialog = null;
     public AlertDialog mExitAppDialog = null;
-    public AlertDialog mSaveEditDialg = null;
+    public AlertDialog mSaveEditDialog = null;
     public DialogInterface.OnClickListener mExitAppDialogListener, mSaveEditDialogListener;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkNetwork(this);
+    }
+
+    public void checkNetwork(Context context){
+        Log.d("NetworkCheck", "checking...");
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            Log.d("NetworkCheck", "activeNetwork != null");
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (!isConnected) {
+                Log.d("NetworkCheck", "no connection");
+                Toast.makeText(this,
+                        "Network Error",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+        else {
+            Log.d("NetworkCheck", "no connection");
+            Toast.makeText(this,
+                    "Network Error",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
 
     // ========================================================
     // ProgressDialog
@@ -93,8 +129,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showSaveEditDialog(final String mPath, final Bitmap mBitmap){
-        if (mSaveEditDialg == null) {
-            mSaveEditDialg = new AlertDialog.Builder(this).create();
+        if (mSaveEditDialog == null) {
+            mSaveEditDialog = new AlertDialog.Builder(this).create();
 
             mSaveEditDialogListener = new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int button) {
@@ -112,15 +148,15 @@ public class BaseActivity extends AppCompatActivity {
                 }
             };
 
-            mSaveEditDialg.setTitle("Confirm Save");
-            mSaveEditDialg.setMessage("Do you want to save the changes?");
-            mSaveEditDialg.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
+            mSaveEditDialog.setTitle("Confirm Save");
+            mSaveEditDialog.setMessage("Do you want to save the changes?");
+            mSaveEditDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
                     mSaveEditDialogListener);
-            mSaveEditDialg.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+            mSaveEditDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
                     mSaveEditDialogListener);
         }
 
-        mSaveEditDialg.show();
+        mSaveEditDialog.show();
     }
 
     // ========================================================
