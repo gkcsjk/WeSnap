@@ -305,10 +305,10 @@ public class ChatsFragment extends Fragment {
             return mChats.size();
         }
 
-        public void cleanupListener() {
-            if (mChildEventListener != null) {
-                mDatabaseReference.removeEventListener(mChildEventListener);
-            }
-        }
+//        public void cleanupListener() {
+//            if (mChildEventListener != null) {
+//                mDatabaseReference.removeEventListener(mChildEventListener);
+//            }
+//        }
     }
 }

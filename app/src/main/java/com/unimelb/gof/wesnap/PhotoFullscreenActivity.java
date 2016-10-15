@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap.chat;
+package com.unimelb.gof.wesnap;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -27,17 +27,20 @@ import com.unimelb.gof.wesnap.util.GlideUtil;
 public class PhotoFullscreenActivity extends BaseActivity {
     private static final String TAG = "PhotoFullscreenActivity";
 
+    public static final String EXTRA_PHOTO_URI_STRING = "photo_uri";
     public static final String EXTRA_PHOTO_FILENAME = "photo_filename";
     public static final String EXTRA_TIME_TO_LIVE = "time_to_live";
     public static final String EXTRA_CHAT_ID = "chat_id";
     public static final String EXTRA_MESSAGE_ID = "msg_id";
 
+    private String mPhotoUriString;
     private String mFilename;
     private StorageReference mStorageRef;
-
     private static final int MILLIS_IN_ONE_SECOND = 1000;
     private int mTimeToLiveMillis;
     private CountDownTimer mTimer;
+
+
 
     /* UI */
     private ImageView mPhotoFullscreenView;
@@ -50,11 +53,15 @@ public class PhotoFullscreenActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_fullscreen);
 
-        /* photo path */
+        /* photo path OR download uri in string */
         mFilename = getIntent().getStringExtra(EXTRA_PHOTO_FILENAME);
-        if (mFilename == null) {
-            throw new IllegalArgumentException("Must pass EXTRA_PHOTO_FILENAME");
+        mPhotoUriString = getIntent().getStringExtra(EXTRA_PHOTO_URI_STRING);
+        if (mFilename == null && mPhotoUriString == null) {
+            throw new IllegalArgumentException(
+                    "Must pass either EXTRA_PHOTO_FILENAME or EXTRA_PHOTO_URI_STRING");
         }
+
+        /* chat ID if any */
         String chatId = getIntent().getStringExtra(EXTRA_CHAT_ID);
         if (chatId != null) {
             /* Firebase Storage */
@@ -71,6 +78,7 @@ public class PhotoFullscreenActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
+        showProgressDialog();
 
         /* get UI elements */
         mPhotoFullscreenView = (ImageView) findViewById(R.id.image_fullscreen_show_photo);
@@ -97,8 +105,18 @@ public class PhotoFullscreenActivity extends BaseActivity {
             };
         }
 
-        // get photo url & show photo
-        showProgressDialog();
+        /* try uri first */
+        if (mPhotoUriString != null) {
+            GlideUtil.loadPhoto(mPhotoUriString, mPhotoFullscreenView);
+            mPhotoFullscreenView.setVisibility(View.VISIBLE);
+            hideProgressDialog();
+            if (mTimer != null) {
+                mTimer.start();
+            }
+            return;
+        }
+
+        /* get photo url & show photo */
         Log.d(TAG, "showPhoto:src=" + mStorageRef.getPath());
         mStorageRef.getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {

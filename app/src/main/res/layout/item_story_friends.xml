@@ -1,53 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_story_friend"
-    android:layout_gravity="center"
-    android:layout_margin="@dimen/size_edges_small" >
+    android:layout_margin="@dimen/size_edges_small"
+    android:background="@color/colorTransparentWhite" >
 
-    <RelativeLayout
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/story_image_fd"
+        android:src="@drawable/a"
+        android:layout_width="@dimen/size_story_friend"
+        android:layout_height="@dimen/size_story_friend"
+        android:scaleType="centerCrop"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/colorTransparentWhite"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorTransparentWhite" >
+        android:layout_height="@dimen/size_avatar"
+        android:layout_toEndOf="@+id/story_image_fd"
+        android:layout_marginStart="@dimen/size_edges"
+        android:orientation="vertical"
+        android:layout_centerVertical="true">
 
-        <ImageView
-            android:id="@+id/story_image_fd"
-            tools:src="@drawable/a"
-            android:contentDescription="@string/desc_image_story"
-            android:layout_alignParentStart="true"
-            android:layout_width="@dimen/size_story_friend"
-            android:layout_height="@dimen/size_story_friend"
-            android:scaleType="centerCrop"
-            android:background="@color/colorGreyDark" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/story_name_fd"
+            android:hint="@string/hint_display_name"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_avatar"
-            android:layout_toEndOf="@+id/story_image_fd"
-            android:layout_marginStart="@dimen/size_edges"
-            android:orientation="vertical"
-            android:layout_centerVertical="true">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/story_name_fd"
-                android:hint="@string/hint_display_name"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:textAppearance="?android:textAppearanceListItem"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/story_time_fd"
-                android:hint="@string/hint_time_ago"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:textAppearance="?android:textAppearanceListItemSmall" />
-        </LinearLayout>
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/story_time_fd"
+            android:hint="@string/hint_time_ago"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:textAppearanceListItemSmall" />
+    </LinearLayout>
+</RelativeLayout>
