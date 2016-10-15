@@ -6,10 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +26,13 @@ import com.unimelb.gof.wesnap.R;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Karl on 3/10/2016.
@@ -60,12 +68,96 @@ public class EmojiDrawActivity extends BaseActivity {
     }
 
     private void doRecognize(){
+        mTextView.setText("Loading...");
         try {
             new doRequest().execute();
         } catch (Exception e) {
             mTextView.append("Error encountered. Exception is: " + e.toString());
         }
+    }
 
+    private void showResults(RecognizeResult r){
+        mTextView.setText("");
+        List<Map<String, Double>> scores;
+        scores = new ArrayList<Map<String, Double>>();
+        Map<String, Double> map;
+        map = new HashMap<String, Double>();
+        map.put("anger", r.scores.anger);
+        map.put("disgust", r.scores.disgust);
+        map.put("fear", r.scores.fear);
+        map.put("happiness", r.scores.happiness);
+        map.put("neutral", r.scores.neutral+r.scores.contempt);
+        map.put("sadness", r.scores.anger);
+        map.put("surprise", r.scores.surprise);
+        Double max = Collections.max(map.values());
+        String maxEmotion = null;
+        Drawable emoji;
+        List<Integer> faceRect= new ArrayList<Integer>();
+        faceRect.add(r.faceRectangle.left);
+        faceRect.add(r.faceRectangle.top);
+        faceRect.add(r.faceRectangle.left + r.faceRectangle.width);
+        faceRect.add(r.faceRectangle.top + r.faceRectangle.height);
+
+        for (Map.Entry<String,Double> entry: map.entrySet()){
+            if (Objects.equals(max, entry.getValue())){
+                maxEmotion = entry.getKey();
+            }
+        }
+        if (maxEmotion != null){
+            mTextView.append(maxEmotion);
+            switch (maxEmotion){
+                case "anger":
+                    emoji = getDrawable(R.mipmap.anger);
+                    drawEmoji(emoji, faceRect);
+                    break;
+                case "disgust":
+                    emoji = getDrawable(R.mipmap.disgust);
+                    drawEmoji(emoji, faceRect);
+                    break;
+                case "happiness":
+                    emoji = getDrawable(R.mipmap.happiness);
+                    drawEmoji(emoji, faceRect);
+                    break;
+                case "fear":
+                    emoji = getDrawable(R.mipmap.fear);
+                    drawEmoji(emoji, faceRect);
+                    break;
+                case "neutral":
+                    emoji = getDrawable(R.mipmap.neutral);
+                    drawEmoji(emoji, faceRect);
+                    break;
+                case "sadness":
+                    emoji = getDrawable(R.mipmap.sadness);
+                    drawEmoji(emoji, faceRect);
+                    break;
+                case "surprise":
+                    emoji = getDrawable(R.mipmap.surprise);
+                    drawEmoji(emoji, faceRect);
+                default:
+                    break;
+            }
+        }
+//        mTextView.append(String.format("\t anger: %1$.5f\n", r.scores.anger));
+//        mTextView.append(String.format("\t contempt: %1$.5f\n", r.scores.contempt));
+//        mTextView.append(String.format("\t disgust: %1$.5f\n", r.scores.disgust));
+//        mTextView.append(String.format("\t fear: %1$.5f\n", r.scores.fear));
+//        mTextView.append(String.format("\t happiness: %1$.5f\n", r.scores.happiness));
+//        mTextView.append(String.format("\t neutral: %1$.5f\n", r.scores.neutral));
+//        mTextView.append(String.format("\t sadness: %1$.5f\n", r.scores.sadness));
+//        mTextView.append(String.format("\t surprise: %1$.5f\n", r.scores.surprise));
+//        mTextView.append(String.format("\t face rectangle: %d, %d, %d, %d",
+// r.faceRectangle.left, r.faceRectangle.top, r.faceRectangle.width, r.faceRectangle.height));
+
+    }
+
+    private void drawEmoji( Drawable emotion, List<Integer> faceRect ){
+        Log.d("emoji", "Drawing emoji...");
+        Canvas drawEmojiCanvas = new Canvas(mBitmap);
+        emotion.setBounds(faceRect.get(0),
+                faceRect.get(1),
+                faceRect.get(2),
+                faceRect.get(3));
+        emotion.draw(drawEmojiCanvas);
     }
 
     private List<RecognizeResult> processWithAutoFaceDetection() throws EmotionServiceException, IOException {
@@ -99,6 +191,17 @@ public class EmojiDrawActivity extends BaseActivity {
         return result;
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isFinishing()) {
+                showSaveEditDialog(mCurrentPath, mBitmap);
+            }
+            return true;
+        }
+        return false;
+    }
+
     private class doRequest extends AsyncTask<String, String, List<RecognizeResult>> {
         // Store error message
         private Exception e = null;
@@ -129,36 +232,9 @@ public class EmojiDrawActivity extends BaseActivity {
                 if (result.size() == 0) {
                     mTextView.append("No emotion detected :(");
                 } else {
-                    Integer count = 0;
-                    // Covert bitmap to a mutable bitmap by copying it
-                    Bitmap bitmapCopy = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
-                    Canvas faceCanvas = new Canvas(bitmapCopy);
-                    faceCanvas.drawBitmap(mBitmap, 0, 0, null);
-                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setStrokeWidth(5);
-                    paint.setColor(Color.RED);
-
                     for (RecognizeResult r : result) {
-                        mTextView.append(String.format("\nFace #%1$d \n", count));
-                        mTextView.append(String.format("\t anger: %1$.5f\n", r.scores.anger));
-                        mTextView.append(String.format("\t contempt: %1$.5f\n", r.scores.contempt));
-                        mTextView.append(String.format("\t disgust: %1$.5f\n", r.scores.disgust));
-                        mTextView.append(String.format("\t fear: %1$.5f\n", r.scores.fear));
-                        mTextView.append(String.format("\t happiness: %1$.5f\n", r.scores.happiness));
-                        mTextView.append(String.format("\t neutral: %1$.5f\n", r.scores.neutral));
-                        mTextView.append(String.format("\t sadness: %1$.5f\n", r.scores.sadness));
-                        mTextView.append(String.format("\t surprise: %1$.5f\n", r.scores.surprise));
-                        mTextView.append(String.format("\t face rectangle: %d, %d, %d, %d", r.faceRectangle.left, r.faceRectangle.top, r.faceRectangle.width, r.faceRectangle.height));
-                        faceCanvas.drawRect(r.faceRectangle.left,
-                                r.faceRectangle.top,
-                                r.faceRectangle.left + r.faceRectangle.width,
-                                r.faceRectangle.top + r.faceRectangle.height,
-                                paint);
-                        count++;
+                        showResults(r);
                     }
-                    ImageView imageView = (ImageView) findViewById(R.id.image_fullscreen_show_photo);
-                    imageView.setImageDrawable(new BitmapDrawable(getResources(), mBitmap));
                 }
             }
         }
