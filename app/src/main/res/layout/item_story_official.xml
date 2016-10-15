@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_story_official"
     android:layout_gravity="center"
-    android:layout_margin="@dimen/size_edges_small" >
+    android:layout_marginBottom="@dimen/size_edges_small" >
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.unimelb.gof.wesnap.stories;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -90,7 +91,7 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
         readSource.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO discover
+                // TODO subscribe?
                 Log.d(TAG, "itemClicked:" + thisStory.source);
                 Toast.makeText(OfficialStoryDetailsActivity.this,
                         "itemClicked:" + thisStory.source,
@@ -101,11 +102,16 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
         readKeyword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO discover
-                Log.d(TAG, "itemClicked:" + thisStory.keyword);
-                Toast.makeText(OfficialStoryDetailsActivity.this,
-                        "itemClicked:" + thisStory.keyword,
-                        Toast.LENGTH_SHORT).show();
+                // TODO subscribe?
+                Log.d(TAG, "buttonClicked:" + thisStory.keyword);
+//                Toast.makeText(OfficialStoryDetailsActivity.this,
+//                        "itemClicked:" + thisStory.keyword,
+//                        Toast.LENGTH_SHORT).show();
+                Intent showDiscoverIntent = new Intent(
+                        OfficialStoryDetailsActivity.this,
+                        DiscoverActivity.class);
+                showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, thisStory.keyword);
+                startActivity(showDiscoverIntent);
             }
         });
     }

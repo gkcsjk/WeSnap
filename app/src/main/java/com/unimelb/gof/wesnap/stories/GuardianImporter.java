@@ -155,18 +155,21 @@ public class GuardianImporter extends AsyncTask<String, Void, String> { // use J
                 }
 
                 // create new story using the data fields
+                String keyword = itemMapObject.get("sectionId").toString();
                 OfficialStory newStory = new OfficialStory(
                         SOURCE_NAME,
-                        itemMapObject.get("sectionId").toString(),
+                        keyword,
                         itemMapObject.get("webTitle").toString(),
                         itemMapObject.get("webUrl").toString(),
                         ((Map) itemMapObject.get("fields")).get("thumbnail").toString(),
                         pubDate,
                         ((Map) itemMapObject.get("fields")).get("headline").toString()
                 );
+
                 // save to Database
-                FirebaseUtil.getOfficialStoriesDatabase().push()
-                        .setValue(newStory);
+                String newStoryId = FirebaseUtil.getOfficialStoriesDatabase().push().getKey();
+                FirebaseUtil.getOfficialStoriesDatabase().child(newStoryId).setValue(newStory);
+                FirebaseUtil.getKeywordsDatabase().child(keyword).child(newStoryId).setValue(pubDate);
                 nArticles++;
             } // finish looping all results!
 

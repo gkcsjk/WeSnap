@@ -69,6 +69,7 @@
     <string name="text_title_official_stories">Official Stories</string>
     <string name="text_title_friends_stories">Stories by Friends</string>
     <string name="text_title_live_stories">Live Stories</string>
+    <string name="text_title_discover">Discover</string>
     <string name="hint_time_ago">xx hours ago</string>
     <string name="text_just_now">just now</string>
     <string name="text_hour_ago">%1$d hour ago</string>
