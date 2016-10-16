@@ -31,6 +31,7 @@ import java.util.List;
 /**
  * DiscoverActivity
  * Provides UI to recommend Official Stories
+ * TODO possible improvement: more than one interests
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -43,6 +44,7 @@ public class DiscoverActivity extends BaseActivity {
     private RecyclerView mDiscoverRecyclerView;
     private DiscoverAdapter mDiscoverAdapter;
     private LinearLayoutManager mLinearLayoutManager;
+    private TextView mNoResultText;
 
     /* Firebase Database */
     private String mKeyword;
@@ -97,6 +99,9 @@ public class DiscoverActivity extends BaseActivity {
         // UI: RecyclerAdapter
         mDiscoverAdapter = new DiscoverAdapter(DiscoverActivity.this, mStoryIdsRef);
         mDiscoverRecyclerView.setAdapter(mDiscoverAdapter);
+
+        /* No result message */
+        mNoResultText = (TextView) findViewById(R.id.text_no_result);
     }
 
     // ========================================================
@@ -172,6 +177,8 @@ public class DiscoverActivity extends BaseActivity {
                                     mStories.add(officialStory);
                                     mStoryIds.add(newOfficialStoryId);
                                     notifyItemInserted(mStories.size() - 1);
+                                    // hide "no result"
+                                    mNoResultText.setVisibility(View.GONE);
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
@@ -200,6 +207,10 @@ public class DiscoverActivity extends BaseActivity {
                         mStories.remove(index);
                         // Update the RecyclerView
                         notifyItemRemoved(index);
+                        // show "no result" if empty
+                        if (mStories.size() <= 0) {
+                            mNoResultText.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         Log.w(TAG, "getOfficialStoryIds:onChildRemoved:unknown_child:" + removedId);
                     }

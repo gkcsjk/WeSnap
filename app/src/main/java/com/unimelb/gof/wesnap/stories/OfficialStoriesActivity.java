@@ -9,7 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import java.util.Random;
 /**
  * OfficialStoriesActivity
  * Provides UI to show the list of Official Stories
+ * TODO possible improvement: more than one interests
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -43,6 +45,10 @@ public class OfficialStoriesActivity extends BaseActivity {
     private RecyclerView mOfficialStoriesRecyclerView;
     private FirebaseRecyclerAdapter<OfficialStory, OfficialStoryViewHolder> mFirebaseAdapter;
     private LinearLayoutManager mLinearLayoutManager;
+    private View mGroupSearch;
+    private EditText mSearchInput;
+    private ImageButton mSearchSubmit;
+    private TextView mNoResultText;
 
     /* Firebase Database / Storage variables */
     private DatabaseReference mOfficialStoriesDatabase;
@@ -80,16 +86,37 @@ public class OfficialStoriesActivity extends BaseActivity {
         // Add recycler
         mOfficialStoriesRecyclerView = (RecyclerView) findViewById(R.id.recycler_stories);
         mOfficialStoriesRecyclerView.setTag(TAG);
-
         // UI: LinearLayoutManager
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setReverseLayout(false);
         mLinearLayoutManager.setStackFromEnd(false);
         mOfficialStoriesRecyclerView.setLayoutManager(mLinearLayoutManager);
-
         // UI: RecyclerAdapter
         setupRecyclerAdapter();
         mOfficialStoriesRecyclerView.setAdapter(mFirebaseAdapter);
+
+        // Add showSearchInput box
+        mGroupSearch = findViewById(R.id.ui_group_search);
+        mGroupSearch.setVisibility(View.GONE);
+        mSearchInput = (EditText) findViewById(R.id.field_search_official);
+        mSearchSubmit = (ImageButton) findViewById(R.id.button_submit_search_official);
+        mSearchSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchTerm = mSearchInput.getText().toString();
+                if (searchTerm.length() == 0) {
+                    mSearchInput.setError("no showSearchInput keyword");
+                } else { // go to DiscoverActivity TODO non-existing keywords?
+                    Intent showDiscoverIntent = new Intent(
+                            OfficialStoriesActivity.this, DiscoverActivity.class);
+                    showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, searchTerm);
+                    startActivity(showDiscoverIntent);
+                }
+            }
+        });
+        // No result message
+        mNoResultText = (TextView) findViewById(R.id.text_no_result);
+        mNoResultText.setVisibility(View.GONE);
     }
 
     // ========================================================
@@ -113,7 +140,7 @@ public class OfficialStoriesActivity extends BaseActivity {
                 importNewStories();
                 break;
             case R.id.official_stories_search:
-                search();
+                showSearchInput();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -141,13 +168,16 @@ public class OfficialStoriesActivity extends BaseActivity {
                             if (!dataSnapshot.exists()) {
                                 (new GuardianImporter(null)).execute("");
                             } else {
-                                Intent showDiscoverIntent = new Intent(OfficialStoriesActivity.this, DiscoverActivity.class);
+                                Intent showDiscoverIntent = new Intent(
+                                        OfficialStoriesActivity.this, DiscoverActivity.class);
                                 // randomly choose one to present to user
-                                int index = (new Random()).nextInt((int) dataSnapshot.getChildrenCount());
+                                int index = (new Random()).nextInt(
+                                        (int) dataSnapshot.getChildrenCount());
                                 int i = 0;
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     if (i == index) {
-                                        showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, child.getKey());
+                                        showDiscoverIntent.putExtra(
+                                                DiscoverActivity.EXTRA_INTERESTS, child.getKey());
                                         startActivity(showDiscoverIntent);
                                         return;
                                     }
@@ -174,7 +204,8 @@ public class OfficialStoriesActivity extends BaseActivity {
 
                         // go to DiscoverActivity
                         if (NUM_INTERESTS == 1) {
-                            Intent showDiscoverIntent = new Intent(OfficialStoriesActivity.this, DiscoverActivity.class);
+                            Intent showDiscoverIntent = new Intent(
+                                    OfficialStoriesActivity.this, DiscoverActivity.class);
                             showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, keyword);
                             startActivity(showDiscoverIntent);
                         } // else: TODO possible improvement: more than one interests
@@ -217,18 +248,18 @@ public class OfficialStoriesActivity extends BaseActivity {
     }
 
     // ======================================================
-    private void search() {
+    private void showSearchInput() {
         Log.d(TAG, "searchOfficialStories");
-        Toast.makeText(OfficialStoriesActivity.this,
-                "search for official stories??", Toast.LENGTH_SHORT).show();
-
-        // TODO search
+        if (mGroupSearch.getVisibility() == View.VISIBLE) {
+            mGroupSearch.setVisibility(View.GONE);
+        } else {
+            mGroupSearch.setVisibility(View.VISIBLE);
+        }
     }
 
     // ======================================================
     // ======================================================
     // ======================================================
-
     /* OfficialStoryViewHolder */
     private static class OfficialStoryViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
