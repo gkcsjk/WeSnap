@@ -80,7 +80,8 @@ public class PhotoUploader {
                                 fMemoriesDatabase.child(filename).setValue(true);
                                 // Update UI
                                 activity.hideProgressDialog();
-                                Toast.makeText(activity, SAVED_TO_MEMORIES, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, SAVED_TO_MEMORIES,
+                                        Toast.LENGTH_SHORT).show();
                             }
                         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -92,7 +93,8 @@ public class PhotoUploader {
                                 Uri downloadUrl = null;
                                 // Update UI
                                 activity.hideProgressDialog();
-                                Toast.makeText(activity, FAILED_MEMORIES, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, FAILED_MEMORIES,
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
     }
@@ -126,7 +128,6 @@ public class PhotoUploader {
 
         /* Unique Story ID */
         final String uniqueStoryId = fStoriesDatabase.push().getKey();
-        // final String uniqueStoryId = AppParams.getMyUsername() +"_"+ AppParams.getImageFilename();
 
         /* Upload file to Firebase Storage & Database */
         final StorageReference photoRef = fStoriesStorage.child(uniqueStoryId);
@@ -177,14 +178,17 @@ public class PhotoUploader {
                                 }
                                 // Update UI
                                 activity.hideProgressDialog();
-                                Toast.makeText(activity, SENT_TO_STORIES, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, SENT_TO_STORIES,
+                                        Toast.LENGTH_SHORT).show();
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.w(TAG, "storiesShareToFriends:onCancelled", databaseError.toException());
+                                Log.w(TAG, "storiesShareToFriends:onCancelled",
+                                        databaseError.toException());
                                 // Update UI
                                 activity.hideProgressDialog();
-                                Toast.makeText(activity, FAILED_STORIES, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, FAILED_STORIES,
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
                         // [END publish the photo as a new personal story]

@@ -28,7 +28,8 @@ public class ChatStarter {
 
     // ======================================================
     /* check if exists an active "chat" for the selected friend */
-    public static void checkExistingChats(final Context context, final String uid, final String name) {
+    public static void checkExistingChats(final Context context,
+                                          final String uid, final String name) {
         // get current user's chat ids
         refMyChatIds.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,20 +84,19 @@ public class ChatStarter {
         });
     }
 
-    // ======================================================
-    /* Direct User to an existing chat */
-    private static void goToChat(final Context context, String chatId, String chatTitle) {
-        Log.d(TAG, "goToChat:id=" + chatId);
-        Intent intent = new Intent(context, MessagesActivity.class);
-        intent.putExtra(MessagesActivity.EXTRA_CHAT_ID, chatId);
-        intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, chatTitle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
-    }
 
     // ======================================================
     /* Create a new chat for the selected friend */
-    private static void startNewChat(final Context context, final String uid, final String name) {
+    // start with null text message
+    public static void startNewChat(final Context context,
+                                     final String uid, final String name) {
+        startNewChat(context, uid, name, null);
+    }
+
+    // start with welcome / added-friend text message
+    public static void startNewChat(final Context context,
+                                     final String uid, final String name,
+                                     final String initialMessageBody) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
         final DatabaseReference refCurrentUser = FirebaseUtil.getCurrentUserRef();
@@ -123,7 +123,7 @@ public class ChatStarter {
                 HashMap<String, String> participants = new HashMap<>();
                 participants.put(uid, name);
                 participants.put(me.getUid(), me.getDisplayedName());
-                Chat newChat = new Chat(participants, null, null, null);
+                Chat newChat = new Chat(participants, initialMessageBody);
                 DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
                 newChatRef.setValue(newChat);
 
@@ -140,5 +140,16 @@ public class ChatStarter {
                 Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
             }
         });
+    }
+
+    // ======================================================
+    /* Direct User to an existing chat */
+    private static void goToChat(final Context context, String chatId, String chatTitle) {
+        Log.d(TAG, "goToChat:id=" + chatId);
+        Intent intent = new Intent(context, MessagesActivity.class);
+        intent.putExtra(MessagesActivity.EXTRA_CHAT_ID, chatId);
+        intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, chatTitle);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
     }
 }

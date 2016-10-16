@@ -9,13 +9,13 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGreyDark">#37474F</color>     <!-- Blue Grey 800 -->
-    <color name="colorGreyMedium">#607D8B</color>    <!-- Blue Grey 500 -->
+    <color name="colorGreyMedium">#607D8B</color>   <!-- Blue Grey 500 -->
     <color name="colorGreyLight">#CFD8DC</color>    <!-- Blue Grey 100 -->
     <color name="colorGreyButton">#90A4AE</color>   <!-- Blue Grey 300 -->
 
     <!-- For Messaging -->
     <color name="colorSenderGreen">#4CAF50</color>   <!-- Green 500 -->
-    <color name="colorSenderRed">#F44336</color>   <!-- Red 500 -->
+    <color name="colorSenderRed">#F44336</color>     <!-- Red 500 -->
 
     <!-- Transparent !!!!!! -->
     <color name="colorTransparentWhite">#80FFFFFF</color>   <!-- White 50% -->

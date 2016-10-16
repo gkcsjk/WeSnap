@@ -159,13 +159,13 @@ public class MemoryDetailsActivity extends BaseActivity
     /* Show/Hide the control buttons */
     private void updateControls() {
         if (mIsVisible) {
-            findViewById(R.id.ui_group_edit_buttons).setVisibility(View.GONE);
-            findViewById(R.id.ui_group_share_buttons).setVisibility(View.GONE);
+            findViewById(R.id.ui_group_memory_controls).setVisibility(View.GONE);
+            findViewById(R.id.ui_group_memory_send_controls).setVisibility(View.GONE);
             findViewById(R.id.bt_send).setVisibility(View.GONE);
             mIsVisible = false;
         } else {
-            findViewById(R.id.ui_group_edit_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.ui_group_share_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.ui_group_memory_controls).setVisibility(View.VISIBLE);
+            findViewById(R.id.ui_group_memory_send_controls).setVisibility(View.VISIBLE);
             findViewById(R.id.bt_send).setVisibility(View.VISIBLE);
             mIsVisible = true;
         }
@@ -244,7 +244,6 @@ public class MemoryDetailsActivity extends BaseActivity
     // ========================================================
     /* createStory() */
     private void createStory() {
-        // TODO check why empty size uploaded to Storage
         // create a local file
         File localFile = getLocalFileInstance();
         if (localFile == null) {
@@ -254,13 +253,31 @@ public class MemoryDetailsActivity extends BaseActivity
                     Toast.LENGTH_SHORT).show();
             return;
         }
+
         // Get uri
-        Uri photoUri = FileProvider.getUriForFile(
-                MemoryDetailsActivity.this,
-                AppParams.FILEPROVIDER,
-                localFile);
-        // Send as new Story
-        PhotoUploader.uploadToStories(photoUri, MemoryDetailsActivity.this);
+        final Uri photoUri = FileProvider.getUriForFile(
+                MemoryDetailsActivity.this, AppParams.FILEPROVIDER, localFile);
+
+        // download photo to the local file
+        mStorageRef.getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);
+                        // Downloaded to local file
+                        // Send as new Story
+                        PhotoUploader.uploadToStories(photoUri, MemoryDetailsActivity.this);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e(TAG, "downloadFile:failure:", exception);
+                        Toast.makeText(MemoryDetailsActivity.this,
+                                "Unable to send due to download failure",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     // ========================================================
@@ -328,8 +345,10 @@ public class MemoryDetailsActivity extends BaseActivity
                         Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);
                         // Downloaded to local file
                         // choose a friend as receiver
-                        Intent sendPhotoIntent = new Intent(MemoryDetailsActivity.this, ChooseFriendActivity.class);
-                        sendPhotoIntent.putExtra(ChooseFriendActivity.EXTRA_PHOTO_PATH, localFile.getAbsolutePath());
+                        Intent sendPhotoIntent = new Intent(
+                                MemoryDetailsActivity.this, ChooseFriendActivity.class);
+                        sendPhotoIntent.putExtra(
+                                ChooseFriendActivity.EXTRA_PHOTO_PATH, localFile.getAbsolutePath());
                         startActivity(sendPhotoIntent);
                         finish();
                     }

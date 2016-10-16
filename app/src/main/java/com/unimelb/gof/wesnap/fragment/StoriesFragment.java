@@ -122,6 +122,17 @@ public class StoriesFragment extends Fragment {
         mFriendsStoriesRecyclerAdapter = new FriendsStoriesAdapter(
                 getActivity(), mFriendsStoriesDatabase);
         mFriendsStoriesRecyclerView.setAdapter(mFriendsStoriesRecyclerAdapter);
+
+//        // UI: OnScrollListener
+//        mFriendsStoriesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if (dy == mFriendsStoriesRecyclerAdapter.getItemCount()) {
+//                    Log.e(TAG,"scroll to last");
+//                }
+//            }
+//        });
     }
 
     // ======================================================
