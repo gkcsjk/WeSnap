@@ -28,6 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.chat.ChatStarter;
+import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
@@ -98,8 +100,6 @@ public class SearchNearbyActivity extends BaseActivity {
         pairedListView.setAdapter(pairedAdapter);
         discoverListView.setAdapter(discoverAdapter);
         discoverAdapter.notifyDataSetChanged();
-
-
     }
 
     @Override
@@ -288,11 +288,14 @@ public class SearchNearbyActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String uid = (String) dataSnapshot.getValue();
                 FriendHandler.insertFriendAtoB(uid, FirebaseUtil.getCurrentUserId());
-                FriendHandler.insertFriendAtoB(mUsername, friendUsername);
                 ll1.setVisibility(View.GONE);
                 ll2.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);
                 tv1.setText(FRIEND_ADDING_MESSAGE);
+
+                // start a new chat
+                ChatStarter.startNewChat(SearchNearbyActivity.this,
+                        uid, friendUsername, Chat.ADDED_AS_FRIEND);
             }
 
             @Override

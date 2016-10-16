@@ -9,6 +9,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
+import com.unimelb.gof.wesnap.chat.ChatStarter;
+import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -101,6 +103,11 @@ public class FriendHandler {
         insertFriendAtoB(fromUserId, toUserId);
         insertFriendAtoB(toUserId, fromUserId);
         refRequest.removeValue();
+
+        // start a new chat
+        ChatStarter.startNewChat(v.getContext(),
+                fromUserId, viewHolder.nameView.getText().toString(),
+                Chat.ADDED_AS_FRIEND);
 
         // update UI
         Snackbar.make(v, ACCEPTED, Snackbar.LENGTH_LONG).show();

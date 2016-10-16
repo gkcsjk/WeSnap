@@ -66,7 +66,8 @@
 
     <!--Stories-->
     <string name="text_title_my_stories">My Stories</string>
-    <string name="text_title_official_stories">Official Stories</string>
+    <string name="text_title_official_stories">Public Stories</string>
+    <string name="text_title_subscriptions">Subscriptions</string>
     <string name="text_title_friends_stories">Stories by Friends</string>
     <string name="text_title_live_stories">Live Stories</string>
     <string name="text_title_discover">Discover</string>

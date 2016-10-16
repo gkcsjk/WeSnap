@@ -3,9 +3,7 @@ package com.unimelb.gof.wesnap.models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,9 +11,14 @@ import java.util.Map;
  */
 @IgnoreExtraProperties
 public class Chat {
+    @Exclude
+    public static final String ADDED_AS_FRIEND = "Added as friends ";
+    @Exclude
+    private static final int MILLISECONDS_IN_ONE_HOUR = 60 * 60 * 1000;
+
     private Map<String, String> participants = new HashMap<>(); // {uid: displayedName}
     private String lastMessageBody;
-
+    private Long chatCreatedAt;
     private String chatTitle = null; // TODO for group chats; use null for now
     private String chatAvatarUrl = null; // TODO use default icon for now
 
@@ -30,6 +33,8 @@ public class Chat {
                 String chatAvatarUrl, String chatTitle) {
         this.participants.putAll(participants);
         this.lastMessageBody = lastMessageBody;
+        this.chatCreatedAt = System.currentTimeMillis();
+
         if (chatTitle != null) {
             this.chatTitle = chatTitle;
         }
@@ -45,7 +50,36 @@ public class Chat {
     }
 
     public String getLastMessageBody() {
-        return lastMessageBody;
+        String msg = getAddFriendMessage();
+        if (msg == null) {
+            return lastMessageBody;
+        } else {
+            return msg;
+        }
+    }
+
+    public long getChatCreatedAt() {
+        return this.chatCreatedAt;
+    }
+
+    @Exclude
+    private String getAddFriendMessage() {
+        if (this.chatCreatedAt != null && this.lastMessageBody.equals(ADDED_AS_FRIEND)) {
+            int hours = (int) (System.currentTimeMillis() - this.chatCreatedAt)
+                    / MILLISECONDS_IN_ONE_HOUR;
+            if (hours >= 0) {
+                switch (hours) {
+                    case 0:
+                        return (ADDED_AS_FRIEND + "just now");
+                    case 1:
+                        return (ADDED_AS_FRIEND + "1 hour ago");
+                    default:
+                        return (ADDED_AS_FRIEND + hours + " hours ago");
+                }
+            }
+        }
+
+        return null;
     }
 
     public String getChatTitle() {
