@@ -13,5 +13,5 @@
     <dimen name="size_photo_message">160dp</dimen>
     <dimen name="size_story_my">160dp</dimen>
     <dimen name="size_story_official">160dp</dimen>
-    <dimen name="size_story_friend">56dp</dimen>
+    <dimen name="size_story_friend">40dp</dimen>
 </resources>

@@ -1,13 +1,13 @@
 package com.unimelb.gof.wesnap.stories;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.OfficialStory;
+import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
 /**
@@ -31,8 +32,9 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
 
     private ImageView thumnailView;
     private TextView titleView;
-    private Button readSource;
-    private Button readKeyword;
+    private TextView keywordView;
+    private ImageButton readSimilarButton;
+    private ImageButton subscribeButton;
     private TextView summaryView;
     private Button readStory;
     private WebView mWebpageView;
@@ -54,10 +56,12 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
         thisStory = new OfficialStory(array);
 
         /* load info fields */
-        readSource = (Button) findViewById(R.id.source);
-        readSource.setText(thisStory.source);
-        readKeyword = (Button) findViewById(R.id.keyword);
-        readKeyword.setText(getString(R.string.text_story_keyword_var, thisStory.keyword));
+        keywordView = (TextView) findViewById(R.id.keyword);
+        keywordView.setText(getString(R.string.text_story_keyword_var, thisStory.keyword));
+        readSimilarButton = (ImageButton) findViewById(R.id.bt_similar);
+        subscribeButton = (ImageButton) findViewById(R.id.bt_subscribe);
+        subscribeButton.setImageResource(R.drawable.ic_action_subscribe);
+        // TODO check if already subscribed?
 
         thumnailView = (ImageView) findViewById(R.id.thumnail);
         String photoUrl = thisStory.photoUrl;
@@ -73,10 +77,12 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
         mWebpageView = (WebView) findViewById(R.id.webpage);
         mWebpageView.setVisibility(View.GONE);
 
+        /* set click listeners */
+        // show web content
         readStory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "itemClicked:" + thisStory.title);
+                Log.d(TAG, "readStory:showWebContent:title=" + thisStory.title);
                 // hide
                 thumnailView.setVisibility(View.GONE);
                 titleView.setVisibility(View.GONE);
@@ -88,30 +94,36 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
             }
         });
 
-        readSource.setOnClickListener(new View.OnClickListener() {
+        // show stories with the same keyword
+        readSimilarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO subscribe?
-                Log.d(TAG, "itemClicked:" + thisStory.source);
-                Toast.makeText(OfficialStoryDetailsActivity.this,
-                        "itemClicked:" + thisStory.source,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        readKeyword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO subscribe?
-                Log.d(TAG, "buttonClicked:" + thisStory.keyword);
-//                Toast.makeText(OfficialStoryDetailsActivity.this,
-//                        "itemClicked:" + thisStory.keyword,
-//                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "readSimilar:showDiscover:keyword=" + thisStory.keyword);
                 Intent showDiscoverIntent = new Intent(
                         OfficialStoryDetailsActivity.this,
                         DiscoverActivity.class);
                 showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, thisStory.keyword);
                 startActivity(showDiscoverIntent);
+            }
+        });
+
+        // subscribe to stories with the same keyword
+        subscribeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { // TODO subscribe?
+                Log.d(TAG, "subscribe:keyword=" + thisStory.keyword);
+                // save to Firebase Database
+                if (FirebaseUtil.getUserSubscriptionsRef() != null) {
+                    FirebaseUtil.getUserSubscriptionsRef()
+                            .child(thisStory.keyword).setValue(true);
+                }
+                // update UI
+                subscribeButton.setImageResource(R.drawable.ic_action_subscribe_done);
+                Toast.makeText(OfficialStoryDetailsActivity.this,
+                        "Subscribed to " + thisStory.keyword,
+                        Toast.LENGTH_SHORT).show();
+
+                // TODO for un-subscribe
             }
         });
     }

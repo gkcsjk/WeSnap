@@ -20,7 +20,11 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by qideng on 15/10/16.
+ * GuardianImporter
+ * Fetch news data via Guardian API
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 public class GuardianImporter extends AsyncTask<String, Void, String> { // use JSON instead?
     private static final String TAG = "GuardianImporter";

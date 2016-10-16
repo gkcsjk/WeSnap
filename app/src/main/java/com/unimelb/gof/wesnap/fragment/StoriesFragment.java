@@ -20,19 +20,22 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.PhotoFullscreenActivity;
 import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.models.OfficialStory;
 import com.unimelb.gof.wesnap.models.Story;
 import com.unimelb.gof.wesnap.stories.MyStoriesActivity;
 import com.unimelb.gof.wesnap.stories.OfficialStoriesActivity;
+import com.unimelb.gof.wesnap.stories.OfficialStoryDetailsActivity;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * StoriesFragment
@@ -47,14 +50,30 @@ public class StoriesFragment extends Fragment {
     /* UI Variables */
     private Button mMyStoriesButton;
     private Button mOfficialStoriesButton;
+    // UI group: Subscription
+    private View mGroupSub;
+    private TextView mSubscriptionTitle;
+    private RecyclerView mSubscriptionRecyclerView;
+    private SubscriptionAdapter mSubscriptionRecyclerAdapter;
+    private LinearLayoutManager mHorizontalLinearLayoutManager;
+    // UI group: Friends Stories
     private TextView mFriendsStoriesTitle;
     private RecyclerView mFriendsStoriesRecyclerView;
     private FriendsStoriesAdapter mFriendsStoriesRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
     /* Firebase Database / Storage variables */
+    // Friends stories
     private DatabaseReference mFriendsStoriesDatabase;
     private DatabaseReference mAllStoriesDatabase;
+    // Subscription
+    private DatabaseReference mOfficialStoriesDatabase;
+    private DatabaseReference mInterestsDatabase;
+    private DatabaseReference mSubscriptionDatabase;
+    private ValueEventListener mSubscriptionListener;
+
+    /* List of subscribed keywords */
+    public Set<String> mSubscriptionKeywords = null;
 
     public StoriesFragment() {
     }
@@ -87,6 +106,15 @@ public class StoriesFragment extends Fragment {
             }
         });
 
+        /* UI group: Subscription */
+        mGroupSub = rootView.findViewById(R.id.ui_group_subscriptions);
+        mGroupSub.setVisibility(View.GONE);
+        mSubscriptionTitle = (TextView) rootView.findViewById(R.id.text_title_subscriptions);
+        mSubscriptionRecyclerView = (RecyclerView) rootView.findViewById(
+                R.id.recycler_subscriptions);
+        mSubscriptionRecyclerView.setTag(TAG);
+
+        /* UI group: Friends */
         mFriendsStoriesTitle = (TextView) rootView.findViewById(R.id.text_title_friends_stories);
         mFriendsStoriesRecyclerView = (RecyclerView) rootView.findViewById(
                 R.id.recycler_friends_stories);
@@ -104,35 +132,66 @@ public class StoriesFragment extends Fragment {
 
         // Database Refs
         mFriendsStoriesDatabase = FirebaseUtil.getFriendsStoriesDatabase();
-        mAllStoriesDatabase = FirebaseUtil.getStoriesDatabase();
+        mSubscriptionDatabase = FirebaseUtil.getUserSubscriptionsRef();
+        mInterestsDatabase = FirebaseUtil.getUserInterestsRef();
         String idCurrentUser = FirebaseUtil.getCurrentUserId();
-        if (mFriendsStoriesDatabase == null || idCurrentUser == null ) {
+        if (mFriendsStoriesDatabase == null || mSubscriptionDatabase == null
+                || mInterestsDatabase == null || idCurrentUser == null ) {
             // null value error out
             Log.e(TAG, "unexpectedly null Database References; goToLogin()");
             (new BaseActivity()).goToLogin("unexpected null value");
             return;
         }
-        mFriendsStoriesDatabase = mFriendsStoriesDatabase.child(idCurrentUser);
 
+        mFriendsStoriesDatabase = mFriendsStoriesDatabase.child(idCurrentUser);
+        mAllStoriesDatabase = FirebaseUtil.getStoriesDatabase();
+        mOfficialStoriesDatabase = FirebaseUtil.getOfficialStoriesDatabase();
+
+        /*------------------------------------------------*/
+        /* for friends stories */
         // UI: LinearLayoutManager
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mFriendsStoriesRecyclerView.setLayoutManager(mLinearLayoutManager);
-
         // UI: RecyclerAdapter
         mFriendsStoriesRecyclerAdapter = new FriendsStoriesAdapter(
                 getActivity(), mFriendsStoriesDatabase);
         mFriendsStoriesRecyclerView.setAdapter(mFriendsStoriesRecyclerAdapter);
 
-//        // UI: OnScrollListener
-//        mFriendsStoriesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if (dy == mFriendsStoriesRecyclerAdapter.getItemCount()) {
-//                    Log.e(TAG,"scroll to last");
-//                }
-//            }
-//        });
+        /*------------------------------------------------*/
+        /* for subscription list */
+        // UI: LinearLayoutManager
+        mHorizontalLinearLayoutManager = new LinearLayoutManager(
+                getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mHorizontalLinearLayoutManager.setStackFromEnd(false);
+        mSubscriptionRecyclerView.setLayoutManager(mHorizontalLinearLayoutManager);
+        // UI: RecyclerAdapter
+        mSubscriptionRecyclerAdapter = new SubscriptionAdapter(
+                getActivity(), mOfficialStoriesDatabase);
+        mSubscriptionRecyclerView.setAdapter(mSubscriptionRecyclerAdapter);
+
+        // get my list of subscribed keywords
+        mSubscriptionListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "mSubscriptionListener:onDataChange");
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                if (map != null) { // show view
+                    mSubscriptionKeywords = map.keySet();
+                    mGroupSub.setVisibility(View.VISIBLE);
+                    mSubscriptionRecyclerAdapter.resetListener();
+                    Log.d(TAG, "mSubscriptionListener:onDataChange:list=" +
+                            mSubscriptionKeywords.toString());
+                } else { // hide view
+                    mSubscriptionKeywords = null;
+                    mGroupSub.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "mSubscriptionListener:onCancelled", databaseError.toException());
+            }
+        };
+        mSubscriptionDatabase.addValueEventListener(mSubscriptionListener);
     }
 
     // ======================================================
@@ -317,5 +376,179 @@ public class StoriesFragment extends Fragment {
     }
 
     // ======================================================
+    // ======================================================
+    // ======================================================
+    /* OfficialStoryViewHolder */
+    private static class OfficialStoryViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imageView;
+        public TextView titleView;
+        public TextView sourceView;
+        public TextView keywordView;
 
+        public OfficialStoryViewHolder(View v) {
+            super(v);
+            imageView = (ImageView) itemView.findViewById(R.id.story_image_off);
+            titleView = (TextView) itemView.findViewById(R.id.story_title_off);
+            sourceView = (TextView) itemView.findViewById(R.id.story_source_off);
+            keywordView = (TextView) itemView.findViewById(R.id.story_keyword_off);
+        }
+    }
+
+    // ======================================================
+    /* SubscriptionAdapter */
+    private class SubscriptionAdapter
+            extends RecyclerView.Adapter<OfficialStoryViewHolder> {
+
+        Context mContext;
+        DatabaseReference mDatabaseReference;
+        ChildEventListener mChildEventListener;
+
+        List<String> mStoryIds = new ArrayList<>();
+        List<OfficialStory> mStories = new ArrayList<>();
+
+        SubscriptionAdapter(final Context context, DatabaseReference ref) {
+            mContext = context;
+            mDatabaseReference = ref;
+
+            // Create child event listener
+            // [START child_event_listener_recycler]
+            ChildEventListener childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "getOfficialStory:onChildAdded:" + dataSnapshot.getKey());
+                    // load data
+                    OfficialStory officialStory =
+                            dataSnapshot.getValue(OfficialStory.class);
+                    // check subscription
+                    if (mSubscriptionKeywords != null
+                            && mSubscriptionKeywords.contains(officialStory.keyword)) {
+                        // update RecyclerView
+                        mStories.add(officialStory);
+                        mStoryIds.add(dataSnapshot.getKey());
+                        notifyItemInserted(mStories.size() - 1);
+                    }
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "getOfficialStoryIds:onChildChanged:" + dataSnapshot.getKey());
+                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "getOfficialStoryIds:onChildRemoved:" + dataSnapshot.getKey());
+                    // get official story id and index
+                    String removedId = dataSnapshot.getKey();
+                    int index = mStoryIds.indexOf(removedId);
+                    if (index > -1) { // if shown:
+                        // Remove data from the list
+                        mStoryIds.remove(index);
+                        mStories.remove(index);
+                        // Update the RecyclerView
+                        notifyItemRemoved(index);
+                    }
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "getOfficialStoryIds:onChildMoved:" + dataSnapshot.getKey());
+                    // This method is triggered when a child location's priority changes.
+                    Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "getOfficialStoryIds:onCancelled", databaseError.toException());
+                    Toast.makeText(mContext, "Failed to load official story ids",
+                            Toast.LENGTH_SHORT).show();
+                }
+            };
+            ref.addChildEventListener(childEventListener);
+            // [END child_event_listener_recycler]
+
+            // Store reference to listener so it can be removed on app stop
+            mChildEventListener = childEventListener;
+        }
+
+        @Override
+        public OfficialStoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view = inflater.inflate(R.layout.item_story_official_subscription, parent, false);
+            return new OfficialStoryViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final OfficialStoryViewHolder viewHolder, int position) {
+            Log.d(TAG, "populateViewHolder:" + position);
+
+            // Load the item view with thisStory user info
+            final int index = position;
+            final OfficialStory officialStory = mStories.get(index);
+
+            // load info of official story
+            viewHolder.titleView.setText(officialStory.title);
+            viewHolder.sourceView.setText(officialStory.source);
+            viewHolder.keywordView.setText(getString(
+                    R.string.text_story_keyword_var, officialStory.keyword));
+            String photoUrl = officialStory.photoUrl;
+            if (photoUrl != null && photoUrl.length() != 0) {
+                GlideUtil.loadPhoto(photoUrl, viewHolder.imageView);
+            }
+
+            // click to read official story
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "itemClicked:" + officialStory.webpageUrl);
+
+                    // record the click event (register user interest)
+                    mInterestsDatabase.child(officialStory.keyword)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Log.d(TAG, "getKeywordTimes:onDataChange:" +
+                                            dataSnapshot.getKey());
+                                    Long times = (Long) dataSnapshot.getValue();
+                                    if (times == null) {
+                                        times = (long) 0;
+                                    }
+                                    dataSnapshot.getRef().setValue(times + 1);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.w(TAG, "getKeywordTimes:onCancelled",
+                                            databaseError.toException());
+                                }
+                            });
+
+                    // show story
+                    Intent showContentIntent = new Intent(
+                            getActivity(),
+                            OfficialStoryDetailsActivity.class);
+                    showContentIntent.putExtra(
+                            OfficialStoryDetailsActivity.EXTRA_INFO_ARRAY,
+                            officialStory.toStringArray());
+                    startActivity(showContentIntent);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mStories.size();
+        }
+
+        public void resetListener() {
+            if (mChildEventListener != null) {
+                mDatabaseReference.removeEventListener(mChildEventListener);
+                mDatabaseReference.addChildEventListener(mChildEventListener);
+            }
+        }
+    }
+
+    // ======================================================
 }
