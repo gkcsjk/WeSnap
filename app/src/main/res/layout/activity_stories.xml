@@ -14,6 +14,47 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+    <LinearLayout
+        android:id="@+id/ui_group_search"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/size_edges"
+        android:paddingEnd="@dimen/size_edges"
+        android:visibility="gone">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" >
+            <!-- Search Input Field -->
+            <EditText
+                android:id="@+id/field_search_official"
+                android:hint="@string/action_search_official"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:inputType="text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/button_submit_search_official"
+            android:src="@drawable/ic_action_search"
+            android:contentDescription="@string/action_search_official"
+            android:layout_width="@dimen/size_icon_tab"
+            android:layout_height="@dimen/size_icon_tab"
+            android:layout_gravity="center"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_no_result"
+        android:text="@string/status_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="?android:textAppearanceSearchResultTitle" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_stories"
         android:layout_width="match_parent"

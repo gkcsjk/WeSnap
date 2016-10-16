@@ -11,6 +11,7 @@
     <string name="action_loading">Loading</string>
     <string name="action_exit_app">Exit App</string>
     <string name="status_not_found">Not Found</string>
+    <string name="status_no_result">No Results</string>
 
     <!--Auth-->
     <string name="text_title_login">Log In</string>
@@ -86,6 +87,7 @@
     <string name="action_read_story">Read More</string>
     <string name="action_similar">Read Similar</string>
     <string name="action_subscribe">Subscribe</string>
+    <string name="action_search_official">Search Public Stories</string>
 
     <!--Memories-->
     <string name="action_my_memories">My Memories</string>

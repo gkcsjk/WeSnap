@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/size_edges" >
 
+        <!-- Search Input Field -->
         <EditText
             android:id="@+id/field_search_username"
             android:hint="@string/hint_username"

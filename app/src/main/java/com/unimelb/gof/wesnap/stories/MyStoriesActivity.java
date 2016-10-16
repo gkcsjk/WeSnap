@@ -45,6 +45,7 @@ public class MyStoriesActivity extends BaseActivity {
     /* UI Variables */
     private RecyclerView mMyStoriesRecyclerView;
     private MyStoriesAdapter mRecyclerAdapter;
+    private TextView mNoResultText;
 
     /* Firebase Database / Storage variables */
     private DatabaseReference mMyStoriesDatabase;
@@ -92,6 +93,9 @@ public class MyStoriesActivity extends BaseActivity {
         // UI: RecyclerAdapter
         mRecyclerAdapter = new MyStoriesAdapter(MyStoriesActivity.this, mMyStoriesDatabase);
         mMyStoriesRecyclerView.setAdapter(mRecyclerAdapter);
+
+        /* No result message */
+        mNoResultText = (TextView) findViewById(R.id.text_no_result);
     }
 
     // ========================================================
@@ -174,6 +178,8 @@ public class MyStoriesActivity extends BaseActivity {
                                     mStories.add(story);
                                     mStoryIds.add(newStoryId);
                                     notifyItemInserted(mStories.size() - 1);
+                                    // hide "no result"
+                                    mNoResultText.setVisibility(View.GONE);
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
@@ -202,6 +208,10 @@ public class MyStoriesActivity extends BaseActivity {
                         mStories.remove(storyIndex);
                         // Update the RecyclerView
                         notifyItemRemoved(storyIndex);
+                        // show "no result" if empty
+                        if (mStories.size() <= 0) {
+                            mNoResultText.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         Log.w(TAG, "getStoryIds:onChildRemoved:unknown_id=" + removedStoryId);
                     }
