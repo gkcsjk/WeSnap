@@ -84,7 +84,8 @@
     <string name="text_story_keyword_var">#%1$s</string>
     <string name="action_import_official_stories">Import New Stories</string>
     <string name="action_read_story">Read More</string>
-    <string name="action_read_discover">Read Similar</string>
+    <string name="action_similar">Read Similar</string>
+    <string name="action_subscribe">Subscribe</string>
 
     <!--Memories-->
     <string name="action_my_memories">My Memories</string>

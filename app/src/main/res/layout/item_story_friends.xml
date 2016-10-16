@@ -30,7 +30,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:textAppearance="?android:textAppearanceListItem"
+            android:textAppearance="?android:textAppearanceListItemSmall"
             android:textStyle="bold" />
 
         <TextView
@@ -40,6 +40,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:textAppearance="?android:textAppearanceListItemSmall" />
+            android:textAppearance="?android:textAppearanceListItemSecondary" />
     </LinearLayout>
 </RelativeLayout>

@@ -13,33 +13,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/colorAccent"
+            android:background="@color/colorTransparentBlack"
             android:elevation="2dp">
 
-            <Button
-                android:id="@+id/source"
-                android:text="@string/action_read_discover"
+            <TextView
+                android:id="@+id/keyword"
+                android:text="@string/text_story_keyword"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:textAppearance="?android:textAppearanceListItem"
                 android:textAllCaps="true"
-                android:textColor="@color/colorWhite"
-                android:drawableStart="@drawable/ic_action_discover"
-                android:drawablePadding="@dimen/size_edges_small"
+                android:textColor="@color/colorAccent"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
 
-            <Button
-                android:id="@+id/keyword"
-                android:text="@string/action_read_discover"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <ImageButton
+                android:id="@+id/bt_similar"
+                android:src="@drawable/ic_action_discover"
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/action_similar"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceListItem"
-                android:textAllCaps="true"
-                android:textColor="@color/colorWhite"
-                android:drawableStart="@drawable/ic_action_discover"
-                android:drawablePadding="@dimen/size_edges_small"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+
+            <ImageButton
+                android:id="@+id/bt_subscribe"
+                android:src="@drawable/ic_action_subscribe"
+                android:contentDescription="@string/action_subscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
         </LinearLayout>
 

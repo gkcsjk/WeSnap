@@ -8,6 +8,9 @@ import java.util.Map;
 
 /**
  * Chat class for Firebase Database
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 @IgnoreExtraProperties
 public class Chat {

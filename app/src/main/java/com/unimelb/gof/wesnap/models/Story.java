@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by qideng on 18/09/2016.
+ * Story class for Firebase Database
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 @IgnoreExtraProperties
 public class Story {

@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * OfficialStoriesActivity
- * Provides UI to show the list of Official Stories
+ * DiscoverActivity
+ * Provides UI to recommend Official Stories
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -128,7 +128,7 @@ public class DiscoverActivity extends BaseActivity {
     }
 
     // ======================================================
-    /* FriendChooserAdapter */
+    /* DiscoverAdapter */
     private class DiscoverAdapter extends RecyclerView.Adapter<OfficialStoryViewHolder> {
 
         Context mContext;
