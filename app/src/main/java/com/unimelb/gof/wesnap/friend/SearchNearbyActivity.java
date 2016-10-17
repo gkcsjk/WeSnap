@@ -269,7 +269,7 @@ public class SearchNearbyActivity extends BaseActivity {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case MESSAGE_READ:
                     Log.d("friend username:", "main thread recieve");
                     byte[] readBuf = (byte[])msg.obj;

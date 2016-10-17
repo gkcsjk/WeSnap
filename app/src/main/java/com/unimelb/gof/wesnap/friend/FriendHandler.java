@@ -76,9 +76,51 @@ public class FriendHandler {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
+                            Log.w(TAG, "getCurrentUser:onCancelled",
+                                    databaseError.toException());
                             // update UI
                             Snackbar.make(v, NOT_SENT, Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+        }
+    }
+
+    public static void sendFriendRequestNoFeedback(final String toUserId) {
+        Log.d(TAG, "sendFriendRequest");
+
+        final String fromUserId = FirebaseUtil.getMyUidNonNull();
+        if (fromUserId == null) {
+            return;
+        }
+
+        if (AppParams.currentUser != null) {
+            // get current user info
+            Map<String, Object> requestValues = AppParams.currentUser.toFriendRequest();
+            // add request to destination user
+            FirebaseUtil.getRequestsRef()
+                    .child(toUserId).child(fromUserId).setValue(requestValues);
+        } else {
+            // go to Firebase Database
+            FirebaseUtil.getMyUserRef()
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.w(TAG, "getCurrentUser:onDataChange");
+                            // fetch current user info
+                            User currentUser = dataSnapshot.getValue(User.class);
+                            AppParams.currentUser = currentUser;
+                            Map<String, Object> requestValues =
+                                    currentUser.toFriendRequest();
+                            // add request to destination user
+                            FirebaseUtil.getRequestsRef()
+                                    .child(toUserId).child(fromUserId)
+                                    .setValue(requestValues);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w(TAG, "getCurrentUser:onCancelled",
+                                    databaseError.toException());
                         }
                     });
         }
