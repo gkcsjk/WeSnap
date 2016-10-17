@@ -53,6 +53,7 @@ public class SearchNearbyActivity extends BaseActivity {
     private final static int REQUEST_DISCOVERABLE_DURATION = 1000;
     private final static int MESSAGE_READ = 1;
 
+    private boolean isEnableBluetooth = false;
     private String mUsername;
     private String friendUsername;
     LinearLayout ll1, ll2;
@@ -117,6 +118,7 @@ public class SearchNearbyActivity extends BaseActivity {
             Log.d(TAG, "Bluetooth is enable");
             getPairedDevices();
             startSearching();
+            isEnableBluetooth = true;
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
         }
@@ -257,9 +259,11 @@ public class SearchNearbyActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(myReceiver);
-        pairedDevicesNameList.clear();
         super.onDestroy();
+        if (isEnableBluetooth){
+            unregisterReceiver(myReceiver);
+            pairedDevicesNameList.clear();
+        }
     }
 
     private Handler mHandler = new Handler(){
