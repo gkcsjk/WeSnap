@@ -271,9 +271,12 @@ public class MyStoriesActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
                             // show story photo fullscreen
-                            Intent showPhotoIntent = new Intent(MyStoriesActivity.this, PhotoFullscreenActivity.class);
-                            showPhotoIntent.putExtra(PhotoFullscreenActivity.EXTRA_PHOTO_URI_STRING, photoUrl);
-                            showPhotoIntent.putExtra(PhotoFullscreenActivity.EXTRA_TIME_TO_LIVE, AppParams.NO_TTL);
+                            Intent showPhotoIntent = new Intent(
+                                    MyStoriesActivity.this, PhotoFullscreenActivity.class);
+                            showPhotoIntent.putExtra(
+                                    PhotoFullscreenActivity.EXTRA_PHOTO_URI_STRING, photoUrl);
+                            showPhotoIntent.putExtra(
+                                    PhotoFullscreenActivity.EXTRA_TIME_TO_LIVE, AppParams.NO_TTL);
                             startActivity(showPhotoIntent);
                         }
                     }

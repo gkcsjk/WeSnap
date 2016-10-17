@@ -26,7 +26,8 @@ import java.util.Map;
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class GuardianImporter extends AsyncTask<String, Void, String> { // use JSON instead?
+public class GuardianImporter
+        extends AsyncTask<String, Void, String> {
     private static final String TAG = "GuardianImporter";
     public static final String SOURCE_NAME = "Guardian";
 
@@ -93,14 +94,6 @@ public class GuardianImporter extends AsyncTask<String, Void, String> { // use J
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
-//            String inputLine;
-//            StringBuilder response = new StringBuilder();
-//            while ((inputLine = in.readLine()) != null) {
-//                Log.d(TAG, "response:"+inputLine);
-//                response.append(inputLine);
-//            }
-//            in.close();
-//            return response.toString(); TODO
 
             String inputLine = in.readLine();
             Log.d(TAG, "response:"+inputLine);

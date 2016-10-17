@@ -17,16 +17,18 @@ public class User {
     private String email;
     private String username;
     private String displayedName;
-    private String avatarUrl; // TODO user-supplied avatar? snapcode?
+    private String avatarUrl; // if null: use default icons
 
-    private Map<String, Boolean> friends; // "uid: true"
-    private Map<String, Boolean> chats; // "chat-id: true"
+    private Map<String, Boolean> friends;   // "uid: true"
+    private Map<String, Boolean> chats;     // "chat-id: true"
 
     public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        // Default constructor required for calls to
+        // DataSnapshot.getValue(User.class)
     }
 
-    public User(String uid, String username, String displayedName, String email) {
+    public User(String uid, String username, String displayedName,
+                String email) {
         this(uid, username, displayedName, email, null, null);
     }
 

@@ -70,7 +70,8 @@ public class FriendItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 // accept friend requests
-                FriendHandler.acceptFriendRequest(refRequest, FriendItemViewHolder.this, v);
+                FriendHandler.acceptFriendRequest(refRequest,
+                        FriendItemViewHolder.this, v);
             }
         });
     }

@@ -99,7 +99,8 @@ public class MemoryDetailsActivity extends BaseActivity
         showProgressDialog();
 
         /* UI: fullscreen photo view */
-        mPhotoFullscreenView = (ImageView) findViewById(R.id.image_fullscreen_memory);
+        mPhotoFullscreenView = (ImageView) findViewById(
+                R.id.image_fullscreen_memory);
         Log.d(TAG, "showPhoto:src=" + mFirebaseUri);
         GlideUtil.loadImage(mFirebaseUri, mPhotoFullscreenView);
         mPhotoFullscreenView.setVisibility(View.VISIBLE);
@@ -159,13 +160,17 @@ public class MemoryDetailsActivity extends BaseActivity
     /* Show/Hide the control buttons */
     private void updateControls() {
         if (mIsVisible) {
-            findViewById(R.id.ui_group_memory_controls).setVisibility(View.GONE);
-            findViewById(R.id.ui_group_memory_send_controls).setVisibility(View.GONE);
+            findViewById(R.id.ui_group_memory_controls)
+                    .setVisibility(View.GONE);
+            findViewById(R.id.ui_group_memory_send_controls)
+                    .setVisibility(View.GONE);
             findViewById(R.id.bt_send).setVisibility(View.GONE);
             mIsVisible = false;
         } else {
-            findViewById(R.id.ui_group_memory_controls).setVisibility(View.VISIBLE);
-            findViewById(R.id.ui_group_memory_send_controls).setVisibility(View.VISIBLE);
+            findViewById(R.id.ui_group_memory_controls)
+                    .setVisibility(View.VISIBLE);
+            findViewById(R.id.ui_group_memory_send_controls)
+                    .setVisibility(View.VISIBLE);
             findViewById(R.id.bt_send).setVisibility(View.VISIBLE);
             mIsVisible = true;
         }
@@ -177,8 +182,7 @@ public class MemoryDetailsActivity extends BaseActivity
         Log.d(TAG, "deleteMemory:filename=" + mFirebaseFilename);
         mStorageRef.delete();
         mDatabaseRef.removeValue();
-        Toast.makeText(MemoryDetailsActivity.this,
-                "Deleted",
+        Toast.makeText(MemoryDetailsActivity.this, "Deleted",
                 Toast.LENGTH_SHORT).show();
         finish();
     }
@@ -202,9 +206,11 @@ public class MemoryDetailsActivity extends BaseActivity
 
         // download photo to the local file
         mStorageRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                .addOnSuccessListener(
+                        new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    public void onSuccess(
+                            FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);
                         hideProgressDialog();
                         // create a local uri to share
@@ -217,7 +223,8 @@ public class MemoryDetailsActivity extends BaseActivity
                         shareIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
                         shareIntent.setType("image/jpeg");
                         startActivity(Intent.createChooser(shareIntent,
-                                getResources().getText(R.string.action_share_memory_to)));
+                                getResources()
+                                .getText(R.string.action_share_memory_to)));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -233,9 +240,8 @@ public class MemoryDetailsActivity extends BaseActivity
     }
 
     // ========================================================
-    /* lockMemory() */
+    /* TODO lockMemory() */
     private void lockMemory() {
-        // TODO lockMemory....
         Toast.makeText(MemoryDetailsActivity.this,
                 "lockMemory() TBD",
                 Toast.LENGTH_SHORT).show();
@@ -256,17 +262,22 @@ public class MemoryDetailsActivity extends BaseActivity
 
         // Get uri
         final Uri photoUri = FileProvider.getUriForFile(
-                MemoryDetailsActivity.this, AppParams.APP_FILE_PROVIDER, localFile);
+                MemoryDetailsActivity.this,
+                AppParams.APP_FILE_PROVIDER,
+                localFile);
 
         // download photo to the local file
-        mStorageRef.getFile(localFile).addOnSuccessListener(
-                new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        mStorageRef.getFile(localFile)
+                .addOnSuccessListener(
+                        new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    public void onSuccess(
+                            FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);
                         // Downloaded to local file
                         // Send as new Story
-                        PhotoUploader.uploadToStories(photoUri, MemoryDetailsActivity.this);
+                        PhotoUploader.uploadToStories(photoUri,
+                                MemoryDetailsActivity.this);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -297,9 +308,11 @@ public class MemoryDetailsActivity extends BaseActivity
 
         // download photo to the local file
         mStorageRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                .addOnSuccessListener(
+                        new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    public void onSuccess(
+                            FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);
                         // Downloaded to local file
                         Intent editPhotoIntent = new Intent(
@@ -339,16 +352,20 @@ public class MemoryDetailsActivity extends BaseActivity
 
         // download photo to the local file
         mStorageRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                .addOnSuccessListener(
+                        new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    public void onSuccess(
+                            FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);
                         // Downloaded to local file
                         // choose a friend as receiver
                         Intent sendPhotoIntent = new Intent(
-                                MemoryDetailsActivity.this, ChooseFriendActivity.class);
+                                MemoryDetailsActivity.this,
+                                ChooseFriendActivity.class);
                         sendPhotoIntent.putExtra(
-                                ChooseFriendActivity.EXTRA_PHOTO_PATH, localFile.getAbsolutePath());
+                                ChooseFriendActivity.EXTRA_PHOTO_PATH,
+                                localFile.getAbsolutePath());
                         startActivity(sendPhotoIntent);
                         finish();
                     }

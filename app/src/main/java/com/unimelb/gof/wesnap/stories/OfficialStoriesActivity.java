@@ -32,7 +32,6 @@ import java.util.Random;
 /**
  * OfficialStoriesActivity
  * Provides UI to show the list of Official Stories
- * TODO possible improvement: more than one interests
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -106,7 +105,7 @@ public class OfficialStoriesActivity extends BaseActivity {
                 String searchTerm = mSearchInput.getText().toString();
                 if (searchTerm.length() == 0) {
                     mSearchInput.setError("no showSearchInput keyword");
-                } else { // go to DiscoverActivity TODO non-existing keywords?
+                } else { // go to DiscoverActivity
                     Intent showDiscoverIntent = new Intent(
                             OfficialStoriesActivity.this, DiscoverActivity.class);
                     showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, searchTerm);
@@ -177,7 +176,8 @@ public class OfficialStoriesActivity extends BaseActivity {
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                                     if (i == index) {
                                         showDiscoverIntent.putExtra(
-                                                DiscoverActivity.EXTRA_INTERESTS, child.getKey());
+                                                DiscoverActivity.EXTRA_INTERESTS,
+                                                child.getKey());
                                         startActivity(showDiscoverIntent);
                                         return;
                                     }
@@ -208,7 +208,7 @@ public class OfficialStoriesActivity extends BaseActivity {
                                     OfficialStoriesActivity.this, DiscoverActivity.class);
                             showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, keyword);
                             startActivity(showDiscoverIntent);
-                        } // else: TODO possible improvement: more than one interests
+                        } // (possible improvement: more than one interests)
                     }
                 }
             }

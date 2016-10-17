@@ -39,7 +39,7 @@ import java.io.IOException;
  * MessagesActivity
  * This activity shows the messages in a chat conversation and
  * provides the action of view/replay/send messages.
- * (message: upload photo from local / text input) TODO take photo ???
+ * (message: upload photo from local / text input)
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne

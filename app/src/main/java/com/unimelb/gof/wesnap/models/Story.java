@@ -26,7 +26,8 @@ public class Story {
     private Long timestamp;
 
     public Story() {
-        // Default constructor required for calls to DataSnapshot.getValue(Story.class)
+        // Default constructor required for calls to
+        // DataSnapshot.getValue(Story.class)
     }
 
     public Story(String authorUid, String authorName,
@@ -57,7 +58,8 @@ public class Story {
 
     @Exclude
     public long getDiffHours() {
-        return (System.currentTimeMillis() - this.timestamp) / MILLISECONDS_IN_ONE_HOUR;
+        return (System.currentTimeMillis() - this.timestamp)
+                / MILLISECONDS_IN_ONE_HOUR;
     }
 
     @Exclude

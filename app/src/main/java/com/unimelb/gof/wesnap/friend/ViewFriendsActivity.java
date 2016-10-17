@@ -75,7 +75,8 @@ public class ViewFriendsActivity extends BaseActivity {
         mFriendsRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // UI: RecyclerAdapter
-        mRecyclerAdapter = new FriendsAdapter(ViewFriendsActivity.this, refMyFriendIds);
+        mRecyclerAdapter = new FriendsAdapter(
+                ViewFriendsActivity.this, refMyFriendIds);
         mFriendsRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
@@ -97,8 +98,11 @@ public class ViewFriendsActivity extends BaseActivity {
             // [START child_event_listener_recycler]
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getFriendIds:onChildAdded:" + dataSnapshot.getKey());
+                public void onChildAdded(DataSnapshot dataSnapshot,
+                                         String previousChildName) {
+                    Log.d(TAG, "getFriendIds:onChildAdded:" +
+                            dataSnapshot.getKey());
+
                     // get friendId
                     final String newFriendId = dataSnapshot.getKey();
                     // get "users/friendId/"
@@ -106,11 +110,13 @@ public class ViewFriendsActivity extends BaseActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Log.d(TAG, "getUser:onDataChange:" + dataSnapshot.getKey());
+                                    Log.d(TAG, "getUser:onDataChange:" +
+                                            dataSnapshot.getKey());
+
                                     if (!dataSnapshot.exists()) {
-                                        Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
                                         FriendHandler.removeFriendAfromB(
-                                                newFriendId, FirebaseUtil.getMyUid());
+                                                newFriendId,
+                                                FirebaseUtil.getMyUid());
                                         return;
                                     }
                                     // load friend's user data
@@ -122,20 +128,26 @@ public class ViewFriendsActivity extends BaseActivity {
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-                                    Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                                    Log.w(TAG, "getUser:onCancelled",
+                                            databaseError.toException());
                                 }
                             });
                 }
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getFriendIds:onChildChanged:" + dataSnapshot.getKey());
-                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
+                public void onChildChanged(DataSnapshot dataSnapshot,
+                                           String previousChildName) {
+                    Log.d(TAG, "getFriendIds:onChildChanged:" +
+                            dataSnapshot.getKey());
+                    Toast.makeText(mContext,
+                            "Changed:" + dataSnapshot.getKey(),
+                            Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "getFriendIds:onChildRemoved:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getFriendIds:onChildRemoved:" +
+                            dataSnapshot.getKey());
                     // get friend id and index
                     String removedFriendId = dataSnapshot.getKey();
                     int friendIndex = mFriendIds.indexOf(removedFriendId);
@@ -146,21 +158,26 @@ public class ViewFriendsActivity extends BaseActivity {
                         // Update the RecyclerView
                         notifyItemRemoved(friendIndex);
                     } else {
-                        Log.w(TAG, "getFriendIds:onChildRemoved:unknown_child:" + removedFriendId);
+                        Log.w(TAG, "getFriendIds:onChildRemoved:unknown_child:"
+                                + removedFriendId);
                     }
                 }
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getFriendIds:onChildMoved:" + dataSnapshot.getKey());
-                    // This method is triggered when a child location's priority changes.
+                public void onChildMoved(DataSnapshot dataSnapshot,
+                                         String previousChildName) {
+                    Log.d(TAG, "getFriendIds:onChildMoved:" +
+                            dataSnapshot.getKey());
+                    // This method is triggered
+                    // when a child location's priority changes.
                     Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
                             Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "getFriendIds:onCancelled", databaseError.toException());
+                    Log.w(TAG, "getFriendIds:onCancelled",
+                            databaseError.toException());
                     Toast.makeText(mContext, "Failed to load friends.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -173,14 +190,16 @@ public class ViewFriendsActivity extends BaseActivity {
         }
 
         @Override
-        public FriendItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public FriendItemViewHolder onCreateViewHolder(ViewGroup parent,
+                                                       int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.item_friend, parent, false);
             return new FriendItemViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final FriendItemViewHolder viewHolder, int position) {
+        public void onBindViewHolder(final FriendItemViewHolder viewHolder,
+                                     int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             // Load the item view with friend user info
@@ -190,7 +209,8 @@ public class ViewFriendsActivity extends BaseActivity {
             if (avatarUrl != null && avatarUrl.length() != 0) {
                 GlideUtil.loadProfileIcon(avatarUrl, viewHolder.avatarView);
             } else {
-                viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
+                viewHolder.avatarView.setImageResource(
+                        R.drawable.ic_default_avatar);
             }
             viewHolder.emailView.setText(friend.getEmail());
             viewHolder.doButton.setVisibility(View.GONE);

@@ -166,7 +166,6 @@ public class FriendHandler {
             FirebaseUtil.getUsersRef().child(toUserId).child("friends")
                     .child(someFriendId).setValue(true);
         }
-        // TODO null?
     }
 
     // ========================================================
@@ -177,8 +176,6 @@ public class FriendHandler {
         if (someFriendId != null && fromUserId != null) {
             FirebaseUtil.getUsersRef().child(fromUserId).child("friends")
                     .child(someFriendId).setValue(true);
-            return;
         }
-        // TODO null?
     }
 }
