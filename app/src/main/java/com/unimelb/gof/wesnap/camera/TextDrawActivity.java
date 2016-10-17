@@ -50,7 +50,8 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
         mButton1.setOnClickListener(this);
         mButton2 = (Button) findViewById(R.id.bt_set);
         mButton2.setOnClickListener(this);
-        mBitmap = PhotoEditor.setPic(mCurrentPath, mImageview);
+        mBitmap = PhotoEditor.setPicOnEmotion(mCurrentPath);
+        mImageview.setImageBitmap(mBitmap);
         mCanvas = new Canvas(mBitmap);
         y = mImageview.getY();
         x = mImageview.getX();
