@@ -119,7 +119,9 @@ public class MeFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.w(TAG, "getCurrentUser:onDataChange");
                 User currentUser = dataSnapshot.getValue(User.class);
-                showInfo(currentUser);
+                if (currentUser != null) {
+                    showInfo(currentUser);
+                }
             }
 
             @Override
