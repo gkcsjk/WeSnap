@@ -436,6 +436,7 @@ public class LoginActivity extends BaseActivity
         Log.d(TAG, "goToMain");
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

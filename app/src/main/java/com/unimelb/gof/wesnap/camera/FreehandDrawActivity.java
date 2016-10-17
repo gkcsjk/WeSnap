@@ -34,7 +34,7 @@ public class FreehandDrawActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         mCurrentPath = intent.getStringExtra(PhotoEditor.PATH_RECEIVER);
-        mBitmap = PhotoEditor.setPic(mCurrentPath);
+        mBitmap = PhotoEditor.setPicOnEmotion(mCurrentPath);
         dv = new DrawingView(this);
         setContentView(dv);
         mPaint = new Paint();
@@ -44,7 +44,7 @@ public class FreehandDrawActivity extends BaseActivity {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(12);
+        mPaint.setStrokeWidth(6);
     }
 
     public class DrawingView extends View {

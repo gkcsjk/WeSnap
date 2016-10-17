@@ -61,17 +61,14 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
         mBitmap = PhotoEditor.setPicOnEmotion(mCurrentPath);
         mImageview.setImageBitmap(mBitmap);
         mCanvas = new Canvas(mBitmap);
-        y = mImageview.getY();
-        x = mImageview.getX();
-
 
         mImageview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                float touchX = event.getRawX();
-                float touchY = event.getRawY();
-                x = touchX;
-                y = touchY;
+                float touchX = event.getX();
+                float touchY = event.getY();
+                x = mBitmap.getWidth()*touchX/mImageview.getWidth();
+                y = mBitmap.getHeight()*touchY/mImageview.getHeight();
                 mTextView.setText(HINT_TEXT);
                 return true;
             }
@@ -95,7 +92,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
 
     private void setText(){
         mText = mEditText.getText().toString();
-        Log.d("123",mText);
+        Log.d(TAG, mText);
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
