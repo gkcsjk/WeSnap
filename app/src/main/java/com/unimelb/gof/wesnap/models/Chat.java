@@ -67,7 +67,8 @@ public class Chat {
 
     @Exclude
     private String getAddFriendMessage() {
-        if (this.chatCreatedAt != null && this.lastMessageBody.equals(ADDED_AS_FRIEND)) {
+        if (this.chatCreatedAt != null && this.lastMessageBody != null &&
+                this.lastMessageBody.equals(ADDED_AS_FRIEND)) {
             int hours = (int) (System.currentTimeMillis() - this.chatCreatedAt)
                     / MILLISECONDS_IN_ONE_HOUR;
             if (hours >= 0) {

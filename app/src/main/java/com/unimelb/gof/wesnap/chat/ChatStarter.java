@@ -32,6 +32,8 @@ public class ChatStarter {
                                           final String uid, final String name) {
         // get current user's chat ids
         refMyChatIds.addListenerForSingleValueEvent(new ValueEventListener() {
+            private boolean mChatExists;
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "getChatIds:onDataChange");
@@ -45,7 +47,12 @@ public class ChatStarter {
                 }
 
                 final Object[] mChatIdArray = mChatIds.keySet().toArray();
+                mChatExists = false;
                 for (Object c : mChatIdArray) {
+                    if (mChatExists) {
+                        break;
+                    }
+
                     // get the chat record with id = c
                     FirebaseUtil.getChatsRef().child(c.toString())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -55,24 +62,31 @@ public class ChatStarter {
                                     Log.d(TAG, "getChat:onDataChange:" + chatId);
 
                                     if (!dataSnapshot.exists()) {
-                                        Log.w(TAG, "refMyChatIds:unexpected non-existing chat id=" + chatId);
+                                        Log.w(TAG, "non-existing chat:" + chatId);
                                         refMyChatIds.child(chatId).removeValue();
                                         return;
                                     }
 
                                     // check if contains selectedFriendId
                                     Chat chat = dataSnapshot.getValue(Chat.class);
-                                    if (chat.getParticipants().containsKey(uid)) {
+                                    if (chat.getParticipants().containsKey(uid))
+                                    {
                                         // found one! enter that chat
+                                        mChatExists = true;
                                         goToChat(context, chatId, name);
-                                    } else if (chatId.equals(mChatIdArray[mChatIdArray.length - 1].toString())) {
+                                    } else if (
+                                            (!mChatExists) && chatId.equals(
+                                            mChatIdArray[mChatIdArray.length - 1]
+                                            .toString()))
+                                    {
                                         // the last one! start a new chat
                                         startNewChat(context, uid, name);
                                     }
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-                                    Log.w(TAG, "getChat:onCancelled", databaseError.toException());
+                                    Log.w(TAG, "getChat:onCancelled",
+                                            databaseError.toException());
                                 }
                             });
                 }
@@ -89,14 +103,14 @@ public class ChatStarter {
     /* Create a new chat for the selected friend */
     // start with null text message
     public static void startNewChat(final Context context,
-                                     final String uid, final String name) {
+                                    final String uid, final String name) {
         startNewChat(context, uid, name, null);
     }
 
     // start with welcome / added-friend text message
     public static void startNewChat(final Context context,
-                                     final String uid, final String name,
-                                     final String initialMessageBody) {
+                                    final String uid, final String name,
+                                    final String initialMessageBody) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
         final DatabaseReference refCurrentUser = FirebaseUtil.getMyUserRef();
@@ -130,7 +144,8 @@ public class ChatStarter {
                 // add this chat to both user
                 String newChatId = newChatRef.getKey();
                 refCurrentUser.child("chats").child(newChatId).setValue(true);
-                FirebaseUtil.getUsersRef().child(uid).child("chats").child(newChatId).setValue(true);
+                FirebaseUtil.getUsersRef().child(uid).child("chats")
+                        .child(newChatId).setValue(true);
 
                 // now go to the new chat
                 goToChat(context, newChatId, name);

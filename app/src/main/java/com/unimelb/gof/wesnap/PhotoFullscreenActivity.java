@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -11,15 +12,21 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.StorageReference;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
+import com.unimelb.gof.wesnap.memories.MemoryDetailsActivity;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 import com.unimelb.gof.wesnap.util.GlideUtil;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by qideng on 10/10/16.
@@ -114,15 +121,30 @@ public class PhotoFullscreenActivity extends BaseActivity {
             return;
         }
 
-        /* get photo url & show photo */
+        /* get photo from Firebase & show photo */
         Log.d(TAG, "showPhoto:src=" + mStorageRef.getPath());
-        mStorageRef.getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+
+        // create a local file
+        final File localFile = getLocalFileInstance();
+        if (localFile == null) {
+            Log.e(TAG, "showPhoto:local file error");
+            Toast.makeText(PhotoFullscreenActivity.this,
+                    "Unable to show photo due to local file error",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // download photo to local file
+        mStorageRef.getFile(localFile).addOnSuccessListener(
+                new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d(TAG, "getUri:onSuccess:" + uri);
+                    public void onSuccess(
+                            FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Log.e(TAG, "downloadFile:onSuccess");
+                        // Downloaded to local file
                         hideProgressDialog();
-                        GlideUtil.loadImage(uri.toString(), mPhotoFullscreenView);
+                        GlideUtil.loadImage(localFile.getAbsolutePath(),
+                                mPhotoFullscreenView);
                         mPhotoFullscreenView.setVisibility(View.VISIBLE);
                         if (mTimer != null) {
                             mTimer.start();
@@ -132,12 +154,27 @@ public class PhotoFullscreenActivity extends BaseActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        Log.w(TAG, "getUri:onFailure", exception);
+                        Log.e(TAG, "downloadFile:onFailure:", exception);
                         hideProgressDialog();
                         quitError();
                     }
                 });
+    }
+
+    // ========================================================
+    /* getLocalFileInstance(): create a local file */
+    private File getLocalFileInstance() {
+        File localFile;
+        try {
+            File storageDir = PhotoFullscreenActivity.this.getExternalFilesDir(
+                    Environment.DIRECTORY_PICTURES);
+            localFile = File.createTempFile(
+                    AppParams.getImageFilename(), ".jpg", storageDir);
+        } catch (IOException e) {
+            Log.e(TAG, "create file error");
+            return null;
+        }
+        return localFile;
     }
 
     // ======================================================
