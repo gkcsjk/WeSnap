@@ -104,8 +104,8 @@ public class FriendHandler {
         insertFriendAtoB(toUserId, fromUserId);
         refRequest.removeValue();
 
-        // start a new chat
-        ChatStarter.startNewChat(v.getContext(),
+        // if exist chat go to chat OR start a new chat
+        ChatStarter.checkExistingChats(v.getContext(),
                 fromUserId, viewHolder.nameView.getText().toString(),
                 Chat.ADDED_AS_FRIEND);
 

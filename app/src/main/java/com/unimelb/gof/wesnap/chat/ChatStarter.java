@@ -30,6 +30,12 @@ public class ChatStarter {
     /* check if exists an active "chat" for the selected friend */
     public static void checkExistingChats(final Context context,
                                           final String uid, final String name) {
+        checkExistingChats(context, uid, name, null);
+    }
+
+    public static void checkExistingChats(final Context context,
+                                          final String uid, final String name,
+                                          final String initialMessageBody) {
         // get current user's chat ids
         refMyChatIds.addListenerForSingleValueEvent(new ValueEventListener() {
             private boolean mChatExists;
@@ -42,7 +48,7 @@ public class ChatStarter {
                         (HashMap<String, Boolean>) dataSnapshot.getValue();
                 if (mChatIds == null) {
                     // no chat! start a new one
-                    startNewChat(context, uid, name);
+                    startNewChat(context, uid, name, initialMessageBody);
                     return;
                 }
 
@@ -69,7 +75,8 @@ public class ChatStarter {
 
                                     // check if contains selectedFriendId
                                     Chat chat = dataSnapshot.getValue(Chat.class);
-                                    if (chat.getParticipants().containsKey(uid))
+                                    if ((!mChatExists) &&
+                                        chat.getParticipants().containsKey(uid))
                                     {
                                         // found one! enter that chat
                                         mChatExists = true;
@@ -80,7 +87,8 @@ public class ChatStarter {
                                             .toString()))
                                     {
                                         // the last one! start a new chat
-                                        startNewChat(context, uid, name);
+                                        startNewChat(context, uid, name,
+                                                initialMessageBody);
                                     }
                                 }
                                 @Override
@@ -167,4 +175,6 @@ public class ChatStarter {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
+
+    // ======================================================
 }

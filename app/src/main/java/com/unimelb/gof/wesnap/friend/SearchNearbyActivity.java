@@ -293,9 +293,10 @@ public class SearchNearbyActivity extends BaseActivity {
                 tv1.setVisibility(View.VISIBLE);
                 tv1.setText(FRIEND_ADDING_MESSAGE);
 
-                // start a new chat
-                ChatStarter.startNewChat(SearchNearbyActivity.this,
-                        uid, friendUsername, Chat.ADDED_AS_FRIEND);
+                // if exist chat go to chat OR start a new chat
+                ChatStarter.checkExistingChats(SearchNearbyActivity.this,
+                        uid, friendUsername,
+                        Chat.ADDED_AS_FRIEND);
             }
 
             @Override
