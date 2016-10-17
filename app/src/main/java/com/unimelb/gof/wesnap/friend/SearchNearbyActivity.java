@@ -49,7 +49,7 @@ public class SearchNearbyActivity extends BaseActivity {
 
     public final static String EXTRA_USERNAME = "text_username";
     private final static String TAG = "SearchNearby";
-    private final static String FRIEND_ADDING_MESSAGE = "Friend Added";
+    private final static String FRIEND_ADDING_MESSAGE = "Please check your added me.";
     private final static int REQUEST_DISCOVERABLE_DURATION = 1000;
     private final static int MESSAGE_READ = 1;
 
