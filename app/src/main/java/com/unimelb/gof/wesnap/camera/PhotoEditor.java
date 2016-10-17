@@ -78,6 +78,7 @@ public class PhotoEditor {
 
 		/* Decode the JPEG file into a Bitmap */
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPath, bmOptions);
+        bitmap = resizeBitmap(bitmap, targetW, targetH);
         mImageView.setImageBitmap(bitmap);
         return bitmap;
     }
