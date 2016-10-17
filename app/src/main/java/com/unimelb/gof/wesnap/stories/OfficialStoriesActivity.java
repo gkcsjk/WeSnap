@@ -87,8 +87,8 @@ public class OfficialStoriesActivity extends BaseActivity {
         mOfficialStoriesRecyclerView.setTag(TAG);
         // UI: LinearLayoutManager
         mLinearLayoutManager = new LinearLayoutManager(this);
-        mLinearLayoutManager.setReverseLayout(false);
-        mLinearLayoutManager.setStackFromEnd(false);
+        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager.setStackFromEnd(true);
         mOfficialStoriesRecyclerView.setLayoutManager(mLinearLayoutManager);
         // UI: RecyclerAdapter
         setupRecyclerAdapter();

@@ -250,7 +250,12 @@ public class ChatsFragment extends Fragment {
             /* Load the item view with chat info */
             final Chat chat = mChats.get(position);
             // ----- last message
-            viewHolder.lastmsgView.setText(chat.getLastMessageBody());
+            String msg = chat.getAddFriendMessage();
+            if (msg != null) {
+                viewHolder.lastmsgView.setText(msg);
+            } else {
+                viewHolder.lastmsgView.setText(chat.getLastMessageBody());
+            }
             // ----- chat title / participants
             Map<String, String> participants = chat.getParticipants();
             String uid = null;

@@ -223,11 +223,15 @@ public class ChooseFriendActivity extends BaseActivity {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String photoPath = getIntent()
+                            .getStringExtra(EXTRA_PHOTO_PATH);
+                    int timeToLive = getIntent()
+                            .getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.NO_TTL);
                     // check if exists an active "chat" for the selected friend
                     // and act accordingly
-                    ChatStarter.checkExistingChats(
-                            ChooseFriendActivity.this,
-                            mFriendIds.get(index), name);
+                    ChatStarter.checkExistingChats(ChooseFriendActivity.this,
+                            mFriendIds.get(index), name, null,
+                            photoPath, timeToLive);
                 }
             });
         }
