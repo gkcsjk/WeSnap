@@ -40,10 +40,13 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
-
 /**
- * Created by Karl on 7/10/2016.
- */
+ * Search nearby activity
+ * This activity searches the nearby friends using bluetooth
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
+ **/
 
 public class SearchNearbyActivity extends BaseActivity {
 

@@ -35,7 +35,13 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Created by Karl on 3/10/2016.
+ * EmojiDrawActivity
+ * This activity let user draw emoji on the photos.
+ * Microsoft Emotion API is used to detect the human faces and
+ * their emotions.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 
 public class EmojiDrawActivity extends BaseActivity {
@@ -137,17 +143,6 @@ public class EmojiDrawActivity extends BaseActivity {
                     break;
             }
         }
-//        mTextView.append(String.format("\t anger: %1$.5f\n", r.scores.anger));
-//        mTextView.append(String.format("\t contempt: %1$.5f\n", r.scores.contempt));
-//        mTextView.append(String.format("\t disgust: %1$.5f\n", r.scores.disgust));
-//        mTextView.append(String.format("\t fear: %1$.5f\n", r.scores.fear));
-//        mTextView.append(String.format("\t happiness: %1$.5f\n", r.scores.happiness));
-//        mTextView.append(String.format("\t neutral: %1$.5f\n", r.scores.neutral));
-//        mTextView.append(String.format("\t sadness: %1$.5f\n", r.scores.sadness));
-//        mTextView.append(String.format("\t surprise: %1$.5f\n", r.scores.surprise));
-//        mTextView.append(String.format("\t face rectangle: %d, %d, %d, %d",
-// r.faceRectangle.left, r.faceRectangle.top, r.faceRectangle.width, r.faceRectangle.height));
-
     }
 
     private void drawEmoji( Drawable emotion, List<Integer> faceRect ){

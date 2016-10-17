@@ -22,6 +22,14 @@ import com.unimelb.gof.wesnap.util.PhotoUploader;
 
 import java.io.File;
 
+/**
+ * EditPhotoActivity
+ * This activity let user to edit photo by different ways
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
+ */
+
 public class EditPhotoActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "EditPhotoActivity";

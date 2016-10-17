@@ -10,7 +10,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Created by Karl on 3/10/2016.
+ * PhotoEditer
+ * This class providers some public methods used to deal with
+ * loading and saving bitmaps.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 
 public class PhotoEditor {
