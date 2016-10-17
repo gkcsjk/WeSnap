@@ -83,7 +83,6 @@ public class EmojiDrawActivity extends BaseActivity {
     }
 
     private void showResults(RecognizeResult r){
-        mTextView.setText("");
         List<Map<String, Double>> scores;
         scores = new ArrayList<Map<String, Double>>();
         Map<String, Double> map;
@@ -227,6 +226,7 @@ public class EmojiDrawActivity extends BaseActivity {
                 if (result.size() == 0) {
                     mTextView.append("No emotion detected :(");
                 } else {
+                    mTextView.setText("");
                     for (RecognizeResult r : result) {
                         showResults(r);
                     }
