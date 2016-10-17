@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         // Add tabs to main screen
-        this.setupTabs();
+        setupTabs();
         // Add FAB to chat screen: starting a new chat
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity {
 
     // ========================================================
     /* MyTabAdapter */
-    private class MyTabAdapter extends FragmentPagerAdapter {//FragmentStatePagerAdapter
+    private class MyTabAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
         private final List<Integer> mFragmentIconList = new ArrayList<>();
