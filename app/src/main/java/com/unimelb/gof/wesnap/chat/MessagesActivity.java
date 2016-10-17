@@ -121,8 +121,10 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
 
         /* Send out initial photo if local file path is passed */
         String filePath = getIntent().getStringExtra(EXTRA_PHOTO_PATH);
-        int timeToLive = getIntent().getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.DEFAULT_TTL);
-        if (filePath != null && timeToLive > 0) {
+        int timeToLive = getIntent().getIntExtra(EXTRA_TIME_TO_LIVE,
+                AppParams.DEFAULT_TTL);
+        if (filePath != null) {
+            Log.e(TAG, "sendInitial:photoPath=" + filePath);
             sendPhotoFromPath(filePath, timeToLive);
         }
 
@@ -397,7 +399,8 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
         Log.d(TAG, "sendPhotoFromPath:ttl=" + timeToLive);
 
         File photoFile = new File(localFilePath);
-        Uri photoUri = FileProvider.getUriForFile(MessagesActivity.this,
+        Uri photoUri = FileProvider.getUriForFile(
+                MessagesActivity.this,
                 "com.unimelb.gof.wesnap.fileprovider",
                 photoFile);
         sendPhotoFromUri(photoUri, timeToLive);

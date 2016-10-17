@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.models.Chat;
 import com.unimelb.gof.wesnap.models.User;
+import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
 import java.util.HashMap;
@@ -36,6 +37,15 @@ public class ChatStarter {
     public static void checkExistingChats(final Context context,
                                           final String uid, final String name,
                                           final String initialMessageBody) {
+        checkExistingChats(context, uid, name, initialMessageBody,
+                null, AppParams.NO_TTL);
+    }
+
+    public static void checkExistingChats(final Context context,
+                                          final String uid, final String name,
+                                          final String initialMessageBody,
+                                          final String photoPath,
+                                          final int timeToLive) {
         // get current user's chat ids
         refMyChatIds.addListenerForSingleValueEvent(new ValueEventListener() {
             private boolean mChatExists;
@@ -48,7 +58,8 @@ public class ChatStarter {
                         (HashMap<String, Boolean>) dataSnapshot.getValue();
                 if (mChatIds == null) {
                     // no chat! start a new one
-                    startNewChat(context, uid, name, initialMessageBody);
+                    startNewChat(context, uid, name, initialMessageBody,
+                            photoPath, timeToLive);
                     return;
                 }
 
@@ -76,19 +87,21 @@ public class ChatStarter {
                                     // check if contains selectedFriendId
                                     Chat chat = dataSnapshot.getValue(Chat.class);
                                     if ((!mChatExists) &&
-                                        chat.getParticipants().containsKey(uid))
+                                            chat.getParticipants().containsKey(uid))
                                     {
                                         // found one! enter that chat
                                         mChatExists = true;
-                                        goToChat(context, chatId, name);
+                                        goToChat(context, chatId, name,
+                                                photoPath, timeToLive);
                                     } else if (
                                             (!mChatExists) && chatId.equals(
-                                            mChatIdArray[mChatIdArray.length - 1]
-                                            .toString()))
+                                                    mChatIdArray[mChatIdArray.length - 1]
+                                                            .toString()))
                                     {
                                         // the last one! start a new chat
                                         startNewChat(context, uid, name,
-                                                initialMessageBody);
+                                                initialMessageBody,
+                                                photoPath, timeToLive);
                                     }
                                 }
                                 @Override
@@ -110,15 +123,26 @@ public class ChatStarter {
     // ======================================================
     /* Create a new chat for the selected friend */
     // start with null text message
-    public static void startNewChat(final Context context,
+    private static void startNewChat(final Context context,
                                     final String uid, final String name) {
-        startNewChat(context, uid, name, null);
+        startNewChat(context, uid, name,
+                null, null, AppParams.NO_TTL);
     }
 
     // start with welcome / added-friend text message
-    public static void startNewChat(final Context context,
+    private static void startNewChat(final Context context,
                                     final String uid, final String name,
                                     final String initialMessageBody) {
+        startNewChat(context, uid, name,
+                initialMessageBody, null, AppParams.NO_TTL);
+    }
+
+    // start with a photo
+    private static void startNewChat(final Context context,
+                                    final String uid, final String name,
+                                    final String initialMessageBody,
+                                    final String photoPath,
+                                    final int timeToLive) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
         final DatabaseReference refCurrentUser = FirebaseUtil.getMyUserRef();
@@ -156,7 +180,7 @@ public class ChatStarter {
                         .child(newChatId).setValue(true);
 
                 // now go to the new chat
-                goToChat(context, newChatId, name);
+                goToChat(context, newChatId, name, photoPath, timeToLive);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -169,9 +193,18 @@ public class ChatStarter {
     /* Direct User to an existing chat */
     private static void goToChat(final Context context, String chatId, String chatTitle) {
         Log.d(TAG, "goToChat:id=" + chatId);
+        goToChat(context, chatId, chatTitle, null, AppParams.NO_TTL);
+    }
+
+    private static void goToChat(final Context context, String chatId, String chatTitle,
+                                 final String photoPath, final int timeToLive) {
+        Log.d(TAG, "goToChat:id=" + chatId);
+
         Intent intent = new Intent(context, MessagesActivity.class);
         intent.putExtra(MessagesActivity.EXTRA_CHAT_ID, chatId);
         intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, chatTitle);
+        intent.putExtra(MessagesActivity.EXTRA_PHOTO_PATH, photoPath);
+        intent.putExtra(MessagesActivity.EXTRA_TIME_TO_LIVE, timeToLive);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }

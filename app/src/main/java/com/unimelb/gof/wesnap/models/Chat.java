@@ -54,12 +54,7 @@ public class Chat {
     }
 
     public String getLastMessageBody() {
-        String msg = getAddFriendMessage();
-        if (msg == null) {
-            return lastMessageBody;
-        } else {
-            return msg;
-        }
+        return lastMessageBody;
     }
 
     public long getChatCreatedAt() {
@@ -67,7 +62,7 @@ public class Chat {
     }
 
     @Exclude
-    private String getAddFriendMessage() {
+    public String getAddFriendMessage() {
         if (this.chatCreatedAt != null && this.lastMessageBody != null &&
                 this.lastMessageBody.equals(ADDED_AS_FRIEND)) {
             int hours = (int) (System.currentTimeMillis() - this.chatCreatedAt)
