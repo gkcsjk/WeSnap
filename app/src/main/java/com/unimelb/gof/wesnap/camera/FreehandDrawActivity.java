@@ -14,9 +14,13 @@ import android.view.View;
 
 import com.unimelb.gof.wesnap.BaseActivity;
 
-
 /**
- * Created by Karl on 2/10/2016.
+ * FreehandDrawActivity
+ * This activity let user draw whatever they want by free-hand
+ * on the photos.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 
 public class FreehandDrawActivity extends BaseActivity {

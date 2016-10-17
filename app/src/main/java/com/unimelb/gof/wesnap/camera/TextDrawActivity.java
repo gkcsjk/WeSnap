@@ -20,10 +20,18 @@ import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
 
 /**
- * Created by Karl on 3/10/2016.
+ * TextDrawActivity
+ * This activity let user draw text on the photo. User can select the position
+ * by just simple click the photos.
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 
 public class TextDrawActivity extends BaseActivity implements View.OnClickListener{
+
+    private final static String HINT_TEXT = "Position selected.";
+    private final static String TAG = "TextDrawActivity";
 
     private ImageView mImageview;
     private TextView mTextView;
@@ -64,8 +72,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
                 float touchY = event.getRawY();
                 x = touchX;
                 y = touchY;
-                //TODO: not accurate...dont know why...
-                mTextView.setText("Position selectd.");
+                mTextView.setText(HINT_TEXT);
                 return true;
             }
         });
@@ -95,7 +102,7 @@ public class TextDrawActivity extends BaseActivity implements View.OnClickListen
         mPaint.setColor(Color.GREEN);
         mPaint.setTextSize(50);
         mCanvas.drawText(mText ,x, y, mPaint);
-        Log.d("123", String.valueOf(x)+"  " +String.valueOf(y));
+        Log.d(TAG, String.valueOf(x)+"  " +String.valueOf(y));
         mImageview.setImageBitmap(mBitmap);
     }
 
