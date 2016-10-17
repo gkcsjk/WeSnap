@@ -259,8 +259,8 @@ public class MemoryDetailsActivity extends BaseActivity
                 MemoryDetailsActivity.this, AppParams.APP_FILE_PROVIDER, localFile);
 
         // download photo to the local file
-        mStorageRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        mStorageRef.getFile(localFile).addOnSuccessListener(
+                new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Log.e(TAG, "downloadFile:filename=" + mFirebaseFilename);

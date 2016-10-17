@@ -245,6 +245,8 @@ public class ChooseFriendActivity extends BaseActivity {
     private void checkExistingChats(final String uid, final String name) {
         // get current user's chat ids
         refMyChatIds.addListenerForSingleValueEvent(new ValueEventListener() {
+            private boolean mChatExists;
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "getChatIds:onDataChange");
@@ -258,7 +260,11 @@ public class ChooseFriendActivity extends BaseActivity {
                 }
 
                 final Object[] mChatIdArray = mChatIds.keySet().toArray();
+                mChatExists = false;
                 for (Object c : mChatIdArray) {
+                    if (mChatExists) {
+                        break;
+                    }
                     // get the chat record with id = c
                     FirebaseUtil.getChatsRef().child(c.toString())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -268,24 +274,31 @@ public class ChooseFriendActivity extends BaseActivity {
                                     Log.d(TAG, "getChat:onDataChange:" + chatId);
 
                                     if (!dataSnapshot.exists()) {
-                                        Log.w(TAG, "refMyChatIds:unexpected non-existing chat id=" + chatId);
+                                        Log.w(TAG, "non-existing chat:" + chatId);
                                         refMyChatIds.child(chatId).removeValue();
                                         return;
                                     }
 
                                     // check if contains selectedFriendId
                                     Chat chat = dataSnapshot.getValue(Chat.class);
-                                    if (chat.getParticipants().containsKey(uid)) {
+                                    if (chat.getParticipants().containsKey(uid))
+                                    {
                                         // found one! enter that chat
+                                        mChatExists = true;
                                         goToChat(chatId, name);
-                                    } else if (chatId.equals(mChatIdArray[mChatIdArray.length - 1].toString())) {
+                                    } else if (
+                                            (!mChatExists) && chatId.equals(
+                                            mChatIdArray[mChatIdArray.length - 1]
+                                            .toString()))
+                                    {
                                         // the last one! start a new chat
                                         startNewChat(uid, name);
                                     }
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-                                    Log.w(TAG, "getChat:onCancelled", databaseError.toException());
+                                    Log.w(TAG, "getChat:onCancelled",
+                                            databaseError.toException());
                                 }
                             });
                 }
@@ -302,11 +315,14 @@ public class ChooseFriendActivity extends BaseActivity {
     private void goToChat(String chatId, String chatTitle) {
         Log.d(TAG, "goToChat:id=" + chatId);
 
-        Intent intent = new Intent(ChooseFriendActivity.this, MessagesActivity.class);
+        Intent intent = new Intent(
+                ChooseFriendActivity.this, MessagesActivity.class);
         intent.putExtra(MessagesActivity.EXTRA_CHAT_ID, chatId);
         intent.putExtra(MessagesActivity.EXTRA_CHAT_TITLE, chatTitle);
-        intent.putExtra(MessagesActivity.EXTRA_PHOTO_PATH, getIntent().getStringExtra(EXTRA_PHOTO_PATH));
-        intent.putExtra(MessagesActivity.EXTRA_TIME_TO_LIVE, getIntent().getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.NO_TTL));
+        intent.putExtra(MessagesActivity.EXTRA_PHOTO_PATH,
+                getIntent().getStringExtra(EXTRA_PHOTO_PATH));
+        intent.putExtra(MessagesActivity.EXTRA_TIME_TO_LIVE,
+                getIntent().getIntExtra(EXTRA_TIME_TO_LIVE, AppParams.NO_TTL));
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
@@ -348,14 +364,16 @@ public class ChooseFriendActivity extends BaseActivity {
                 // add this chat to both user TODO notifications?
                 String newChatId = newChatRef.getKey();
                 refCurrentUser.child("chats").child(newChatId).setValue(true);
-                FirebaseUtil.getUsersRef().child(uid).child("chats").child(newChatId).setValue(true);
+                FirebaseUtil.getUsersRef().child(uid).child("chats")
+                        .child(newChatId).setValue(true);
 
                 // now go to the new chat
                 goToChat(newChatId, name);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+                Log.w(TAG, "getCurrentUser:onCancelled",
+                        databaseError.toException());
             }
         });
     }
