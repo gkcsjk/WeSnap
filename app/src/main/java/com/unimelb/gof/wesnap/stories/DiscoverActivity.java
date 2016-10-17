@@ -31,7 +31,6 @@ import java.util.List;
 /**
  * DiscoverActivity
  * Provides UI to recommend Official Stories
- * TODO possible improvement: more than one interests
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -87,7 +86,8 @@ public class DiscoverActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
 
         // Add recycler
-        mDiscoverRecyclerView = (RecyclerView) findViewById(R.id.recycler_stories);
+        mDiscoverRecyclerView = (RecyclerView) findViewById(
+                R.id.recycler_stories);
         mDiscoverRecyclerView.setTag(TAG);
 
         // UI: LinearLayoutManager
@@ -97,7 +97,8 @@ public class DiscoverActivity extends BaseActivity {
         mDiscoverRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // UI: RecyclerAdapter
-        mDiscoverAdapter = new DiscoverAdapter(DiscoverActivity.this, mStoryIdsRef);
+        mDiscoverAdapter = new DiscoverAdapter(
+                DiscoverActivity.this, mStoryIdsRef);
         mDiscoverRecyclerView.setAdapter(mDiscoverAdapter);
 
         /* No result message */
@@ -134,7 +135,8 @@ public class DiscoverActivity extends BaseActivity {
 
     // ======================================================
     /* DiscoverAdapter */
-    private class DiscoverAdapter extends RecyclerView.Adapter<OfficialStoryViewHolder> {
+    private class DiscoverAdapter
+            extends RecyclerView.Adapter<OfficialStoryViewHolder> {
 
         Context mContext;
         DatabaseReference mDatabaseReference;
@@ -151,13 +153,17 @@ public class DiscoverActivity extends BaseActivity {
             // [START child_event_listener_recycler]
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getOfficialStoryIds:onChildAdded:" + dataSnapshot.getKey());
+                public void onChildAdded(DataSnapshot dataSnapshot,
+                                         String previousChildName) {
+                    Log.d(TAG, "getOfficialStoryIds:onChildAdded:" +
+                            dataSnapshot.getKey());
+
                     // get official story id
                     final String newOfficialStoryId = dataSnapshot.getKey();
                     // get "keyword/officialStoryId/"
                     mOfficialStoriesDatabase.child(newOfficialStoryId)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                            .addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Log.d(TAG, "getOfficialStory:onDataChange:" +
@@ -166,13 +172,14 @@ public class DiscoverActivity extends BaseActivity {
                                     if (!dataSnapshot.exists()) {
                                         Log.w(TAG, "getOfficialStory:non-existing:" +
                                                 newOfficialStoryId);
-                                        mDatabaseReference.child(newOfficialStoryId).removeValue();
+                                        mDatabaseReference.child(newOfficialStoryId)
+                                                .removeValue();
                                         return;
                                     }
 
                                     // load data
-                                    OfficialStory officialStory =
-                                            dataSnapshot.getValue(OfficialStory.class);
+                                    OfficialStory officialStory = dataSnapshot
+                                            .getValue(OfficialStory.class);
                                     // update RecyclerView
                                     mStories.add(officialStory);
                                     mStoryIds.add(newOfficialStoryId);
@@ -189,15 +196,16 @@ public class DiscoverActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getOfficialStoryIds:onChildChanged:" + dataSnapshot.getKey());
-                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
-                            Toast.LENGTH_SHORT).show();
+                public void onChildChanged(DataSnapshot dataSnapshot,
+                                           String previousChildName) {
+                    Log.d(TAG, "getOfficialStoryIds:onChildChanged:" +
+                            dataSnapshot.getKey());
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "getOfficialStoryIds:onChildRemoved:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getOfficialStoryIds:onChildRemoved:" +
+                            dataSnapshot.getKey());
                     // get official story id and index
                     String removedId = dataSnapshot.getKey();
                     int index = mStoryIds.indexOf(removedId);
@@ -212,21 +220,22 @@ public class DiscoverActivity extends BaseActivity {
                             mNoResultText.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        Log.w(TAG, "getOfficialStoryIds:onChildRemoved:unknown_child:" + removedId);
+                        Log.w(TAG, "getOfficialStoryIds:unknown_child:" +
+                                removedId);
                     }
                 }
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getOfficialStoryIds:onChildMoved:" + dataSnapshot.getKey());
-                    // This method is triggered when a child location's priority changes.
-                    Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
-                            Toast.LENGTH_SHORT).show();
+                public void onChildMoved(DataSnapshot dataSnapshot,
+                                         String previousChildName) {
+                    Log.d(TAG, "getOfficialStoryIds:onChildMoved:" +
+                            dataSnapshot.getKey());
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "getOfficialStoryIds:onCancelled", databaseError.toException());
+                    Log.w(TAG, "getOfficialStoryIds:onCancelled",
+                            databaseError.toException());
                     Toast.makeText(mContext, "Failed to load official story ids",
                             Toast.LENGTH_SHORT).show();
                 }

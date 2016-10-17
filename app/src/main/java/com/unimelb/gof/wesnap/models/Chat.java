@@ -19,11 +19,12 @@ public class Chat {
     @Exclude
     private static final int MILLISECONDS_IN_ONE_HOUR = 60 * 60 * 1000;
 
-    private Map<String, String> participants = new HashMap<>(); // {uid: displayedName}
+    private Map<String, String> participants = new HashMap<>();
+                                                // {uid: displayedName}
     private String lastMessageBody;
     private Long chatCreatedAt;
-    private String chatTitle = null; // TODO for group chats; use null for now
-    private String chatAvatarUrl = null; // TODO use default icon for now
+    private String chatTitle = null; // null for now; possible group chats
+    private String chatAvatarUrl = null; // if null: use default icon
 
     public Chat() {
     }
@@ -82,7 +83,6 @@ public class Chat {
                 }
             }
         }
-
         return null;
     }
 

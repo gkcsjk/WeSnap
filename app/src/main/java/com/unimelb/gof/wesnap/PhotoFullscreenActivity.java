@@ -29,7 +29,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by qideng on 10/10/16.
+ * PhotoFullscreenActivity
+ * Show photo, possibly with timeout rules
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
  */
 public class PhotoFullscreenActivity extends BaseActivity {
     private static final String TAG = "PhotoFullscreenActivity";

@@ -73,7 +73,8 @@ public class MemoriesActivity extends BaseActivity {
         mMemoriesDatabase = FirebaseUtil.getMyMemoriesDatabase();
         mMemoriesStorage = FirebaseUtil.getMyMemoriesStorage();
         String idCurrentUser = FirebaseUtil.getMyUid();
-        if (mMemoriesDatabase == null || mMemoriesStorage == null || idCurrentUser == null) {
+        if (mMemoriesDatabase == null || mMemoriesStorage == null
+                || idCurrentUser == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
             (new BaseActivity()).goToLogin("unexpected null value");
@@ -97,16 +98,21 @@ public class MemoriesActivity extends BaseActivity {
         });
 
         // Add recycler
-        mMemoriesRecyclerView = (RecyclerView) findViewById(R.id.recycler_memories);
+        mMemoriesRecyclerView = (RecyclerView) findViewById(
+                R.id.recycler_memories);
         mMemoriesRecyclerView.setTag(TAG);
 
         // UI: GridLayoutManager
-        int tilePadding = getResources().getDimensionPixelSize(R.dimen.size_edges_small);
-        mMemoriesRecyclerView.setPadding(tilePadding, tilePadding, tilePadding, tilePadding);
-        mMemoriesRecyclerView.setLayoutManager(new GridLayoutManager(MemoriesActivity.this, 2));
+        int tilePadding = getResources()
+                .getDimensionPixelSize(R.dimen.size_edges_small);
+        mMemoriesRecyclerView.setPadding(
+                tilePadding, tilePadding, tilePadding, tilePadding);
+        mMemoriesRecyclerView.setLayoutManager(
+                new GridLayoutManager(MemoriesActivity.this, 2));
 
         // UI: RecyclerAdapter
-        mRecyclerAdapter = new MemoriesAdapter(MemoriesActivity.this, mMemoriesDatabase);
+        mRecyclerAdapter = new MemoriesAdapter(
+                MemoriesActivity.this, mMemoriesDatabase);
         mMemoriesRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
@@ -140,7 +146,8 @@ public class MemoriesActivity extends BaseActivity {
 
     // ======================================================
     /* MemoriesAdapter */
-    private class MemoriesAdapter extends RecyclerView.Adapter<MemoryViewHolder> {
+    private class MemoriesAdapter
+            extends RecyclerView.Adapter<MemoryViewHolder> {
         private Context mContext;
         private DatabaseReference mDatabaseReference;
         private ChildEventListener mChildEventListener;
@@ -156,8 +163,11 @@ public class MemoriesActivity extends BaseActivity {
             // [START child_event_listener_recycler]
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getMemoryFilename:onChildAdded:" + dataSnapshot.getKey());
+                public void onChildAdded(DataSnapshot dataSnapshot,
+                                         String previousChildName) {
+                    Log.d(TAG, "getMemoryFilename:onChildAdded:" +
+                            dataSnapshot.getKey());
+
                     // get MemoryUrl string
                     final String newMemoryFilename = dataSnapshot.getKey();
                     // get MemoryUrl from current user storage
@@ -165,7 +175,8 @@ public class MemoriesActivity extends BaseActivity {
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    // Got the download URL for 'memories/myUid/newMemoryFilename'
+                                    // Got the download URL for
+                                    // 'memories/myUid/newMemoryFilename'
                                     Log.d(TAG, "getUri:onSuccess:" + uri);
                                     mMemoryFilenames.add(newMemoryFilename);
                                     mMemoryUris.add(uri);
@@ -177,21 +188,21 @@ public class MemoriesActivity extends BaseActivity {
                                 public void onFailure(@NonNull Exception exception) {
                                     // Handle any errors
                                     Log.w(TAG, "getUri:onFailure", exception);
-                                    // TODO getUri:onFailure
                                 }
                             });
                 }
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getMemoryFilename:onChildChanged:" + dataSnapshot.getKey());
-                    Toast.makeText(mContext, "Changed:" + dataSnapshot.getKey(),
-                            Toast.LENGTH_SHORT).show();
+                public void onChildChanged(DataSnapshot dataSnapshot,
+                                           String previousChildName) {
+                    Log.d(TAG, "getMemoryFilename:onChildChanged:" +
+                            dataSnapshot.getKey());
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "getMemoryFilename:onChildRemoved:" + dataSnapshot.getKey());
+                    Log.d(TAG, "getMemoryFilename:onChildRemoved:" +
+                            dataSnapshot.getKey());
                     // get filename and index
                     final String removedMemoryFilename = dataSnapshot.getKey();
                     int index = mMemoryFilenames.indexOf(removedMemoryFilename);
@@ -202,21 +213,22 @@ public class MemoriesActivity extends BaseActivity {
                         // Update the RecyclerView
                         notifyItemRemoved(index);
                     } else {
-                        Log.w(TAG, "getMemoryFilename:onChildRemoved:unknown_child:" + removedMemoryFilename);
+                        Log.w(TAG, "getMemoryFilename:unknown_child:" +
+                                removedMemoryFilename);
                     }
                 }
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                    Log.d(TAG, "getMemoryFilename:onChildMoved:" + dataSnapshot.getKey());
-                    // This method is triggered when a child location's priority changes.
-                    Toast.makeText(mContext, "Moved:" + dataSnapshot.getKey(),
-                            Toast.LENGTH_SHORT).show();
+                public void onChildMoved(DataSnapshot dataSnapshot,
+                                         String previousChildName) {
+                    Log.d(TAG, "getMemoryFilename:onChildMoved:" +
+                            dataSnapshot.getKey());
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "getMemoryFilename:onCancelled", databaseError.toException());
+                    Log.w(TAG, "getMemoryFilename:onCancelled",
+                            databaseError.toException());
                     Toast.makeText(mContext, "Failed to load memory filenames.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -229,14 +241,16 @@ public class MemoriesActivity extends BaseActivity {
         }
 
         @Override
-        public MemoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MemoryViewHolder onCreateViewHolder(ViewGroup parent,
+                                                   int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.item_memory, parent, false);
             return new MemoryViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final MemoryViewHolder viewHolder, final int position) {
+        public void onBindViewHolder(final MemoryViewHolder viewHolder,
+                                     final int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             final Uri uri = mMemoryUris.get(position);
@@ -254,7 +268,8 @@ public class MemoriesActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
                             Intent showMemoryIntent = new Intent(
-                                    MemoriesActivity.this, MemoryDetailsActivity.class);
+                                    MemoriesActivity.this,
+                                    MemoryDetailsActivity.class);
                             showMemoryIntent.putExtra(
                                     MemoryDetailsActivity.EXTRA_PHOTO_FILENAME,
                                     filename);
@@ -284,9 +299,11 @@ public class MemoriesActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK
+                && null != data) {
             Uri selectedImageUri = data.getData();
-            PhotoUploader.uploadToMemories(selectedImageUri, MemoriesActivity.this);
+            PhotoUploader.uploadToMemories(
+                    selectedImageUri, MemoriesActivity.this);
         }
     }
 

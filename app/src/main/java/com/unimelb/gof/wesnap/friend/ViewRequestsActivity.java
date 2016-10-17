@@ -25,7 +25,6 @@ import java.util.HashMap;
  * This activity shows the pending friend requests received by current user and
  * allows the user accept or deny the requests.
  *
- * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
@@ -72,7 +71,8 @@ public class ViewRequestsActivity extends BaseActivity {
         mNotFoundText.setVisibility(View.GONE);
 
         // RecyclerView for "found"
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_friend_requests);
+        mRecyclerView = (RecyclerView) findViewById(
+                R.id.recycler_friend_requests);
         mRecyclerView.setTag(TAG);
         mRecyclerView.setVisibility(View.GONE);
         mLinearLayoutManager = new LinearLayoutManager(ViewRequestsActivity.this);
@@ -100,7 +100,8 @@ public class ViewRequestsActivity extends BaseActivity {
                 if (avatarUrl != null && avatarUrl.length() != 0) {
                     GlideUtil.loadProfileIcon(avatarUrl, viewHolder.avatarView);
                 } else {
-                    viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
+                    viewHolder.avatarView.setImageResource(
+                            R.drawable.ic_default_avatar);
                 }
 
                 // Use friend list from AppParam to check if is friend already

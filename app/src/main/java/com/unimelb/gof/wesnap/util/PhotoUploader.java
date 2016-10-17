@@ -59,8 +59,7 @@ public class PhotoUploader {
             return;
         }
 
-        /* Photo filename TODO */
-        // final String filename = localFileUri.getLastPathSegment().replaceAll("\\.jpg","");
+        /* Photo filename */
         final String filename = AppParams.getMyUsername() +"_"+ AppParams.getImageFilename();
 
         /* Upload file to Firebase Storage & Database */

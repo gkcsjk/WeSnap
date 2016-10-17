@@ -201,7 +201,8 @@ public class ChooseFriendActivity extends BaseActivity {
         }
 
         @Override
-        public void onBindViewHolder(final FriendItemViewHolder viewHolder, int position) {
+        public void onBindViewHolder(final FriendItemViewHolder viewHolder,
+                                     int position) {
             Log.d(TAG, "populateViewHolder:" + position);
 
             // Load the item view with friend user info

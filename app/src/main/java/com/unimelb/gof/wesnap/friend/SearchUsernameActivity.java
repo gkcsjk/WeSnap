@@ -28,7 +28,6 @@ import java.util.Map;
  * This activity takes in a username string from user input,
  * returns the search results, and provides the option to add friends.
  *
- * @author Qi Deng (dengq@student.unimelb.edu.au)
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
@@ -61,8 +60,10 @@ public class SearchUsernameActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
 
         // search field and button
-        mSearchKeywordField = (EditText) findViewById(R.id.field_search_username);
-        mSearchSubmitButton = (ImageButton) findViewById(R.id.button_submit_search_username);
+        mSearchKeywordField = (EditText) findViewById(
+                R.id.field_search_username);
+        mSearchSubmitButton = (ImageButton) findViewById(
+                R.id.button_submit_search_username);
         mSearchSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +83,8 @@ public class SearchUsernameActivity extends BaseActivity {
         mNotFoundText.setVisibility(View.GONE);
 
         // RecyclerView for "found"
-        mResultsRecyclerView = (RecyclerView) findViewById(R.id.recycler_search_results);
+        mResultsRecyclerView = (RecyclerView) findViewById(
+                R.id.recycler_search_results);
         mResultsRecyclerView.setTag(TAG);
         mResultsRecyclerView.setVisibility(View.GONE);
         mLinearLayoutManager = new LinearLayoutManager(SearchUsernameActivity.this);
@@ -99,7 +101,8 @@ public class SearchUsernameActivity extends BaseActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "getUsername:onDataChange:username=" + mSearchKeyword);
+                        Log.d(TAG, "getUsername:onDataChange:username=" +
+                                mSearchKeyword);
                         if (dataSnapshot.exists()) {
                             // username found
                             mResultUid = (String) dataSnapshot.getValue();
@@ -114,7 +117,8 @@ public class SearchUsernameActivity extends BaseActivity {
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUsername:onCancelled", databaseError.toException());
+                        Log.w(TAG, "getUsername:onCancelled",
+                                databaseError.toException());
                     }
                 });
     }
@@ -144,7 +148,8 @@ public class SearchUsernameActivity extends BaseActivity {
                 if (avatarUrl != null && avatarUrl.length() != 0) {
                     GlideUtil.loadProfileIcon(avatarUrl, viewHolder.avatarView);
                 } else {
-                    viewHolder.avatarView.setImageResource(R.drawable.ic_default_avatar);
+                    viewHolder.avatarView.setImageResource(
+                            R.drawable.ic_default_avatar);
                 }
 
                 // Check if is friend already, and set up button action and UI accordingly
@@ -156,17 +161,21 @@ public class SearchUsernameActivity extends BaseActivity {
                                 //if (dataSnapshot.exists()) {
                                 Map<String, Boolean> myFriends =
                                         (Map<String, Boolean>) dataSnapshot.getValue();
-                                if (myFriends != null && myFriends.containsKey(mResultUid)) {
+                                if (myFriends != null &&
+                                        myFriends.containsKey(mResultUid)) {
                                     // isFriend = true;
-                                    viewHolder.useChatButton(SearchUsernameActivity.this, mResultUid, resultUser.getDisplayedName());
+                                    viewHolder.useChatButton(SearchUsernameActivity.this,
+                                            mResultUid, resultUser.getDisplayedName());
                                 } else {
-                                    // otherwise, enable the button to send friend request
+                                    // otherwise, enable the button to
+                                    // send friend request
                                     viewHolder.useAddButton(mResultUid);
                                 }
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.w(TAG, "getMyFriends:onCancelled", databaseError.toException());
+                                Log.w(TAG, "getMyFriends:onCancelled",
+                                        databaseError.toException());
                             }
                         });
             }

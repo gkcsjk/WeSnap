@@ -160,7 +160,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     // ========================================================
-    // TODO for network failure ???
     public void goToLogin(String message) {
         Log.d(TAG, "goToLogin:"+ message);
 

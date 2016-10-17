@@ -61,7 +61,6 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
         readSimilarButton = (ImageButton) findViewById(R.id.bt_similar);
         subscribeButton = (ImageButton) findViewById(R.id.bt_subscribe);
         subscribeButton.setImageResource(R.drawable.ic_action_subscribe);
-        // TODO check if already subscribed?
 
         thumnailView = (ImageView) findViewById(R.id.thumnail);
         String photoUrl = thisStory.photoUrl;
@@ -102,7 +101,8 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
                 Intent showDiscoverIntent = new Intent(
                         OfficialStoryDetailsActivity.this,
                         DiscoverActivity.class);
-                showDiscoverIntent.putExtra(DiscoverActivity.EXTRA_INTERESTS, thisStory.keyword);
+                showDiscoverIntent.putExtra(
+                        DiscoverActivity.EXTRA_INTERESTS, thisStory.keyword);
                 startActivity(showDiscoverIntent);
             }
         });
@@ -110,7 +110,7 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
         // subscribe to stories with the same keyword
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { // TODO subscribe?
+            public void onClick(View v) {
                 Log.d(TAG, "subscribe:keyword=" + thisStory.keyword);
                 // save to Firebase Database
                 if (FirebaseUtil.getMySubscriptionKeywordsRef() != null) {
@@ -122,8 +122,6 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
                 Toast.makeText(OfficialStoryDetailsActivity.this,
                         "Subscribed to " + thisStory.keyword,
                         Toast.LENGTH_SHORT).show();
-
-                // TODO for un-subscribe
             }
         });
     }
