@@ -61,8 +61,8 @@ public class ChooseFriendActivity extends BaseActivity {
         setContentView(R.layout.activity_view_friends);
 
         /* Firebase Database variables */
-        refMyFriendIds = FirebaseUtil.getCurrentFriendsRef();
-        refMyChatIds = FirebaseUtil.getCurrentChatsRef();
+        refMyFriendIds = FirebaseUtil.getMyFriendIdsRef();
+        refMyChatIds = FirebaseUtil.getMyChatIdsRef();
         if (refMyFriendIds == null || refMyChatIds == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
@@ -130,7 +130,7 @@ public class ChooseFriendActivity extends BaseActivity {
                                     if (!dataSnapshot.exists()) {
                                         Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
                                         FriendHandler.removeFriendAfromB(
-                                                newFriendId, FirebaseUtil.getCurrentUserId());
+                                                newFriendId, FirebaseUtil.getMyUid());
                                         return;
                                     }
                                     // load friend's user data
@@ -317,7 +317,7 @@ public class ChooseFriendActivity extends BaseActivity {
     private void startNewChat(final String uid, final String name) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
-        final DatabaseReference refCurrentUser = FirebaseUtil.getCurrentUserRef();
+        final DatabaseReference refCurrentUser = FirebaseUtil.getMyUserRef();
         if (refCurrentUser == null) { // error out
             Log.e(TAG, "current user ref unexpectedly null; goToLogin()");
             goToLogin("current user ref: null");

@@ -73,8 +73,8 @@ public class DiscoverActivity extends BaseActivity {
         mOfficialStoriesDatabase = FirebaseUtil.getOfficialStoriesDatabase();
         mStoryIdsRef = FirebaseUtil.getKeywordsDatabase().child(mKeyword);
 
-        mInterestsDatabase = FirebaseUtil.getUserInterestsRef();
-        String idCurrentUser = FirebaseUtil.getCurrentUserId();
+        mInterestsDatabase = FirebaseUtil.getMyInterestKeywordsRef();
+        String idCurrentUser = FirebaseUtil.getMyUid();
         if (mInterestsDatabase == null || idCurrentUser == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");

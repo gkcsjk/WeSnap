@@ -104,8 +104,8 @@ public class MessagesActivity extends BaseActivity implements View.OnClickListen
 
         /* Firebase Database */
         // get current user id & ref
-        mCurrentUserId = FirebaseUtil.getCurrentUserId();
-        mCurrentUserDatabseRef = FirebaseUtil.getCurrentUserRef();
+        mCurrentUserId = FirebaseUtil.getMyUid();
+        mCurrentUserDatabseRef = FirebaseUtil.getMyUserRef();
         if (mCurrentUserId == null || mCurrentUserDatabseRef == null) {
             // null value; error out
             Log.e(TAG, "current user uid/ref unexpectedly null; goToLogin()");

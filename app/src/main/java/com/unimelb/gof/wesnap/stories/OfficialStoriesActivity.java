@@ -68,8 +68,8 @@ public class OfficialStoriesActivity extends BaseActivity {
 
         // Firebase Refs
         mOfficialStoriesDatabase = FirebaseUtil.getOfficialStoriesDatabase();
-        mInterestsDatabase = FirebaseUtil.getUserInterestsRef();
-        String idCurrentUser = FirebaseUtil.getCurrentUserId();
+        mInterestsDatabase = FirebaseUtil.getMyInterestKeywordsRef();
+        String idCurrentUser = FirebaseUtil.getMyUid();
         if (mOfficialStoriesDatabase == null || mInterestsDatabase == null
                 || idCurrentUser == null) {
             // null value error out

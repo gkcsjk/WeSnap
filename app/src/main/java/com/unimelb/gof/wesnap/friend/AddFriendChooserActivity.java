@@ -100,7 +100,7 @@ public class AddFriendChooserActivity extends BaseActivity
             shareMyUsername(AppParams.getMyUsername());
             return;
         }
-        FirebaseUtil.getCurrentUserRef().child("username")
+        FirebaseUtil.getMyUserRef().child("username")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -148,7 +148,7 @@ public class AddFriendChooserActivity extends BaseActivity
             searchNearby(AppParams.getMyUsername());
             return;
         }
-        FirebaseUtil.getCurrentUserRef().child("username")
+        FirebaseUtil.getMyUserRef().child("username")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

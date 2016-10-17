@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap.fragment;
+package com.unimelb.gof.wesnap;
 
 import android.content.Intent;
 import android.net.Uri;

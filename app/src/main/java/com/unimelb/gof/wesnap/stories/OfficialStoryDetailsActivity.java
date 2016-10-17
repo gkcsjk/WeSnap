@@ -113,8 +113,8 @@ public class OfficialStoryDetailsActivity extends BaseActivity {
             public void onClick(View v) { // TODO subscribe?
                 Log.d(TAG, "subscribe:keyword=" + thisStory.keyword);
                 // save to Firebase Database
-                if (FirebaseUtil.getUserSubscriptionsRef() != null) {
-                    FirebaseUtil.getUserSubscriptionsRef()
+                if (FirebaseUtil.getMySubscriptionKeywordsRef() != null) {
+                    FirebaseUtil.getMySubscriptionKeywordsRef()
                             .child(thisStory.keyword).setValue(true);
                 }
                 // update UI

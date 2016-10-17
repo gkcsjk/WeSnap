@@ -53,7 +53,7 @@ public class ViewRequestsActivity extends BaseActivity {
         setContentView(R.layout.activity_view_requests);
 
         /* Firebase Database variables */
-        refCurrentRequests = FirebaseUtil.getCurrentRequestsRef();
+        refCurrentRequests = FirebaseUtil.getMyFriendRequestsRef();
 
         /* Get friend list */
         if (AppParams.currentUser != null) {

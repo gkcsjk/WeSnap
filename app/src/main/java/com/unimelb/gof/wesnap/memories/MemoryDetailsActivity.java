@@ -78,8 +78,8 @@ public class MemoryDetailsActivity extends BaseActivity
         }
 
         /* Firebase Database & Storage */
-        DatabaseReference dbRef = FirebaseUtil.getCurrentMemoriesDatabase();
-        StorageReference stRef = FirebaseUtil.getCurrentMemoriesStorage();
+        DatabaseReference dbRef = FirebaseUtil.getMyMemoriesDatabase();
+        StorageReference stRef = FirebaseUtil.getMyMemoriesStorage();
         if (dbRef == null || stRef == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
@@ -210,7 +210,7 @@ public class MemoryDetailsActivity extends BaseActivity
                         // create a local uri to share
                         Uri photoUri = FileProvider.getUriForFile(
                                 MemoryDetailsActivity.this,
-                                AppParams.FILEPROVIDER, localFile);
+                                AppParams.APP_FILE_PROVIDER, localFile);
                         // Start the system share action
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
@@ -256,7 +256,7 @@ public class MemoryDetailsActivity extends BaseActivity
 
         // Get uri
         final Uri photoUri = FileProvider.getUriForFile(
-                MemoryDetailsActivity.this, AppParams.FILEPROVIDER, localFile);
+                MemoryDetailsActivity.this, AppParams.APP_FILE_PROVIDER, localFile);
 
         // download photo to the local file
         mStorageRef.getFile(localFile)

@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap.fragment;
+package com.unimelb.gof.wesnap;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,9 +20,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.unimelb.gof.wesnap.BaseActivity;
-import com.unimelb.gof.wesnap.PhotoFullscreenActivity;
-import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.models.OfficialStory;
 import com.unimelb.gof.wesnap.models.Story;
 import com.unimelb.gof.wesnap.stories.MyStoriesActivity;
@@ -39,7 +36,7 @@ import java.util.Set;
 
 /**
  * StoriesFragment
- * This fragment provides UI for stories.
+ * This fragment provides UI for the "stories" tab.
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -52,17 +49,15 @@ public class StoriesFragment extends Fragment {
     private Button mOfficialStoriesButton;
     // UI group: Subscription
     private View mGroupSub;
-    private TextView mSubscriptionTitle;
     private RecyclerView mSubscriptionRecyclerView;
     private SubscriptionAdapter mSubscriptionRecyclerAdapter;
     private LinearLayoutManager mHorizontalLinearLayoutManager;
     // UI group: Friends Stories
-    private TextView mFriendsStoriesTitle;
     private RecyclerView mFriendsStoriesRecyclerView;
     private FriendsStoriesAdapter mFriendsStoriesRecyclerAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
-    /* Firebase Database / Storage variables */
+    /* Firebase Database variables */
     // Friends stories
     private DatabaseReference mFriendsStoriesDatabase;
     private DatabaseReference mAllStoriesDatabase;
@@ -109,13 +104,15 @@ public class StoriesFragment extends Fragment {
         /* UI group: Subscription */
         mGroupSub = rootView.findViewById(R.id.ui_group_subscriptions);
         mGroupSub.setVisibility(View.GONE);
-        mSubscriptionTitle = (TextView) rootView.findViewById(R.id.text_title_subscriptions);
+        TextView textSubscriptionTitle = (TextView) rootView.findViewById(
+                R.id.text_title_subscriptions);
         mSubscriptionRecyclerView = (RecyclerView) rootView.findViewById(
                 R.id.recycler_subscriptions);
         mSubscriptionRecyclerView.setTag(TAG);
 
-        /* UI group: Friends */
-        mFriendsStoriesTitle = (TextView) rootView.findViewById(R.id.text_title_friends_stories);
+        /* UI group: Friends Stories */
+        TextView textFriendsStoriesTitle = (TextView) rootView.findViewById(
+                R.id.text_title_friends_stories);
         mFriendsStoriesRecyclerView = (RecyclerView) rootView.findViewById(
                 R.id.recycler_friends_stories);
         mFriendsStoriesRecyclerView.setTag(TAG);
@@ -130,11 +127,11 @@ public class StoriesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
 
-        // Database Refs
+        /* Firebase Database Reference */
         mFriendsStoriesDatabase = FirebaseUtil.getFriendsStoriesDatabase();
-        mSubscriptionDatabase = FirebaseUtil.getUserSubscriptionsRef();
-        mInterestsDatabase = FirebaseUtil.getUserInterestsRef();
-        String idCurrentUser = FirebaseUtil.getCurrentUserId();
+        mSubscriptionDatabase = FirebaseUtil.getMySubscriptionKeywordsRef();
+        mInterestsDatabase = FirebaseUtil.getMyInterestKeywordsRef();
+        String idCurrentUser = FirebaseUtil.getMyUid();
         if (mFriendsStoriesDatabase == null || mSubscriptionDatabase == null
                 || mInterestsDatabase == null || idCurrentUser == null ) {
             // null value error out
