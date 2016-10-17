@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.R;
@@ -214,7 +213,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     private void saveMemory() {
         File photoFile = new File(mCurrentPhotoPath);
         Uri photoUri = FileProvider.getUriForFile(EditPhotoActivity.this,
-                AppParams.FILEPROVIDER, photoFile);
+                AppParams.APP_FILE_PROVIDER, photoFile);
         PhotoUploader.uploadToMemories(photoUri, EditPhotoActivity.this);
     }
 
@@ -223,7 +222,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     private void saveStory() {
         File photoFile = new File(mCurrentPhotoPath);
         Uri photoUri = FileProvider.getUriForFile(EditPhotoActivity.this,
-                AppParams.FILEPROVIDER, photoFile);
+                AppParams.APP_FILE_PROVIDER, photoFile);
         PhotoUploader.uploadToStories(photoUri, EditPhotoActivity.this);
     }
 

@@ -27,6 +27,8 @@ import com.unimelb.gof.wesnap.models.*;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
 
+import java.util.HashMap;
+
 /**
  * LoginActivity
  * For user register and login.
@@ -34,14 +36,18 @@ import com.unimelb.gof.wesnap.util.FirebaseUtil;
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
  */
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity
+        implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
 
     private static final String FIELD_REQUIRED = "This field is required";
     private static final int MIN_LENGTH = 6;
-    private static final String TOO_SHORT = "require at least "+MIN_LENGTH+" characters";
-    public static final String NOT_ALLOWED_CHAR = ". $ # [ ] / are not allowed";
-    private static final String USERNAME_EXIST = "Username exists. Try again.";
+    private static final String TOO_SHORT =
+            "require at least " + MIN_LENGTH + " characters";
+    private static final String NOT_ALLOWED_CHAR =
+            ". $ # [ ] / are not allowed";
+    private static final String USERNAME_EXIST =
+            "Username exists. Try again.";
 
     /* UI components */
     // login
@@ -67,7 +73,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     // ========================================================
     /* onCreate()
-     * (Change of user auth state is handled here by the listener.) */
+     * (Change of user auth state is handled here in the listener.) */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +93,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mRegisterUI = (ViewGroup) findViewById(R.id.ui_group_register);
         mRegisterUI.setVisibility(View.GONE);
         mRegUsernameField = (EditText) findViewById(R.id.field_username_r);
-        mRegDisplayedNameField = (EditText) findViewById(R.id.field_display_name_r);
+        mRegDisplayedNameField = (EditText) findViewById(
+                R.id.field_display_name_r);
         mRegEmailField = (EditText) findViewById(R.id.field_email_r);
         mRegPasswordField = (EditText) findViewById(R.id.field_password_r);
         mRegSubmitButton = (Button) findViewById(R.id.button_submit_register);
@@ -97,28 +104,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         /* Firebase Auth */
         mAuth = FirebaseAuth.getInstance();
+
         // [START auth_state_listener]
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 // Listen for Firebase Auth state changes
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in: direct to Main activity
+                if (user != null) { // User signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-
                     // for new user: save the user info to Firebase Database
                     if (isNewUser) {
                         saveNewUser(user.getUid());
+                    } else {
+                        // direct to main
+                        hideProgressDialog();
+                        goToMain();
                     }
-                    hideProgressDialog();
-
-                    // direct to main
-                    goToMain();
-                } else {
-                    // User is signed out
+                } else { // User signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-
                     // reset to login
                     hideProgressDialog();
                     showLogin();
@@ -129,29 +133,77 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     // ========================================================
-    /* saveNewUser(): save account info to Firebase Database, and
+    /* Save account info to Firebase Database, and
      * send out the initial messages */
-    private void saveNewUser(String newUid) {
+    private void saveNewUser(final String newUid) {
         Log.d(TAG, "saveNewUser:id=" + newUid);
-        String newName = mRegDisplayedNameField.getText().toString();
+        final String newName = mRegDisplayedNameField.getText().toString();
 
-        // initial Chat & Message from Dev Team
-        Chat newChat = AppParams.getWelcomeChat(newUid, newName);
-        DatabaseReference newChatRef = FirebaseUtil.getChatsRef().push();
-        String newChatId = newChatRef.getKey();
-        newChatRef.setValue(newChat);
+        FirebaseUtil.getDevTeamRef()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "saveNewUser:getDevTeam:onDataChange");
 
-        Message newMessage = AppParams.getWelcomeMessage();
-        FirebaseUtil.getMessagesRef().child(newChatId).push().setValue(newMessage);
+                        User userDevTeam = dataSnapshot.getValue(User.class);
+                        String teamUid = userDevTeam.getUid();
+                        String teamName = userDevTeam.getDisplayedName();
 
-        // new user & username to database
-        User newUser = new User(
-                newUid, mRegUsernameField.getText().toString(),
-                newName, mRegEmailField.getText().toString(),
-                AppParams.ID_DEV_TEAM, newChatId
-        );
-        FirebaseUtil.getUsersRef().child(newUid).setValue(newUser);
-        FirebaseUtil.getUsernamesRef().child(mRegUsernameField.getText().toString()).setValue(newUid);
+                        // initial Chat from Dev Team
+                        HashMap<String, String> participants = new HashMap<>();
+                        participants.put(teamUid, teamName);
+                        participants.put(newUid, newName);
+                        Chat welcomeChat = new Chat(
+                                participants, AppParams.TEXT_WELCOME,
+                                userDevTeam.getAvatarUrl(), null);
+                        DatabaseReference newChatRef =
+                                FirebaseUtil.getChatsRef().push();
+                        String newChatId = newChatRef.getKey();
+                        newChatRef.setValue(welcomeChat);
+
+                        // initial Message from Dev Team
+                        Message welcomeMessage = new Message(teamUid, teamName,
+                                AppParams.TEXT_WELCOME, false);
+                        FirebaseUtil.getMessagesRef().child(newChatId).push()
+                                .setValue(welcomeMessage);
+
+                        // new user & username to database
+                        User newUser = new User(
+                                newUid, mRegUsernameField.getText().toString(),
+                                newName, mRegEmailField.getText().toString(),
+                                teamUid, newChatId);
+                        FirebaseUtil.getUsersRef()
+                                .child(newUid).setValue(newUser);
+                        FirebaseUtil.getUsernamesRef()
+                                .child(mRegUsernameField.getText().toString())
+                                .setValue(newUid);
+
+                        // finish off...
+                        hideProgressDialog();
+                        goToMain();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "saveNewUser:getDevTeam:onCancelled",
+                                databaseError.toException());
+                        // save new user with the initial dev team messages
+
+                        // new user & username to database
+                        User newUser = new User(
+                                newUid, mRegUsernameField.getText().toString(),
+                                newName, mRegEmailField.getText().toString());
+                        FirebaseUtil.getUsersRef()
+                                .child(newUid).setValue(newUser);
+                        FirebaseUtil.getUsernamesRef()
+                                .child(mRegUsernameField.getText().toString())
+                                .setValue(newUid);
+
+                        // finish off...
+                        hideProgressDialog();
+                        goToMain();
+                    }
+                });
     }
 
     // ========================================================
@@ -198,16 +250,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     // ========================================================
-    // login logic
+    /* login logic */
 
-    /* show the LOGIN screen */
+    /* Shows the LOGIN screen */
     private void showLogin() {
-        ((TextView) findViewById(R.id.text_title_login)).setText(R.string.text_title_login);
+        ((TextView) findViewById(R.id.text_title_login))
+                .setText(R.string.text_title_login);
         mLoginUI.setVisibility(View.VISIBLE);
         mRegisterUI.setVisibility(View.GONE);
     }
 
-    /* login(): login via the given email/password */
+    /* Login via the given email/password */
     private void login() {
         final String email = mEmailField.getText().toString();
         final String password = mPasswordField.getText().toString();
@@ -225,15 +278,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         // [START sign_in_with_email]
         Log.d(TAG, "login:email=" + email);
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
+                this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                        Log.d(TAG, "signInWithEmail:onComplete:" +
+                                task.isSuccessful());
 
                         // If sign in fails, display a message to the user.
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Log.w(TAG, "signInWithEmail:failed",
+                                    task.getException());
                             Toast.makeText(LoginActivity.this,
                                     R.string.status_auth_failed,
                                     Toast.LENGTH_SHORT).show();
@@ -241,33 +296,36 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             mRegisterButton.setVisibility(View.VISIBLE);
                             hideProgressDialog();
                         }
-
-                        // If sign in succeeds, the auth state listener will be notified
-                        // and logic to handle the signed in user can be handled in the listener.
+                        // If sign in succeeds, notify the auth state listener
+                        // and logic to handle the signed in user will be
+                        // handled in the listener.
                     }
                 });
         // [END sign_in_with_email]
     }
 
     // ========================================================
-    // register logic
+    /* register logic */
 
-    /* show the REGISTER screen */
+    /* Shows the REGISTER screen */
     private void showRegister() {
-        ((TextView) findViewById(R.id.text_title_login)).setText(R.string.text_title_register);
+        ((TextView) findViewById(R.id.text_title_login))
+                .setText(R.string.text_title_register);
         mLoginUI.setVisibility(View.GONE);
         mRegisterUI.setVisibility(View.VISIBLE);
     }
 
-    /* register(): try to create a new user account */
+    /* Try to create a new user account */
     private void register() {
         final String username = mRegUsernameField.getText().toString();
-        final String displayedName = mRegDisplayedNameField.getText().toString();
+        final String displayedName = mRegDisplayedNameField
+                .getText().toString();
         final String email = mRegEmailField.getText().toString();
         final String password = mRegPasswordField.getText().toString();
         final EditText[] fields = new EditText[]{mRegUsernameField,
                 mRegDisplayedNameField, mRegEmailField, mRegPasswordField};
-        final String[] values = new String[]{username, displayedName, email, password};
+        final String[] values = new String[]{
+                username, displayedName, email, password};
 
         // input validation
         if (!validateEmpty(fields, values)) {
@@ -301,52 +359,59 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             mRegUsernameField.setError(USERNAME_EXIST);
                             mRegSubmitButton.setVisibility(View.VISIBLE);
                             hideProgressDialog();
-                        } else {
-                            // isUnique = true;
+                        } else { // isUnique = true;
                             createAccount(email, password, fields);
                         }
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "checkUsername:onCancelled", databaseError.toException());
+                        Log.w(TAG, "checkUsername:onCancelled",
+                                databaseError.toException());
                     }
                 });
         // [END check_username_unique]
     }
 
-    /* createAccount(): create account via the given username/name/email/password */
-    private void createAccount(String email, String password, final EditText[] fields) {
+    /* Creates account via the given username/name/email/password */
+    private void createAccount(String email, String password,
+                               final EditText[] fields) {
         Log.d(TAG, "createAccount:email=" + email);
 
         // [START create_new_acccount]
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                .addOnCompleteListener(
+                        this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(
+                                    @NonNull Task<AuthResult> task) {
+                                Log.d(TAG, "createUserWithEmail:onComplete:" +
+                                        task.isSuccessful());
 
-                        // If createUserWithEmail fails, display a message to the user.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "createUserWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this,
-                                    R.string.status_register_failed,
-                                    Toast.LENGTH_SHORT).show();
-                            isNewUser = false;
-                            mRegSubmitButton.setVisibility(View.VISIBLE);
-                            hideProgressDialog();
-                        }
-
-                        // If createUserWithEmail succeeds, the auth state listener will be notified
-                        // and logic to handle the signed in user can be handled in the listener.
-                    }
-                });
+                                // If createUserWithEmail fails,
+                                // display a message to the user.
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "createUserWithEmail:failed",
+                                            task.getException());
+                                    Toast.makeText(LoginActivity.this,
+                                            R.string.status_register_failed,
+                                            Toast.LENGTH_SHORT).show();
+                                    isNewUser = false;
+                                    mRegSubmitButton.setVisibility(View.VISIBLE);
+                                    hideProgressDialog();
+                                }
+                                // If createUserWithEmail succeeds,
+                                // the auth state listener will be notified
+                                // and logic to handle the signed in user
+                                // can be handled in the listener.
+                            }
+                        });
         // [END create_new_acccount]
     }
 
     // ========================================================
-    // input data validation
+    /* input data validation */
 
-    /* validateEmpty(): check empty fields in the form; return false when invalid */
+    /* Checks empty fields in the form; return false when invalid */
     private boolean validateEmpty(EditText[] fields, String[] values) {
         boolean valid = true;
         int i;
@@ -363,7 +428,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     // ========================================================
-    // navigation
+    /* navigation */
 
     /* Directs to the main screen */
     private void goToMain() {
@@ -388,4 +453,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
         return false;
     }
+
+    // ========================================================
 }

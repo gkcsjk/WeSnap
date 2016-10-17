@@ -23,11 +23,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.unimelb.gof.wesnap.fragment.*;
 import com.unimelb.gof.wesnap.chat.ChooseFriendActivity;
 import com.unimelb.gof.wesnap.friend.SearchUsernameActivity;
-import com.unimelb.gof.wesnap.memories.MemoriesActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -48,10 +47,6 @@ public class MainActivity extends BaseActivity {
 
     /* Variables for the Logged-in User */
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
-
-    /* ValueEventListener for Current User */
-    ValueEventListener profileListener;
 
     /* UI components */
     private ViewPager mViewPager;
@@ -74,7 +69,7 @@ public class MainActivity extends BaseActivity {
             return;
         } else {
             // if yes, get current user info and store a local copy
-            profileListener = new ValueEventListener() {
+            ValueEventListener profileListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d(TAG, "getCurrentUser:onDataChange");
@@ -85,11 +80,13 @@ public class MainActivity extends BaseActivity {
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+                    Log.w(TAG, "getCurrentUser:onCancelled",
+                            databaseError.toException());
                     goToLogin("Fail to retrieve current user info.");
                 }
             };
-            FirebaseUtil.getCurrentUserRef()
+            FirebaseUtil.getUsersRef()
+                    .child(mFirebaseAuth.getCurrentUser().getUid())
                     .addListenerForSingleValueEvent(profileListener);
         }
 
@@ -106,7 +103,8 @@ public class MainActivity extends BaseActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChooseFriendActivity.class);
+                Intent intent = new Intent(
+                        MainActivity.this, ChooseFriendActivity.class);
                 startActivity(intent);
             }
         });
@@ -116,11 +114,16 @@ public class MainActivity extends BaseActivity {
     /* Set up the tabs in main screen */
     private void setupTabs() {
         // Create MyTabAdapter that contains info of each tab
-        MyTabAdapter myTabAdapter = new MyTabAdapter(getSupportFragmentManager());
-        myTabAdapter.addFragment(new ChatsFragment(), "Chats", R.drawable.ic_action_chat);
-        myTabAdapter.addFragment(new CameraFragment(), "Snap", R.drawable.ic_action_camera);
-        myTabAdapter.addFragment(new StoriesFragment(), "Stories", R.drawable.ic_action_stories);
-        myTabAdapter.addFragment(new MeFragment(), "Me", R.drawable.ic_action_me);
+        MyTabAdapter myTabAdapter =
+                new MyTabAdapter(getSupportFragmentManager());
+        myTabAdapter.addFragment(
+                new ChatsFragment(), "Chats", R.drawable.ic_action_chat);
+        myTabAdapter.addFragment(
+                new CameraFragment(), "Snap", R.drawable.ic_action_camera);
+        myTabAdapter.addFragment(
+                new StoriesFragment(), "Stories", R.drawable.ic_action_stories);
+        myTabAdapter.addFragment(
+                new MeFragment(), "Me", R.drawable.ic_action_me);
 
         // Set ViewPager for each Tabs
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -137,27 +140,28 @@ public class MainActivity extends BaseActivity {
         }
 
         // Set diff FAB / AppBar actions
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-                mFab.clearAnimation();
-                if (mTabLayout.getSelectedTabPosition() == 0) {
-                    // for chats screen
-                    mFab.show();
-                } else {
-                    mFab.hide();
-                }
-            }
+        mTabLayout.addOnTabSelectedListener(
+                new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        mViewPager.setCurrentItem(tab.getPosition());
+                        mFab.clearAnimation();
+                        if (mTabLayout.getSelectedTabPosition() == 0) {
+                            // for chats screen
+                            mFab.show();
+                        } else {
+                            mFab.hide();
+                        }
+                    }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                    }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                    }
+                });
     }
 
     // ========================================================
@@ -239,7 +243,8 @@ public class MainActivity extends BaseActivity {
     /* Search button on app bar */
     private void search() {
         Log.d(TAG, "search:username");
-        Intent intent = new Intent(MainActivity.this, SearchUsernameActivity.class);
+        Intent intent = new Intent(
+                MainActivity.this, SearchUsernameActivity.class);
         startActivity(intent);
     }
 

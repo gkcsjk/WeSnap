@@ -17,7 +17,6 @@ import com.unimelb.gof.wesnap.BaseActivity;
 import com.unimelb.gof.wesnap.models.Story;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * PhotoUploader
@@ -48,10 +47,10 @@ public class PhotoUploader {
 
         /* Firebase Database / Storage variables */
         final DatabaseReference fMemoriesDatabase =
-                FirebaseUtil.getCurrentMemoriesDatabase();
+                FirebaseUtil.getMyMemoriesDatabase();
         final StorageReference fMemoriesStorage =
-                FirebaseUtil.getCurrentMemoriesStorage();
-        final String fCurrentUserId = FirebaseUtil.getCurrentUserId();
+                FirebaseUtil.getMyMemoriesStorage();
+        final String fCurrentUserId = FirebaseUtil.getMyUid();
         if (fMemoriesDatabase == null || fMemoriesStorage == null
                 || fCurrentUserId == null) {
             // null value error out
@@ -116,7 +115,7 @@ public class PhotoUploader {
                 FirebaseUtil.getStoriesDatabase();
         final StorageReference fStoriesStorage =
                 FirebaseUtil.getStoriesStorage();
-        final String fCurrentUserId = FirebaseUtil.getCurrentUserId();
+        final String fCurrentUserId = FirebaseUtil.getMyUid();
         if (fStoriesDatabase == null || fStoriesStorage == null
                 || fCurrentUserId == null || AppParams.currentUser == null) {
             // null value error out
@@ -157,13 +156,13 @@ public class PhotoUploader {
                         fStoriesDatabase.child(uniqueStoryId).setValue(newStory);
 
                         // save as mine
-                        FirebaseUtil.getMyStoriesDatabase()
+                        FirebaseUtil.getSelfStoriesDatabase()
                                 .child(fCurrentUserId)
                                 .child(uniqueStoryId)
                                 .setValue(newStory.getTimestamp());
 
                         // share to friends
-                        FirebaseUtil.getCurrentFriendsRef()
+                        FirebaseUtil.getMyFriendIdsRef()
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {

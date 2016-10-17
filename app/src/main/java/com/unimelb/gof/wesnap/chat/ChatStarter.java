@@ -24,7 +24,7 @@ import java.util.HashMap;
  */
 public class ChatStarter {
     private static final String TAG = "ChatStarter";
-    private static DatabaseReference refMyChatIds = FirebaseUtil.getCurrentChatsRef();
+    private static DatabaseReference refMyChatIds = FirebaseUtil.getMyChatIdsRef();
 
     // ======================================================
     /* check if exists an active "chat" for the selected friend */
@@ -99,7 +99,7 @@ public class ChatStarter {
                                      final String initialMessageBody) {
         Log.d(TAG, "startNewChat:uid=" + uid);
 
-        final DatabaseReference refCurrentUser = FirebaseUtil.getCurrentUserRef();
+        final DatabaseReference refCurrentUser = FirebaseUtil.getMyUserRef();
         if (refCurrentUser == null) { // error out
             Log.e(TAG, "current user ref unexpectedly null; goToLogin()");
             (new BaseActivity()).goToLogin("current user ref: null");

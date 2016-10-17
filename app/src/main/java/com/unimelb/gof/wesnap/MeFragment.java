@@ -1,4 +1,4 @@
-package com.unimelb.gof.wesnap.fragment;
+package com.unimelb.gof.wesnap;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,12 +15,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.unimelb.gof.wesnap.BaseActivity;
-import com.unimelb.gof.wesnap.R;
 import com.unimelb.gof.wesnap.friend.AddFriendChooserActivity;
 import com.unimelb.gof.wesnap.friend.ViewFriendsActivity;
 import com.unimelb.gof.wesnap.friend.ViewRequestsActivity;
-import com.unimelb.gof.wesnap.memories.MemoriesActivity;
 import com.unimelb.gof.wesnap.models.User;
 import com.unimelb.gof.wesnap.util.AppParams;
 import com.unimelb.gof.wesnap.util.FirebaseUtil;
@@ -28,7 +25,7 @@ import com.unimelb.gof.wesnap.util.GlideUtil;
 
 /**
  * MeFragment
- * TODO comments
+ * Shows current user information and provides button for friendship features.
  *
  * COMP90018 Project, Semester 2, 2016
  * Copyright (C) The University of Melbourne
@@ -43,11 +40,9 @@ public class MeFragment extends Fragment {
     private Button mAddFriendButton;
     private Button mViewRequestButton;
     private Button mViewFriendsButton;
-//    private Button mViewMemoriesButton;
 
     /* Firebase Database variables */
-    private DatabaseReference refCurrentUser;
-    private ValueEventListener mListenerCurrentUser;
+    private DatabaseReference mMyUserRef;
 
     public MeFragment() {
     }
@@ -63,41 +58,41 @@ public class MeFragment extends Fragment {
         mUsername = (TextView) rootView.findViewById(R.id.my_username);
         setCurrentUserInfo();
 
-        mAddFriendButton = (Button) rootView.findViewById(R.id.button_add_friends);
+        //--------------
+        mAddFriendButton = (Button) rootView.findViewById(
+                R.id.button_add_friends);
         mAddFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddFriendChooserActivity.class);
+                Intent intent = new Intent(
+                        getActivity(), AddFriendChooserActivity.class);
                 startActivity(intent);
             }
         });
 
-        mViewRequestButton = (Button) rootView.findViewById(R.id.button_view_requests);
+        //--------------
+        mViewRequestButton = (Button) rootView.findViewById(
+                R.id.button_view_requests);
         mViewRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ViewRequestsActivity.class);
+                Intent intent = new Intent(
+                        getActivity(), ViewRequestsActivity.class);
                 startActivity(intent);
             }
         });
 
-        mViewFriendsButton = (Button) rootView.findViewById(R.id.button_view_friends);
+        //--------------
+        mViewFriendsButton = (Button) rootView.findViewById(
+                R.id.button_view_friends);
         mViewFriendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ViewFriendsActivity.class);
+                Intent intent = new Intent(
+                        getActivity(), ViewFriendsActivity.class);
                 startActivity(intent);
             }
         });
-
-//        mViewMemoriesButton = (Button) rootView.findViewById(R.id.button_my_memories);
-//        mViewMemoriesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), MemoriesActivity.class);
-//                startActivity(intent);
-//            }
-//        });
 
         return rootView;
     }
@@ -106,47 +101,46 @@ public class MeFragment extends Fragment {
     private void setCurrentUserInfo() {
         /* Check AppParams */
         if (AppParams.currentUser != null) {
-            String avatarUrl = AppParams.getMyAvatarUrl();
-            if (avatarUrl != null) {
-                GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
-            } else {
-                mAvatar.setImageResource(R.drawable.ic_default_avatar);
-            }
-            mDisplayedName.setText(AppParams.getMyDisplayedName());
-            mUsername.setText(AppParams.getMyUsername());
+            showInfo(AppParams.currentUser);
             return;
         }
 
         /* Confirm Current User */
-        refCurrentUser = FirebaseUtil.getCurrentUserRef();
-        if (refCurrentUser == null) {
-            Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
-            BaseActivity error = new BaseActivity();
-            error.goToLogin("current user uid: null");
+        mMyUserRef = FirebaseUtil.getMyUserRef();
+        if (mMyUserRef == null) {
+            Log.e(TAG, "unexpected null; goToLogin()");
+            (new BaseActivity()).goToLogin("null");
             return;
         }
 
         /* ValueEventListener for Current User */
-        refCurrentUser.addValueEventListener(new ValueEventListener() {
+        mMyUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.w(TAG, "getCurrentUser:onDataChange");
                 User currentUser = dataSnapshot.getValue(User.class);
-
-                String avatarUrl = currentUser.getAvatarUrl();
-                if (avatarUrl != null) {
-                    GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
-                } else {
-                    mAvatar.setImageResource(R.drawable.ic_default_avatar);
-                }
-                mDisplayedName.setText(currentUser.getDisplayedName());
-                mUsername.setText(currentUser.getUsername());
+                showInfo(currentUser);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getCurrentUser:onCancelled", databaseError.toException());
+                Log.w(TAG, "getCurrentUser:onCancelled",
+                        databaseError.toException());
             }
         });
     }
+
+    // ======================================================
+    private void showInfo(User currentUser) {
+        String avatarUrl = currentUser.getAvatarUrl();
+        if (avatarUrl == null || avatarUrl.length() == 0) {
+            mAvatar.setImageResource(R.drawable.avatar_default_2);
+        } else {
+            GlideUtil.loadProfileIcon(avatarUrl, mAvatar);
+        }
+        mDisplayedName.setText(currentUser.getDisplayedName());
+        mUsername.setText(currentUser.getUsername());
+    }
+
+    // ======================================================
 }

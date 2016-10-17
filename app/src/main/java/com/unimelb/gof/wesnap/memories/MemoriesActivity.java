@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -71,9 +70,9 @@ public class MemoriesActivity extends BaseActivity {
         setContentView(R.layout.activity_memories);
 
         // Firebase Refs
-        mMemoriesDatabase = FirebaseUtil.getCurrentMemoriesDatabase();
-        mMemoriesStorage = FirebaseUtil.getCurrentMemoriesStorage();
-        String idCurrentUser = FirebaseUtil.getCurrentUserId();
+        mMemoriesDatabase = FirebaseUtil.getMyMemoriesDatabase();
+        mMemoriesStorage = FirebaseUtil.getMyMemoriesStorage();
+        String idCurrentUser = FirebaseUtil.getMyUid();
         if (mMemoriesDatabase == null || mMemoriesStorage == null || idCurrentUser == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");

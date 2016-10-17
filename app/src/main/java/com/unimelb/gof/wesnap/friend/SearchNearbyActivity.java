@@ -287,7 +287,7 @@ public class SearchNearbyActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String uid = (String) dataSnapshot.getValue();
-                FriendHandler.insertFriendAtoB(uid, FirebaseUtil.getCurrentUserId());
+                FriendHandler.insertFriendAtoB(uid, FirebaseUtil.getMyUid());
                 ll1.setVisibility(View.GONE);
                 ll2.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);

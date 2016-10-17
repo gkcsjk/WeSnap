@@ -64,10 +64,10 @@ public class MyStoriesActivity extends BaseActivity {
         setContentView(R.layout.activity_stories);
 
         // Firebase Refs
-        mMyStoriesDatabase = FirebaseUtil.getMyStoriesDatabase();
+        mMyStoriesDatabase = FirebaseUtil.getSelfStoriesDatabase();
         mAllStoriesDatabase = FirebaseUtil.getStoriesDatabase();
         mAllStoriesStorage = FirebaseUtil.getStoriesStorage();
-        String idCurrentUser = FirebaseUtil.getCurrentUserId();
+        String idCurrentUser = FirebaseUtil.getMyUid();
         if (mMyStoriesDatabase == null || mAllStoriesDatabase== null
                 || mAllStoriesStorage == null || idCurrentUser == null) {
             // null value error out

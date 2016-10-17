@@ -38,7 +38,7 @@ public class FriendHandler {
                                          final View v) {
         Log.d(TAG, "sendFriendRequest");
 
-        final String fromUserId = FirebaseUtil.getCurrentUserId();
+        final String fromUserId = FirebaseUtil.getMyUid();
         if (fromUserId == null) { // null value; error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
             BaseActivity error = new BaseActivity();
@@ -57,7 +57,7 @@ public class FriendHandler {
             viewHolder.useDoneButton();
         } else {
             // go to Firebase Database
-            FirebaseUtil.getCurrentUserRef()
+            FirebaseUtil.getMyUserRef()
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -91,7 +91,7 @@ public class FriendHandler {
         Log.w(TAG, "acceptFriendRequest");
 
         final String fromUserId = refRequest.getKey();
-        final String toUserId = FirebaseUtil.getCurrentUserId();
+        final String toUserId = FirebaseUtil.getMyUid();
         if (toUserId == null) { // null value; error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
             BaseActivity error = new BaseActivity();

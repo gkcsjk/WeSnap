@@ -16,16 +16,18 @@ import java.util.Locale;
  */
 public class AppParams {
     private static final String TAG = "AppParams";
-    public static final String APP_NAME = "WeSnap";
 
+    public static final String APP_NAME = "WeSnap";
+    public static final String APP_FILE_PROVIDER =
+            "com.unimelb.gof.wesnap.fileprovider";
+    public static final String MY_UUID = "7c3fdc44-33a7-463e-9a9b-b039844bd410";
+
+    // ======================================================
+    /* Time to Live */
     public static final int NO_TTL = -1;
     public static final int DEFAULT_TTL = 3;
     public static final int MIN_TTL = 1;
     public static final int MAX_TTL = 10;
-
-    public static final String FILEPROVIDER = "com.unimelb.gof.wesnap.fileprovider";
-    public static final String MY_UUID = "7c3fdc44-33a7-463e-9a9b-b039844bd410";
-
 
     // ======================================================
     /* Timestamp in certain format */
@@ -49,24 +51,11 @@ public class AppParams {
 
     // ======================================================
     /* WeSnap Dev Team */
-    public static final String ID_DEV_TEAM = "ZqiNmgsuE1hJlHOFZNnTSot8l882";
-    public static final String EMAIL_DEV_TEAM = "wesnap@example.com";
-    public static final String USERNAME_DEV_TEAM = "wesnap-dev";
-    public static final String NAME_DEV_TEAM = "Dev Team WeSnap";
-    public static final String URL_DEV_TEAM = "https://firebasestorage.googleapis.com/v0/b/gof-wesnap.appspot.com/o/AppParams%2Favatar-default.jpg?alt=media&token=ad8a66d1-f17b-40df-9942-c5863632cc34";
+    static final String USERNAME_DEV_TEAM = "wesnap-dev";
+    static final String ID_DEV_TEAM = "ZqiNmgsuE1hJlHOFZNnTSot8l882";
 
-    private static final String TEXT_WELCOME = "Hello World! Happy Snapping, WeSnap Dev Team";
-
-    public static Message getWelcomeMessage() {
-        return new Message(ID_DEV_TEAM, NAME_DEV_TEAM, TEXT_WELCOME, false);
-    }
-
-    public static Chat getWelcomeChat (String newUserId, String newUserName) {
-        HashMap<String, String> participants = new HashMap<>();
-        participants.put(ID_DEV_TEAM, NAME_DEV_TEAM);
-        participants.put(newUserId, newUserName);
-        return new Chat(participants, TEXT_WELCOME, URL_DEV_TEAM, null);
-    }
+    public static final String TEXT_WELCOME =
+            "Hello World! Happy Snapping, WeSnap Dev Team";
 
     // ======================================================
     /* Current User */

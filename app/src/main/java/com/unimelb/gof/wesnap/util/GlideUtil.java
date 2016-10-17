@@ -8,10 +8,18 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.unimelb.gof.wesnap.R;
 
+/**
+ * GlideUtil
+ * Helpers to load images into views
+ *
+ * COMP90018 Project, Semester 2, 2016
+ * Copyright (C) The University of Melbourne
+ */
 public class GlideUtil {
     public static void loadImage(String url, ImageView imageView) {
         Context context = imageView.getContext();
-        ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(context, R.color.colorGreyMedium));
+        ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(
+                context, R.color.colorTransparentBlack));
         Glide.with(context)
                 .load(url)
                 .placeholder(cd)
@@ -22,7 +30,8 @@ public class GlideUtil {
 
     public static void loadProfileIcon(String url, ImageView imageView) {
         Context context = imageView.getContext();
-        ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(context, R.color.colorGreyMedium));
+        ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(
+                context, R.color.colorTransparentWhite));
         Glide.with(context)
                 .load(url)
                 .placeholder(cd)

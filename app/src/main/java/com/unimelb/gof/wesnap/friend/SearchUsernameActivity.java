@@ -148,7 +148,7 @@ public class SearchUsernameActivity extends BaseActivity {
                 }
 
                 // Check if is friend already, and set up button action and UI accordingly
-                FirebaseUtil.getCurrentFriendsRef()
+                FirebaseUtil.getMyFriendIdsRef()
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {

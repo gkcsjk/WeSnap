@@ -52,7 +52,7 @@ public class ViewFriendsActivity extends BaseActivity {
         setContentView(R.layout.activity_view_friends);
 
         /* Firebase Database variables */
-        refMyFriendIds = FirebaseUtil.getCurrentFriendsRef();
+        refMyFriendIds = FirebaseUtil.getMyFriendIdsRef();
         if (refMyFriendIds == null) {
             // null value error out
             Log.e(TAG, "current user uid unexpectedly null; goToLogin()");
@@ -110,7 +110,7 @@ public class ViewFriendsActivity extends BaseActivity {
                                     if (!dataSnapshot.exists()) {
                                         Log.w(TAG, "refMyFriendIds:unexpected non-existing user id=" + newFriendId);
                                         FriendHandler.removeFriendAfromB(
-                                                newFriendId, FirebaseUtil.getCurrentUserId());
+                                                newFriendId, FirebaseUtil.getMyUid());
                                         return;
                                     }
                                     // load friend's user data

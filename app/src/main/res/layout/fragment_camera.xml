@@ -4,33 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="?attr/actionBarSize"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".fragment.CameraFragment" >
+    android:background="@color/colorPrimary"
+    tools:context=".CameraFragment" >
 
-    <!-- Start Camera Button -->
-    <Button
-        android:id="@+id/button_start_camera"
-        android:text="@string/action_camera"
-        android:drawableTop="@drawable/ic_action_camera_blue"
-        android:drawablePadding="@dimen/size_edges_small"
-        android:textColor="@color/colorPrimary"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/size_spaces"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <!-- Start Camera Button -->
+        <Button
+            android:id="@+id/button_start_camera"
+            android:text="@string/action_camera"
+            android:drawableTop="@drawable/ic_action_camera"
+            android:drawablePadding="@dimen/size_edges_small"
+            android:textColor="@color/colorWhite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/size_spaces"
+            android:typeface="sans"
+            android:textStyle="bold"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textAllCaps="true"
+            style="?android:attr/borderlessButtonStyle" />
+    </LinearLayout>
 
-    <!-- View Memories Button -->
-    <Button
-        android:id="@+id/button_my_memories"
-        android:text="@string/action_my_memories"
-        android:layout_gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:drawableTop="@drawable/ic_action_view_memories"
-        android:drawablePadding="@dimen/size_edges_small"
-        android:layout_margin="@dimen/size_spaces"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <!-- View Memories Button -->
+        <Button
+            android:id="@+id/button_my_memories"
+            android:text="@string/action_my_memories"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:drawableTop="@drawable/ic_action_memories_white"
+            android:drawablePadding="@dimen/size_edges_small"
+            android:layout_margin="@dimen/size_spaces"
+            android:typeface="sans"
+            android:textStyle="bold"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textAllCaps="true"
+            style="?android:attr/borderlessButtonStyle" />
+    </LinearLayout>
 </LinearLayout>
