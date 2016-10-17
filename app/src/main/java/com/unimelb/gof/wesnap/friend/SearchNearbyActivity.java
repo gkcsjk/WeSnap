@@ -291,16 +291,11 @@ public class SearchNearbyActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String uid = (String) dataSnapshot.getValue();
-                FriendHandler.insertFriendAtoB(uid, FirebaseUtil.getMyUid());
+                FriendHandler.sendFriendRequestNoFeedback(uid);
                 ll1.setVisibility(View.GONE);
                 ll2.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);
                 tv1.setText(FRIEND_ADDING_MESSAGE);
-
-                // if exist chat go to chat OR start a new chat
-                ChatStarter.checkExistingChats(SearchNearbyActivity.this,
-                        uid, friendUsername,
-                        Chat.ADDED_AS_FRIEND);
             }
 
             @Override
